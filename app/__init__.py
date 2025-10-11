@@ -73,7 +73,6 @@ def create_app():
            
             session_avatar_url = session.get('avatar_url', None)
           
-            # --- LÓGICA DAS REDES SOCIAIS (BASE) ---
             social_links = []
             links_json_str = settings.get('social_links', '[]')
             
@@ -88,30 +87,28 @@ def create_app():
             except json.JSONDecodeError:
                 social_links = []
 
-            # --- INÍCIO DA MODIFICAÇÃO GLOBAL ---
-            # 1. Busca TODOS os dados de plugins marcados como públicos para o artista principal
+            # --- INÍCIO DA CORREÇÃO 1: Consulta ao banco de dados mais segura ---
             public_plugin_data = {}
             is_postgres = hasattr(conn, 'cursor_factory')
             placeholder = '%s' if is_postgres else '?'
             
-            # A query agora busca por qualquer chave que comece com 'public_'
-            query_plugin = f"SELECT key, value FROM plugin_data WHERE user_id = {placeholder} AND key LIKE 'public_%'"
-            cursor.execute(query_plugin, (1,)) # ID 1 = Artista Principal
+            # A query agora usa placeholders para todos os parâmetros.
+            query_plugin = f"SELECT key, value FROM plugin_data WHERE user_id = {placeholder} AND key LIKE {placeholder}"
+            # O padrão do LIKE é passado como um parâmetro.
+            cursor.execute(query_plugin, (1, 'public_%')) 
             plugin_data_rows = cursor.fetchall()
+            # --- FIM DA CORREÇÃO 1 ---
             
             for row in plugin_data_rows:
-                # Remove o prefixo 'public_' para criar uma chave mais limpa
                 clean_key = row['key'].replace('public_', '', 1)
                 try:
                     public_plugin_data[clean_key] = json.loads(row['value'])
                 except (json.JSONDecodeError, TypeError):
                     public_plugin_data[clean_key] = row['value']
 
-            # 2. Lógica específica para unificar os contatos, se existirem
-            additional_contacts = public_plugin_data.get('additional_contacts') # Procura pela chave limpa
+            additional_contacts = public_plugin_data.get('additional_contacts')
             if additional_contacts and isinstance(additional_contacts, list):
                 social_links.extend(additional_contacts)
-            # --- FIM DA MODIFICAÇÃO GLOBAL ---
 
             cursor.close()
             conn.close()
@@ -129,7 +126,7 @@ def create_app():
                 home_headline=settings.get('home_headline', 'Bem-vindo à Galeria'),
                 home_subheadline=settings.get('home_subheadline', 'Explore as obras.'),
                 social_links=social_links,
-                public_plugin_data=public_plugin_data, # Disponibiliza TODOS os dados públicos para os templates
+                public_plugin_data=public_plugin_data,
                 custom_css=settings.get('custom_css_theme', None),
                 paypal_email=settings.get('paypal_email'),
                 paypal_hosted_button_id=settings.get('paypal_hosted_button_id'),
@@ -140,6 +137,15 @@ def create_app():
             )
         except Exception as e:
             print(f"Aviso: Não foi possível injetar configurações do site (pode ser o primeiro build): {e}")
-            return {}
+            # --- INÍCIO DA CORREÇÃO 2: Retornar valores padrão em caso de erro ---
+            # Em vez de um dicionário vazio, retorna valores padrão para evitar o UndefinedError.
+            return {
+                'artist_name': 'Site de Arte',
+                'site_mode': 'individual',
+                'social_links': [],
+                'public_plugins': [],
+                'admin_plugins': []
+            }
+            # --- FIM DA CORREÇÃO 2 ---
 
     return app
