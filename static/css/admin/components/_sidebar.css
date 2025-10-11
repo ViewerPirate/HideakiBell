@@ -1,0 +1,138 @@
+/* ADMIN COMPONENT: Sidebar */
+.sidebar {
+    background-color: var(--cor-surface);
+    grid-row: 1 / 3;
+    height: 100vh;
+    border-right: 1px solid var(--cor-borda);
+    display: flex;
+    flex-direction: column;
+    padding: 25px 0;
+    transition: var(--transicao);
+    position: sticky;
+    top: 0;
+}
+
+.sidebar-header {
+    padding: 0 25px 25px;
+    border-bottom: 1px solid var(--cor-borda);
+    transition: var(--transicao);
+}
+
+.sidebar-header h3 {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+}
+
+.sidebar-header h3 i {
+    color: var(--cor-principal);
+    transition: transform 0.4s ease;
+}
+
+.sidebar-header:hover h3 i {
+    transform: rotate(10deg);
+}
+
+.sidebar-menu {
+    padding: 25px 0;
+    flex-grow: 1;
+}
+
+/* --- INÍCIO DA MODIFICAÇÃO --- */
+.sidebar-menu h4 {
+    color: var(--cor-texto-secundario);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0 25px 15px;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+    margin-top: 15px; /* Adicionado espaçamento */
+}
+/* O primeiro título não precisa de margem no topo */
+.sidebar-menu h4:first-of-type {
+    margin-top: 0;
+}
+
+.sidebar-menu ul {
+    list-style: none;
+    padding: 0 15px;
+}
+
+.sidebar-menu li a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 20px;
+    color: var(--cor-texto-secundario);
+    text-decoration: none;
+    transition: var(--transicao);
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: var(--raio-borda);
+    margin-bottom: 5px;
+    white-space: nowrap;
+}
+
+/* Novo estilo de hover */
+.sidebar-menu li a:hover {
+    background-color: var(--cor-fundo);
+    color: var(--cor-principal);
+}
+
+/* Novo estilo para o item de menu ativo */
+.sidebar-menu li a.active {
+    background-image: none;
+    background-color: var(--cor-fundo-claro);
+    color: var(--cor-principal);
+    font-weight: 700;
+    box-shadow: none;
+    position: relative;
+}
+
+/* A barra vertical que indica o item ativo */
+.sidebar-menu li a.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 25%;
+    height: 50%;
+    width: 4px;
+    background-color: var(--cor-principal);
+    border-radius: 0 4px 4px 0;
+}
+/* --- FIM DA MODIFICAÇÃO --- */
+
+.sidebar-menu li a i {
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid var(--cor-borda);
+}
+
+@media (max-width: 1200px) {
+    .sidebar {
+        padding: 25px 0;
+    }
+    .sidebar-header {
+        padding: 0 15px 25px;
+    }
+    .sidebar-header h3 span,
+    .sidebar-menu h4,
+    .sidebar-menu li a span,
+    .sidebar-footer {
+        opacity: 0;
+        display: none;
+    }
+    .sidebar-menu li a {
+        justify-content: center;
+    }
+}

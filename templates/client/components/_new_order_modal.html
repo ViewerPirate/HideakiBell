@@ -1,0 +1,79 @@
+{# --- CONTEÚDO COMPLETAMENTE SUBSTITUÍDO PELO NOVO MODAL COM STEPPER --- #}
+<div class="modal modal-xl" id="newOrderModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Criar Nova Comissão</h2>
+            <button class="close-modal">&times;</button>
+        </div>
+        
+        <form id="stepper-order-form" novalidate>
+            <div class="stepper-modal-body-grid">
+                <div class="stepper-modal-stepper">
+                    </div>
+                
+                
+                <div class="stepper-modal-content-area">
+                    <div class="stepper-modal-pane active" data-pane-id="artist">
+                        <h3>1. Seleção de Artista</h3>
+                        <div id="stepper-artist-container" class="artist-selection-grid">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+
+                    <div class="stepper-modal-pane" data-pane-id="details">
+                        <h3>2. Detalhes do Pedido</h3>
+                        <div class="form-group">
+                            <label for="stepper-title">Título do Pedido*</label>
+                            <input type="text" id="stepper-title" class="form-input" placeholder="Ex: Retrato em Aquarela" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="stepper-type">Tipo de Arte*</label>
+                            <select id="stepper-type" class="form-input" required>
+                                <option value="">Primeiro, selecione um artista...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="stepper-description">Descrição Detalhada*</label>
+                            <textarea id="stepper-description" class="form-input" required rows="6" placeholder="Descreva com detalhes o que você deseja na sua arte, incluindo estilo, cores, personagens, cenário, etc."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="stepper-modal-pane" data-pane-id="options">
+                        <h3>3. Opções Adicionais</h3>
+                        <div class="price-calculator">
+                            <div class="form-group">
+                                <label for="stepper-extras">Extras</label>
+                                <select id="stepper-extras" class="form-input">
+                                    <option value="0.00">Nenhum extra</option>
+                                </select>
+                            </div>
+                            <div class="price-total">
+                                <span>Total Estimado:</span>
+                                <span id="stepper-total-price">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stepper-modal-pane" data-pane-id="review">
+                        <h3>4. Revisão Final</h3>
+                        <div id="stepper-summary-container">
+                            </div>
+                        <div class="form-group" style="margin-top: 1.5rem;">
+                            <label class="terms-label">
+                                <input type="checkbox" id="stepper-terms" required>
+                                <span>Eu li e concordo com os <a href="#" id="terms-link" class="modal-link">Termos de Serviço</a> e <a href="#" id="policy-link" class="modal-link">Política de Reembolso</a>.</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-light" id="stepper-prev" style="display: none;">Voltar</button>
+                <button type="button" class="btn btn-primary" id="stepper-next">Próximo</button>
+                <button type="submit" class="btn btn-success" id="stepper-submit" style="display: none;">Enviar Pedido</button>
+            </div>
+        </form>
+    </div>
+</div>

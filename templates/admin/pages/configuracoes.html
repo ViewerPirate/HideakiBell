@@ -1,0 +1,69 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block title %}
+Configurações - Painel do Artista
+{% endblock %}
+
+{% block content %}
+<form id="settings-form">
+    <div class="section-header">
+        <h2 class="section-title">Configurações Gerais</h2>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save" style="margin-right: 8px;"></i> Salvar Alterações</button>
+    </div>
+
+    <div class="settings-wrapper">
+        <nav class="settings-nav">
+            <a href="#" class="active" data-target="geral"><i class="fas fa-user-circle"></i> Geral</a>
+            <a href="#" data-target="conteudo"><i class="fas fa-file-alt"></i> Conteúdo</a>
+            <a href="#" data-target="servicos"><i class="fas fa-paint-brush"></i> Serviços</a>
+            <a href="#" data-target="pagamentos"><i class="fas fa-credit-card"></i> Pagamentos</a>
+            <a href="#" data-target="ajuda"><i class="fas fa-question-circle"></i> Ajuda & Suporte</a>
+            <a href="#" data-target="integracoes"><i class="fas fa-paper-plane"></i> Integrações</a>
+            <a href="#" data-target="avancado"><i class="fas fa-code"></i> Avançado</a>
+        </nav>
+
+        <div class="settings-content">
+            <div id="pane-geral" class="settings-pane active">
+                {% include 'admin/pages/configuracoes_partials/_perfil_e_inicio.html' %}
+            </div>
+
+            <div id="pane-conteudo" class="settings-pane">
+                {% include 'admin/pages/configuracoes_partials/_sobre.html' %}
+                {% include 'admin/pages/configuracoes_partials/_redes_sociais.html' %}
+                {% include 'admin/pages/configuracoes_partials/_textos_e_politicas.html' %}
+            </div>
+
+            <div id="pane-servicos" class="settings-pane">
+                {% include 'admin/pages/configuracoes_partials/_servicos_e_comissoes.html' %}
+                {% include 'admin/pages/configuracoes_partials/_extras.html' %}
+            </div>
+
+            <div id="pane-pagamentos" class="settings-pane">
+                {% include 'admin/pages/configuracoes_partials/_pagamentos.html' %}
+            </div>
+
+            <div id="pane-ajuda" class="settings-pane">
+                {% include 'admin/pages/configuracoes_partials/_ajuda_e_suporte.html' %}
+            </div>
+            <div id="pane-integracoes" class="settings-pane">
+                {% include 'admin/pages/configuracoes_partials/_telegram.html' %}
+            </div>
+
+            <div id="pane-avancado" class="settings-pane">
+                {% include 'admin/pages/configuracoes_partials/_css_customizado.html' %}
+            </div>
+        </div>
+    </div>
+</form>
+
+{% include 'admin/pages/configuracoes_partials/_templates.html' %}
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/admin_js/pages/configuracoes/config_ui_handlers.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/admin_js/pages/configuracoes/config_data_manager.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/admin_js/pages/configuracoes/config_main.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='js/admin_js/pages/configuracoes.js') }}"></script>
+{% endblock %}

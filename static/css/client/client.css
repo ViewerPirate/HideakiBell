@@ -1,0 +1,20 @@
+/*
+==========================================================================
+  ARQUIVO PRINCIPAL DE ESTILOS - PAINEL DO CLIENTE
+  Este arquivo importa todos os componentes de estilo.
+==========================================================================
+*/
+
+@import url("components/_base.css");
+@import url("components/_top_bar.css");
+@import url("components/_buttons.css");
+@import url("components/_cards.css");
+@import url("components/_forms.css");
+@import url("components/_progress.css");
+@import url("components/_modals.css");
+@import url("components/_utilities.css");
+@import url("components/_pricing_table.css");
+@import url("../chat_widget.css");
+@import url("../avatar_menu.css");
+@import url("components/_minha_conta.css");
+@import url("components/_ajuda_suporte.css");

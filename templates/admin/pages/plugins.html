@@ -1,0 +1,119 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block title %}
+Gerenciar Plugins - Painel do Artista
+{% endblock %}
+
+{% block content %}
+<style>
+    /* Estilos específicos para a página de plugins, inspirados no seu protótipo */
+    .plugin-card {
+        background-color: var(--cor-surface);
+        border: 1px solid var(--cor-borda);
+        border-radius: var(--raio-borda);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: var(--sombra-suave);
+        transition: var(--transicao);
+    }
+    .plugin-card:hover {
+        border-color: var(--cor-principal);
+        transform: translateY(-4px);
+    }
+    .plugin-card h4 {
+        font-size: 1.2em;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+    }
+    .plugin-card h4 small {
+        font-size: 0.8em;
+        color: var(--cor-texto-secundario);
+        font-weight: 500;
+    }
+    .plugin-card p {
+        margin: 0.2rem 0;
+        font-size: 0.9em;
+        color: var(--cor-texto-secundario);
+    }
+    .plugin-actions {
+        margin-top: 1rem;
+        display: flex;
+        gap: 10px;
+    }
+    #plugin-code-textarea {
+        width: 100%;
+        min-height: 350px;
+        font-family: monospace;
+        font-size: 0.9em;
+        background-color: var(--cor-fundo);
+        color: var(--cor-texto-principal);
+        border: 1px solid var(--cor-borda);
+        border-radius: 8px;
+        padding: 1rem;
+    }
+    #plugin-error-message {
+        color: var(--danger);
+        margin-top: 1rem;
+        padding: 0.75rem;
+        background-color: rgba(244, 67, 54, 0.1);
+        border-radius: var(--raio-borda);
+        display: none; /* Oculto por padrão */
+    }
+</style>
+
+<div class="section-header">
+    <div class="section-title">Gerenciador de Plugins</div>
+    <div class="action-buttons">
+        <button class="btn btn-light" id="btn-plugin-viewer"><i class="fas fa-code"></i> Ver Código dos Plugins Ativos</button>
+        <button class="btn btn-primary" id="add-plugin-btn"><i class="fas fa-plus"></i> Adicionar Novo Plugin</button>
+    </div>
+</div>
+
+<div class="card">
+    <p style="color: var(--cor-texto-secundario); font-size: 0.9rem; margin-top: -1rem; margin-bottom: 1.5rem;">
+        Adicione ou gerencie plugins para estender as funcionalidades do seu site. Plugins de escopo 'Admin' rodam apenas neste painel. Plugins de escopo 'Público' rodam em todo o site (use com cuidado). 
+    </p>
+    <div id="plugins-list-container">
+        <div class="loading-overlay" style="display: flex; position: relative; background: none; height: 100px;">
+            <div class="spinner"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="plugin-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="plugin-modal-title">Adicionar Novo Plugin</h3>
+            <button class="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="plugin-scope">Escopo do Plugin</label>
+                <select id="plugin-scope" class="form-input">
+                    <option value="admin" selected>Admin (Apenas para o painel)</option>
+                    <option value="public">Público (Para todo o site - Risco de Segurança)</option>
+                </select>
+                <p style="font-size: 0.85em; color: var(--cor-texto-secundario); margin-top: 5px;">
+                    Selecione 'Público' apenas para plugins 100% seguros e confiáveis, como scripts de análise ou widgets de UI.
+                </p>
+            </div>
+            <div class="form-group">
+                <label for="plugin-code-textarea">Código do Plugin</label>
+                <p style="color: var(--cor-texto-secundario); margin-bottom: 1rem; font-size: 0.9em;">
+                    Cole o código do seu plugin no formato de módulo ES6. O plugin deve exportar, no mínimo, as constantes `id` e `name`, e uma função `activate`.
+                </p>
+                <textarea id="plugin-code-textarea" placeholder="Cole o código do plugin aqui..."></textarea>
+            </div>
+            <div id="plugin-error-message"></div>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-light close-modal">Cancelar</button>
+            <button class="btn btn-primary" id="save-plugin-btn">Salvar Plugin</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/admin_js/pages/plugins.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,46 @@
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <h3><i class="fas fa-palette"></i> <span>Artista Admin</span></h3>
+    </div>
+    
+    <div class="sidebar-menu">
+        <h4>Gestão</h4>
+        <ul>
+            <li><a href="{{ url_for('admin.admin_dashboard') }}" class="{{ 'active' if 'dashboard' in request.path }}"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+            
+            <li><a href="{{ url_for('admin.admin_meu_perfil') }}" class="{{ 'active' if 'meu-perfil' in request.path }}"><i class="fas fa-user-circle"></i> <span>Meu Perfil</span></a></li>
+            <li><a href="{{ url_for('admin.admin_comissoes') }}" class="{{ 'active' if 'comissoes' in request.path }}"><i class="fas fa-shopping-cart"></i> <span>Comissões</span></a></li>
+            <li><a href="{{ url_for('admin.admin_clientes') }}" class="{{ 'active' if 'clientes' in request.path }}"><i class="fas fa-users"></i> <span>Clientes</span></a></li>
+            <li><a href="{{ url_for('admin.admin_mensagens') }}" class="{{ 'active' if 'mensagens' in request.path }}"><i class="fas fa-envelope"></i> <span>Mensagens</span></a></li>
+            <li><a href="{{ url_for('admin.admin_agenda') }}" class="{{ 'active' if 'agenda' in request.path }}"><i class="fas fa-calendar-alt"></i> <span>Agenda</span></a></li>
+        </ul>
+
+        <h4>Análise</h4>
+        <ul>
+            <li><a href="{{ url_for('admin.admin_financeiro') }}" class="{{ 'active' if 'financeiro' in request.path }}"><i class="fas fa-wallet"></i> <span>Financeiro</span></a></li>
+            <li><a href="{{ url_for('admin.admin_relatorios') }}" class="{{ 'active' if 'relatorios' in request.path }}"><i class="fas fa-chart-line"></i> <span>Relatórios</span></a></li>
+        </ul>
+
+        <h4>Conteúdo</h4>
+        <ul>
+            <li><a href="{{ url_for('admin.admin_galeria') }}" class="{{ 'active' if 'galeria' in request.path }}"><i class="fas fa-images"></i> <span>Galeria</span></a></li>
+        </ul>
+
+        <h4>Sistema</h4>
+        <ul>
+            <li><a href="{{ url_for('admin.admin_plugins') }}" class="{{ 'active' if 'plugins' in request.path }}"><i class="fas fa-puzzle-piece"></i> <span>Plugins</span></a></li>
+            <li><a href="{{ url_for('admin.admin_configuracoes') }}" class="{{ 'active' if 'configuracoes' in request.path }}"><i class="fas fa-cog"></i> <span>Configurações</span></a></li>
+        </ul>
+
+        <div id="plugin-nav-menu-container">
+            <ul id="plugin-nav-items">
+                </ul>
+        </div>
+    </div>
+    
+    <div class="sidebar-footer">
+        <a href="{{ url_for('auth.logout') }}" style="display: flex; align-items: center; gap: 10px; color: var(--cor-texto-secundario); text-decoration: none;">
+            <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
+        </a>
+    </div>
+</aside>

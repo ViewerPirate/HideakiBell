@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Área do Cliente{% endblock %} - {{ artist_name }}</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/client/client.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/public.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/viewer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/avatar_menu.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (theme === 'dark' || (!theme && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+
+    <style>
+        /* ESTILOS DO WIDGET DE CHAT RÁPIDO */
+        /* ========================================================== */
+        /* INÍCIO DA MODIFICAÇÃO: Estilo do botão padronizado         */
+        /* ========================================================== */
+        .chat-trigger-btn {
+            background-color: var(--cor-fundo-claro);
+            color: var(--cor-principal);
+            border: 1px solid var(--cor-principal);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 8px 12px;
+            transition: all 0.2s;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .chat-trigger-btn:hover {
+            background-color: var(--cor-principal);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--sombra-media);
+        }
+        /* ======================================================== */
+        /* FIM DA MODIFICAÇÃO                                       */
+        /* ======================================================== */
+        .chat-counter-badge {
+            position: absolute;
+            top: -8px; right: -8px; background-color: var(--danger); color: white;
+            width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 0.75em; font-weight: 700; border: 2px solid var(--cor-surface);
+        }
+        #widget-quick-chat {
+            position: fixed;
+            bottom: 20px; right: 20px; width: 370px; max-width: 90vw; height: 500px;
+            max-height: 80vh; background-color: var(--cor-surface); border: 1px solid var(--cor-borda);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); display: none;
+            flex-direction: column; z-index: 2500; animation: fadeInUp 0.3s ease-out;
+        }
+        #widget-quick-chat.visible { display: flex; }
+        .chat-widget-header {
+            padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
+        }
+        .chat-widget-header h4 { margin: 0; font-size: 1.1em; font-weight: 700; }
+        .chat-widget-header button { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--cor-texto-secundario); transition: color 0.2s; }
+        .chat-widget-header button:hover { color: var(--cor-texto-principal); }
+        .chat-widget-body {
+            flex-grow: 1;
+            overflow-y: auto; padding: 15px; display: flex; flex-direction: column-reverse;
+        }
+        .chat-widget-body::-webkit-scrollbar { width: 6px; }
+        .chat-widget-body::-webkit-scrollbar-track { background: transparent; }
+        .chat-widget-body::-webkit-scrollbar-thumb { background-color: var(--cor-borda); border-radius: 20px; }
+        .chat-bubbles-container { display: flex; flex-direction: column; gap: 12px; }
+        .chat-bubble { padding: 10px 15px; border-radius: 20px; max-width: 80%; line-height: 1.5; animation: popIn 0.2s ease; }
+        .chat-bubble-meta { font-size: 0.75em; color: var(--cor-texto-secundario); margin-top: 5px; }
+        .chat-bubble.received { background-color: var(--cor-fundo); align-self: flex-start; border-bottom-left-radius: 5px; }
+        .chat-bubble.received .chat-bubble-meta { text-align: left; }
+        .chat-bubble.sent { background-image: linear-gradient(45deg, var(--cor-principal), var(--cor-principal-escura)); color: white; align-self: flex-end; border-bottom-right-radius: 5px; }
+        .chat-bubble.sent .chat-bubble-meta { color: rgba(255, 255, 255, 0.7); text-align: right; }
+        .chat-bubble.preview { background-color: transparent; align-self: center; width: 100%; max-width: 100%; padding: 0; }
+        .preview-card { border: 1px solid var(--cor-borda); border-radius: 12px; background-color: var(--cor-fundo); text-align: center; padding: 15px; }
+        .preview-card img { max-width: 100%; max-height: 200px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; }
+        .preview-card-actions { margin-top: 10px; display: flex; gap: 10px; justify-content: center; }
+        .chat-widget-footer { padding: 10px 15px; flex-shrink: 0; position: relative; }
+        .chat-widget-footer form { display: flex; gap: 10px; align-items: flex-end; }
+        .chat-widget-footer textarea {
+            flex-grow: 1;
+            resize: none; border-radius: 21px; padding: 10px 20px; min-height: 42px;
+            max-height: 100px; border: none; background-color: var(--cor-fundo); transition: box-shadow 0.2s;
+            line-height: 1.4;
+            overflow-y: auto;
+        }
+        .chat-widget-footer textarea::-webkit-scrollbar { width: 14px; }
+        .chat-widget-footer textarea::-webkit-scrollbar-track { background: transparent; }
+        .chat-widget-footer textarea::-webkit-scrollbar-thumb {
+            background-color: var(--cor-borda);
+            border-radius: 20px; border: 4px solid var(--cor-fundo); background-clip: padding-box;
+        }
+        .chat-widget-footer textarea:focus { outline: none; box-shadow: 0 0 0 2px var(--cor-principal-escura); }
+        .chat-widget-footer .btn { border-radius: 50%; width: 42px; height: 42px; flex-shrink: 0; padding: 0; }
+        .chat-bubble.revision-request {
+            background-color: rgba(255, 152, 0, 0.1);
+            border-left: 4px solid var(--warning); align-self: flex-start;
+        }
+        .revision-request-header {
+            font-weight: 700;
+            color: var(--warning); margin-bottom: 8px; display: flex; align-items: center;
+            gap: 8px; font-size: 0.9em; padding-bottom: 8px;
+            border-bottom: 1px dashed rgba(255, 152, 0, 0.2);
+        }
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+
+<body data-username="{{ session.username }}" 
+      data-user-role="Cliente" 
+      data-avatar-url="{{ session_avatar_url or '' }}">
+
+<div class="main-wrapper">
+        
+        {% include '_header.html' %}
+        <main class="content-wrapper">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    {% include '_viewer.html' %}
+    {% include 'client/components/_new_order_modal.html' %}
+    {% include 'client/components/_order_details_modal.html' %}
+    {% include 'client/components/_portfolio_modal.html' %}
+    {% include 'client/components/_pricing_modal.html' %}
+    {% include 'client/components/_confirm_modal.html' %}
+    {% include 'client/components/_overlays.html' %}
+    {% include 'client/components/_terms_modal.html' %}
+    {% include 'client/components/_policy_modal.html' %}
+    {% include '_chat_widget.html' %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+
+    {% if public_plugins %}
+    <script>
+        // Injeta os plugins de escopo PÚBLICO para uma variável global
+        window.INJECTED_PLUGINS = {{ public_plugins | tojson | safe }};
+    </script>
+    {% endif %}
+
+    <script src="{{ url_for('static', filename='js/client/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/client/dom.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/client/helpers.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='js/client/render/orders.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/client/render/orderDetails.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/client/render/otherModals.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/client/render/formHelpers.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='js/client/handlers.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='js/admin_js/cms_core.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='js/client/main.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='js/chat_widget.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='js/viewer.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/avatar_menu.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

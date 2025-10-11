@@ -1,0 +1,74 @@
+/* CLIENT COMPONENT: Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px; /* DEPOIS: Padding ajustado */
+    border: 1px solid transparent;
+    border-radius: 8px; /* DEPOIS: Raio de borda padronizado */
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: var(--transicao);
+    font-size: 0.95rem;
+}
+
+.btn:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: var(--sombra-media);
+}
+
+.btn i {
+    font-size: 1.1em;
+}
+
+.btn-primary {
+    background-image: linear-gradient(45deg, var(--cor-principal), var(--cor-principal-escura));
+    color: white;
+}
+
+.btn-secondary {
+    background-image: linear-gradient(45deg, var(--cor-secundaria), var(--cor-principal));
+    color: white;
+}
+
+.btn-light {
+    background-color: var(--cor-surface);
+    color: var(--cor-texto-secundario);
+    border-color: var(--cor-borda);
+}
+.btn-light:hover {
+    border-color: var(--cor-principal);
+    color: var(--cor-principal);
+}
+
+.btn-success {
+    background-color: var(--success);
+    color: white;
+}
+
+.btn-danger {
+    background-color: var(--danger);
+    color: white;
+}
+
+.btn-sm {
+    padding: 8px 16px; /* Padding ajustado para botões pequenos */
+    font-size: 0.85rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.order-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}

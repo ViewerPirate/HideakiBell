@@ -1,0 +1,19 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block title %}
+Dashboard - Painel do Artista
+{% endblock %}
+
+{% block content %}
+    {% include 'admin/components/_dashboard_cards.html' %}
+    {% include 'admin/components/_recent_orders.html' %}
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px;">
+        {% include 'admin/components/_calendar_widget.html' %}
+        {% include 'admin/components/_activity_feed.html' %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin_js/calendar.js') }}"></script>
+{% endblock %}

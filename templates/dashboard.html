@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Painel do Cliente | {{ super() }}{% endblock %}
+
+{% block content %}
+<main>
+    <div class="container">
+        <div class="page-header">
+            <h1>Olá, <span style="color: var(--cor-principal);">{{ session.username }}</span>!</h1>
+            <p>Bem-vindo ao seu painel. Aqui você poderá criar e acompanhar suas comissões.</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}" style="max-width: 800px; margin: 0 auto 2rem auto;">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="form-container" style="max-width: 800px;">
+            <h2>Minhas Comissões</h2>
+            <div style="text-align: center; color: var(--cor-texto-secundario); border: 2px dashed var(--cor-borda); padding: 3rem; border-radius: 8px; margin-top: 1.5rem;">
+                <p>Você ainda não tem nenhuma comissão.</p>
+                <a href="#" class="cta-button" style="margin-top: 1rem; display: inline-block;">
+                    Criar Nova Comissão
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

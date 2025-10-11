@@ -1,0 +1,80 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block title %}
+CRM de Clientes - Painel do Artista
+{% endblock %}
+
+{% block content %}
+<div id="crm-view" class="crm-view">
+    <div class="section-header">
+        <h2 class="section-title">Gerenciador de Clientes</h2>
+        <div class="action-buttons">
+            <button class="btn btn-primary" id="crm-add-client-btn">
+                <i class="fas fa-plus"></i> Novo Cliente
+            </button>
+        </div>
+    </div>
+
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-icon" style="color: #3b82f6; background-color: #dbeafe;"><i class="fas fa-users"></i></div>
+            <div>
+                <div id="kpi-total-clients" class="kpi-value">0</div>
+                <div class="kpi-label">Total de Clientes</div>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon" style="color: #16a34a; background-color: #dcfce7;"><i class="fas fa-user-plus"></i></div>
+            <div>
+                <div id="kpi-new-clients" class="kpi-value">0</div>
+                <div class="kpi-label">Novos (Últimos 30 dias)</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="client-table-container">
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Status Admin</th>
+                        <th>Data de Criação</th>
+                        <th>Bloqueado</th>
+                        <th>Banido</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="crm-clients-table-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal" id="client-notes-modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Anotações sobre <span id="client-notes-modal-name"></span></h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--cor-texto-secundario); font-size: 0.9em; margin-bottom: 1rem;">
+                    Estas anotações são privadas e visíveis apenas para você.
+                </p>
+                <textarea id="client-notes-modal-textarea" class="form-input"></textarea>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-light close-modal">Cancelar</button>
+                <button class="btn btn-primary" id="client-notes-modal-save">Salvar Anotações</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        document.body.dataset.userId = "{{ session.user_id }}";
+    </script>
+    <script src="{{ url_for('static', filename='js/admin_js/pages/clientes.js') }}"></script>
+{% endblock %}

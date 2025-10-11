@@ -1,0 +1,144 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block title %}
+Caixa de Entrada - Painel do Artista
+{% endblock %}
+
+{% block content %}
+<style>
+    .inbox-layout {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 30px;
+        height: calc(100vh - 160px); /* Altura total menos a navegação e preenchimento */
+        background-color: var(--cor-surface);
+        border-radius: var(--raio-borda);
+        border: 1px solid var(--cor-borda);
+        overflow: hidden;
+    }
+    .message-list-panel {
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid var(--cor-borda);
+    }
+    .message-list-header {
+        padding: 20px;
+        border-bottom: 1px solid var(--cor-borda);
+        flex-shrink: 0;
+    }
+    .message-list-header h3 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin: 0;
+    }
+    .message-list {
+        overflow-y: auto;
+        flex-grow: 1;
+        padding: 10px;
+    }
+    .message-item {
+        display: block;
+        padding: 15px;
+        border-bottom: 1px solid var(--cor-borda);
+        cursor: pointer;
+        transition: var(--transicao);
+        border-left: 4px solid transparent;
+        text-decoration: none;
+    }
+    .message-item:hover {
+        background-color: var(--cor-fundo);
+    }
+    .message-item.active {
+        background-color: var(--cor-fundo-claro);
+        border-left-color: var(--cor-principal);
+    }
+    .message-item.unread .sender-name {
+        font-weight: 700;
+        color: var(--cor-texto-principal);
+    }
+    .sender-name {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--cor-texto-secundario);
+    }
+    .message-timestamp {
+        font-size: 0.8em;
+        color: var(--cor-texto-secundario);
+    }
+    .message-viewer-panel {
+        display: flex;
+        flex-direction: column;
+    }
+    .message-viewer-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: var(--cor-texto-secundario);
+        text-align: center;
+    }
+    .message-viewer-placeholder i {
+        font-size: 4em;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+    .message-viewer-content {
+        padding: 30px;
+        flex-grow: 1;
+        overflow-y: auto;
+    }
+    .message-header {
+        border-bottom: 1px solid var(--cor-borda);
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+    }
+    .message-header h2 {
+        font-size: 1.5rem;
+        margin: 0 0 10px 0;
+    }
+    .message-meta {
+        font-size: 0.9em;
+        color: var(--cor-texto-secundario);
+    }
+    .message-body {
+        white-space: pre-wrap;
+        line-height: 1.7;
+    }
+    .message-actions {
+        padding: 20px 30px;
+        border-top: 1px solid var(--cor-borda);
+        background-color: var(--cor-fundo);
+    }
+</style>
+
+<div class="section-header">
+    <h2 class="section-title">Caixa de Entrada</h2>
+</div>
+
+<div class="inbox-layout">
+    <div class="message-list-panel">
+        <div class="message-list-header">
+            <h3>Mensagens Recebidas</h3>
+        </div>
+        <div class="message-list" id="message-list-container">
+            <div class="loading-overlay" style="display: flex; position: relative; background: none; height: 100px;">
+                <div class="spinner"></div>
+            </div>
+            </div>
+    </div>
+
+    <div class="message-viewer-panel" id="message-viewer">
+        <div class="message-viewer-placeholder" id="message-viewer-placeholder">
+            <i class="fas fa-envelope-open-text"></i>
+            <p>Selecione uma mensagem para ler.</p>
+        </div>
+        <div id="message-content-wrapper" style="display: none;">
+            </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/admin_js/pages/mensagens.js') }}"></script>
+{% endblock %}

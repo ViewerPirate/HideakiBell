@@ -1,0 +1,119 @@
+/* ADMIN COMPONENT: Estilos para a página de Configurações com abas */
+.settings-wrapper { 
+    display: grid; 
+    grid-template-columns: 220px 1fr; 
+    gap: 30px; 
+    align-items: flex-start; 
+}
+
+.settings-nav { 
+    background-color: var(--cor-surface); 
+    border-radius: var(--raio-borda); 
+    border: 1px solid var(--cor-borda); 
+    padding: 15px; 
+    position: sticky; 
+    top: 100px; 
+}
+
+.settings-nav a { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    padding: 12px 15px; 
+    border-radius: 8px; 
+    text-decoration: none; 
+    color: var(--cor-texto-secundario); 
+    font-weight: 600; 
+    transition: var(--transicao); 
+    margin-bottom: 5px; 
+}
+
+.settings-nav a:hover { 
+    background-color: var(--cor-fundo); 
+    color: var(--cor-texto-principal); 
+}
+
+.settings-nav a.active { 
+    background-color: var(--cor-fundo-claro); 
+    color: var(--cor-principal); 
+}
+
+.settings-pane { 
+    display: none; 
+    grid-template-columns: 1fr; 
+    gap: 30px; 
+}
+
+.settings-pane.active { 
+    display: grid; 
+}
+
+/* Corrige o layout dos switches (sliders) */
+.settings-wrapper .form-group .toggle-switch {
+    display: flex;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+/* Corrige o alinhamento dos labels de Serviços */
+.settings-pane .commission-type-header {
+    grid-template-columns: 1.5fr 2fr 130px 130px;
+}
+.settings-pane .commission-type-item {
+    grid-template-columns: 1.5fr 2fr 130px 130px;
+}
+.settings-pane .phase-item-header {
+    grid-template-columns: 1fr 140px;
+}
+ .settings-pane .phase-item {
+    grid-template-columns: 1fr 140px;
+ }
+
+/* ============================================================= */
+/* ===== INÍCIO DO BLOCO DE RESPONSIVIDADE PARA PÁGINA DE CONFIGURAÇÕES ===== */
+/* ============================================================= */
+
+/*
+  Estas regras só se aplicam em telas com 992px de largura ou menos
+  (tablets em modo retrato e celulares).
+*/
+@media (max-width: 992px) {
+    
+    /* 1. Transforma o layout principal da página de duas colunas para uma única coluna */
+    .settings-wrapper {
+        grid-template-columns: 1fr; /* Força o empilhamento vertical do menu e do conteúdo */
+        gap: 20px;
+    }
+
+    /* 2. Converte a navegação lateral em uma barra de abas no topo */
+    .settings-nav {
+        position: static; /* Remove o comportamento "sticky" que a prendia na lateral */
+        width: 100%;
+        display: flex; /* Alinha os links horizontalmente */
+        flex-wrap: wrap; /* Permite que os links quebrem para a próxima linha se não couberem */
+        gap: 5px; /* Espaçamento entre os botões de aba */
+        padding: 0;
+        border: none;
+        border-bottom: 2px solid var(--cor-borda); /* Cria uma linha de base para as abas */
+        margin-bottom: 1.5rem; /* Adiciona espaço abaixo da barra de abas */
+    }
+
+    /* 3. Estiliza cada link para parecer uma aba */
+    .settings-nav a {
+        margin-bottom: -2px; /* Puxa o botão para baixo para sobrepor a linha de base */
+        border: 2px solid transparent;
+        border-bottom: none; /* Remove a borda inferior para o efeito de aba */
+        border-radius: 8px 8px 0 0; /* Arredonda os cantos superiores */
+        background-color: var(--cor-fundo);
+        flex-grow: 1; /* Faz as abas ocuparem o espaço disponível */
+        text-align: center;
+        justify-content: center;
+    }
+    
+    /* 4. Estiliza a aba ativa para que ela pareça conectada ao conteúdo */
+    .settings-nav a.active {
+        border-color: var(--cor-borda);
+        border-bottom: 2px solid var(--cor-surface); /* Cria o efeito de "recorte" da aba ativa */
+        background-color: var(--cor-surface);
+    }
+}

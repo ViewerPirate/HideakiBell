@@ -1,0 +1,160 @@
+/* ADMIN COMPONENT: Utilities (Buttons, Notifications, etc.) */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: var(--transicao);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-media);
+}
+
+.btn i {
+    font-size: 1em;
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+}
+
+.btn-primary {
+    background-color: var(--cor-principal);
+    color: white;
+    border-color: var(--cor-principal);
+}
+.btn-primary:hover {
+    background-color: var(--cor-principal-escura);
+    border-color: var(--cor-principal-escura);
+}
+
+.btn-light {
+    background-color: transparent;
+    color: var(--cor-texto-secundario);
+    border-color: var(--cor-borda);
+}
+.btn-light:hover {
+    background-color: var(--cor-fundo);
+    border-color: var(--cor-texto-principal);
+    color: var(--cor-texto-principal);
+}
+
+.btn-success { background-color: var(--success); color: white; }
+.btn-warning { background-color: var(--warning); color: white; }
+.btn-danger { background-color: var(--danger); color: white; }
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 3000;
+    align-items: center;
+    justify-content: center;
+}
+html[data-theme="dark"] .loading-overlay {
+    background-color: rgba(18, 18, 18, 0.8);
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid var(--cor-borda);
+    border-top: 5px solid var(--cor-principal);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: var(--raio-borda);
+    color: white;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: var(--sombra-media);
+    z-index: 4000;
+    animation: slideIn 0.3s ease, fadeOut 0.5s ease 3s forwards;
+    display: none;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* --- REGRAS UNIFICADAS --- */
+.notification.success,
+.notification.error,
+.notification.warning,
+.notification.info {
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.notification.success { background-color: rgba(76, 175, 80, 0.9); }
+.notification.error { background-color: rgba(244, 67, 54, 0.9); }
+.notification.warning { background-color: rgba(255, 152, 0, 0.9); }
+.notification.info { background-color: rgba(59, 130, 246, 0.9); }
+
+
+/* Estilos para os containers de filtro */
+.filter-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-container label {
+    font-weight: 500;
+    color: var(--cor-texto-secundario);
+}
+
+.filter-container .form-input {
+    padding: 8px 12px;
+    width: auto;
+}
+
+/* Estilos para os containers de gráficos */
+.chart-container {
+    position: relative;
+    height: 350px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* Grid para a página de relatórios */
+.reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}

@@ -1,0 +1,30 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block title %}
+Agenda de Prazos - Painel do Artista
+{% endblock %}
+
+{% block styles %}
+    {% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+    <h2>Gerenciamento de Prazos</h2>
+    <div class="action-buttons" id="agenda-filters">
+        <button class="btn btn-sm btn-light active" data-filter="all">Todos</button>
+        <button class="btn btn-sm btn-light" data-filter="week">Próximos 7 dias</button>
+        <button class="btn btn-sm btn-light" data-filter="month">Este Mês</button>
+        <button class="btn btn-sm btn-light" data-filter="overdue">Atrasados</button>
+    </div>
+</div>
+
+<div class="timeline-container" id="agenda-timeline">
+    <div class="loading-overlay" style="display: flex; position: relative; background: none;">
+        <div class="spinner"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/admin_js/pages/agenda.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,83 @@
+/* CLIENT COMPONENT: Progress Tracker */
+.progress-tracker {
+    margin: 1.5rem 0;
+    position: relative;
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 0 10px; /* Add some margin for labels */
+}
+
+.progress-steps::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: var(--cor-borda);
+    z-index: 1;
+    transform: translateY(-50%);
+}
+
+.progress-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 4px;
+    background-color: var(--success);
+    z-index: 2;
+    transform: translateY(-50%);
+    transition: width 0.5s ease;
+    width: 0%; /* Initial width */
+}
+
+.progress-step {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--cor-surface);
+    border: 3px solid var(--cor-borda);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 3;
+    color: var(--cor-texto-secundario);
+    font-weight: 700;
+    transition: var(--transicao);
+}
+
+.progress-step.completed {
+    background-color: var(--success);
+    border-color: var(--success);
+    color: white;
+}
+
+.progress-step.active {
+    border-color: var(--cor-principal);
+    color: var(--cor-principal);
+    transform: scale(1.1);
+    box-shadow: 0 0 0 5px var(--cor-fundo-claro);
+}
+
+.progress-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.progress-label {
+    font-size: 0.85em;
+    color: var(--cor-texto-secundario);
+    text-align: center;
+    width: 80px; /* Adjust as needed */
+    font-weight: 600;
+}
+
+.progress-label.active {
+    color: var(--cor-principal);
+}

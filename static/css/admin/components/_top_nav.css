@@ -1,0 +1,215 @@
+/* --- Código do arquivo modificado: static/css/admin/components/_top_nav.css --- */
+
+/* ADMIN COMPONENT: Top Navigation */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--cor-surface);
+    padding: 15px 40px;
+    border-bottom: 1px solid var(--cor-borda);
+    grid-column: 2;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: var(--cor-fundo);
+    border: 1px solid var(--cor-borda);
+    border-radius: 30px;
+    padding: 10px 18px;
+    width: 350px;
+    transition: var(--transicao);
+}
+
+.search-bar:focus-within {
+    border-color: var(--cor-principal);
+    box-shadow: 0 0 0 3px var(--cor-fundo-claro);
+}
+
+.search-bar input {
+    border: none;
+    background: transparent;
+    width: 100%;
+    padding: 0 10px;
+    outline: none;
+    color: var(--cor-texto-principal);
+    font-size: 1rem;
+}
+
+.search-bar i {
+    color: var(--cor-texto-secundario);
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.notification-bell {
+    position: relative;
+    cursor: pointer;
+    color: var(--cor-texto-secundario);
+    transition: var(--transicao);
+}
+.notification-bell:hover {
+    color: var(--cor-principal);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background-color: var(--danger);
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75em;
+    font-weight: 700;
+    border: 2px solid var(--cor-surface);
+}
+
+.user-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-image: linear-gradient(45deg, var(--cor-principal), var(--cor-principal-escura));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    border: 2px solid var(--cor-surface);
+    box-shadow: var(--sombra-suave);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    background-color: var(--cor-surface);
+    border-radius: var(--raio-borda);
+    box-shadow: var(--sombra-media);
+    border: 1px solid var(--cor-borda);
+    /* MODIFICAÇÃO: Aumenta a largura e remove o padding */
+    width: 380px;
+    padding: 0;
+    display: none;
+    z-index: 100;
+    animation: fadeInUp 0.2s ease-out;
+    /* MODIFICAÇÃO: Adiciona flex-direction para organizar header e lista */
+    display: none; /* Mantido para controle JS */
+    flex-direction: column;
+}
+
+/* MODIFICAÇÃO: Regra para quando o dropdown é exibido via JS */
+.dropdown-menu.visible {
+    display: flex;
+}
+
+#notification-dropdown .dropdown-header {
+    padding: 15px 20px;
+    font-weight: bold;
+    border-bottom: 1px solid var(--cor-borda);
+    flex-shrink: 0; /* Impede que o cabeçalho encolha */
+}
+
+/* MODIFICAÇÃO: Adiciona altura máxima e scroll para a lista */
+#notification-list {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 8px; /* Adiciona um pequeno padding ao redor da lista */
+}
+
+/* MODIFICAÇÃO: Estilos para cada item da notificação */
+.notification-item {
+    display: flex;
+    gap: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    transition: var(--transicao);
+    text-decoration: none;
+    color: var(--cor-texto-principal);
+}
+
+.notification-item:hover {
+    background-color: var(--cor-fundo);
+}
+
+.notification-item .notification-icon {
+    font-size: 1.2rem;
+    color: var(--cor-principal);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.notification-item .notification-content p {
+    margin: 0 0 5px 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.notification-item .notification-content small {
+    font-size: 0.8rem;
+    color: var(--cor-texto-secundario);
+}
+
+
+.dropdown-menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    color: var(--cor-texto-principal);
+    text-decoration: none;
+    transition: var(--transicao);
+    border-radius: 8px;
+}
+
+#dropdownMenu a:hover { /* Evita que o estilo afete a lista de notificações */
+    background-color: var(--cor-fundo);
+    color: var(--cor-principal);
+}
+
+.theme-switcher {
+    background: transparent;
+    border: 1px solid var(--cor-borda);
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--cor-texto-secundario);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    transition: var(--transicao);
+}
+.theme-switcher:hover {
+    color: var(--cor-principal);
+    border-color: var(--cor-principal);
+    transform: rotate(20deg) scale(1.1);
+}
+.theme-switcher svg {
+    width: 22px;
+    height: 22px;
+}
+
+.theme-switcher .icon-sun, .theme-switcher .icon-moon {
+    display: none;
+}
+html[data-theme="light"] .theme-switcher .icon-sun {
+    display: block;
+}
+html[data-theme="dark"] .theme-switcher .icon-moon {
+    display: block;
+}

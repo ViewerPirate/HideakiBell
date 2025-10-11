@@ -1,0 +1,93 @@
+{% extends "client/client_layout.html" %}
+
+{% block title %}Minha Conta{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2rem; padding-bottom: 2rem;">
+    <div class="section-header" style="margin-bottom: 2rem; border: none;">
+        <h1 class="section-title">Minha Conta</h1>
+        <a href="{{ url_for('client.client_dashboard') }}" class="btn btn-light">
+            <i class="fas fa-arrow-left"></i> Voltar para o Dashboard
+        </a>
+    </div>
+
+    <form id="profile-form">
+        <div class="settings-card">
+            <h3>Informações do Perfil</h3>
+            <div class="settings-grid">
+                <div class="form-group">
+                    <label for="acc-username">Nome de Usuário</label>
+                    <input type="text" id="acc-username" class="form-input" value="{{ session.username or 'Cliente' }}" required>
+                </div>
+            </div>
+            
+            <div class="form-group" style="margin-top: 20px;">
+                <label for="acc-avatar-url">URL do Avatar</label>
+                <input type="url" id="acc-avatar-url" class="form-input" value="{{ session.avatar_url or '' }}" placeholder="https://exemplo.com/sua-imagem.jpg">
+                <div style="margin-top: 15px; text-align: center;">
+                    <img id="avatar-preview" 
+                         src="{{ session.avatar_url or 'https://placehold.co/150x150/1e1e1e/ffffff?text=Preview' }}" 
+                         alt="Pré-visualização do Avatar" 
+                         referrerpolicy="no-referrer" 
+                         style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--cor-surface); box-shadow: var(--sombra-suave);">
+                </div>
+            </div>
+            <div style="text-align: right; margin-top: 20px;">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Perfil</button>
+            </div>
+        </div>
+    </form>
+
+    <form id="password-form">
+        <div class="settings-card">
+            <h3>Alterar Senha</h3>
+            <div class="form-group">
+                <label for="acc-current-pass">Senha Atual</label>
+                <input type="password" id="acc-current-pass" class="form-input" placeholder="••••••••" required>
+            </div>
+            <div class="settings-grid">
+                <div class="form-group">
+                    <label for="acc-new-pass">Nova Senha</label>
+                    <input type="password" id="acc-new-pass" class="form-input" placeholder="••••••••" required>
+                </div>
+                <div class="form-group">
+                    <label for="acc-confirm-pass">Confirmar Nova Senha</label>
+                    <input type="password" id="acc-confirm-pass" class="form-input" placeholder="••••••••" required>
+                </div>
+            </div>
+            <div style="text-align: right; margin-top: 20px;">
+                <button type="submit" class="btn btn-primary">Alterar Senha</button>
+            </div>
+        </div>
+    </form>
+      
+    <div class="settings-card danger-zone">
+        <h3>Zona de Perigo</h3>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <strong>Excluir conta</strong>
+                <p style="color: var(--cor-texto-secundario); margin:0;"><small>Esta ação é permanente e não pode ser desfeita.</small></p>
+            </div>
+            <button class="btn btn-danger" id="initiate-delete-btn">Excluir Minha Conta</button>
+        </div>
+        
+        <div id="delete-confirmation-section" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(244, 67, 54, 0.2);">
+            <form id="delete-form">
+                <p style="font-weight: 600;">Para confirmar, digite sua senha atual:</p>
+                <div class="form-group">
+                    <label for="delete-confirm-pass">Sua Senha</label>
+                    <input type="password" id="delete-confirm-pass" class="form-input" required>
+                </div>
+                <div class="action-buttons" style="justify-content: flex-end; margin-top: 0;">
+                    <button type="button" class="btn btn-light" id="cancel-delete-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/client/pages/minha_conta.js') }}"></script>
+{% endblock %}
