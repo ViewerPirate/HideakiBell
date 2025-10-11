@@ -18,24 +18,18 @@ def initialize_database():
         cursor = conn.cursor()
 
         is_postgres = hasattr(conn, 'cursor_factory')
-        if is_postgres:
-            cursor.execute("SELECT to_regclass('public.users')")
-        else:
-            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
         
-        table_exists = cursor.fetchone()
+        # --- INÍCIO DA CORREÇÃO ---
+        # O bloco que verificava a existência da tabela 'users' e saía foi removido.
+        # Agora, o script continuará e usará "CREATE TABLE IF NOT EXISTS" para todas as tabelas,
+        # garantindo que qualquer tabela faltante seja criada sem apagar as existentes.
+        # --- FIM DA CORREÇÃO ---
 
-        if table_exists and table_exists[0]:
-            print("Banco de dados já inicializado. Nenhuma ação necessária.")
-            return
-
-        print("Banco de dados não encontrado ou vazio. Iniciando setup completo...")
+        print("Verificando e criando tabelas se necessário...")
         
         placeholder = '%s' if is_postgres else '?'
         autoincrement_syntax = 'SERIAL PRIMARY KEY' if is_postgres else 'INTEGER PRIMARY KEY AUTOINCREMENT'
         boolean_default_false = 'FALSE' if is_postgres else '0'
-
-        print("Verificando e criando tabelas se necessário...")
 
         cursor.execute(f'''
         CREATE TABLE IF NOT EXISTS users (
@@ -47,7 +41,7 @@ def initialize_database():
             artist_portfolio_description TEXT, artist_avatar TEXT, social_links TEXT, artist_bio TEXT
         )''')
 
-        cursor.execute('''
+        cursor.execute(f'''
         CREATE TABLE IF NOT EXISTS comissoes (
             id TEXT PRIMARY KEY NOT NULL, client TEXT, type TEXT, date TEXT, deadline TEXT, price REAL, status TEXT,
             description TEXT, preview TEXT, comments TEXT, reference_files TEXT, client_id INTEGER,
@@ -61,7 +55,7 @@ def initialize_database():
             timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, related_commission_id TEXT
         )''')
 
-        cursor.execute('CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY NOT NULL, value TEXT)')
+        cursor.execute(f'CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY NOT NULL, value TEXT)')
 
         cursor.execute(f'''
         CREATE TABLE IF NOT EXISTS gallery (
@@ -76,7 +70,7 @@ def initialize_database():
             message_content TEXT NOT NULL, received_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, is_read INTEGER NOT NULL DEFAULT 0
         )''')
 
-        cursor.execute('''
+        cursor.execute(f'''
         CREATE TABLE IF NOT EXISTS plugins (
             id TEXT PRIMARY KEY NOT NULL, name TEXT NOT NULL, description TEXT, version TEXT, code TEXT NOT NULL,
             is_active INTEGER NOT NULL DEFAULT 0, scope TEXT NOT NULL DEFAULT 'admin', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -102,53 +96,48 @@ def initialize_database():
             value TEXT,
             PRIMARY KEY (plugin_id, user_id, key)
         )''')
-
+        
         print("Tabelas verificadas.")
-        print("Populando com dados iniciais...")
+        
+        # Verifica se a tabela de usuários está vazia para popular com dados iniciais
+        cursor.execute('SELECT id FROM users LIMIT 1')
+        user_exists = cursor.fetchone()
 
-        admin_pass = 'Admin@123'
-        hashed_password = generate_password_hash(admin_pass)
-        
-        query_users = f'INSERT INTO users (username, password_hash, is_admin) VALUES ({placeholder}, {placeholder}, {placeholder})'
-        
-        if is_postgres:
+        if not user_exists:
+            print("Populando com dados iniciais...")
+            admin_pass = 'Admin@123'
+            hashed_password = generate_password_hash(admin_pass)
+            query_users = f'INSERT INTO users (username, password_hash, is_admin) VALUES ({placeholder}, {placeholder}, {placeholder})'
             cursor.execute(query_users, ('admin', hashed_password, True))
+            print("Usuário 'admin' padrão criado.")
+
+            default_settings = {
+                'site_mode': 'individual', 'studio_name': 'Nome do Estúdio', 'artist_name': 'Seu Nome Artístico',
+                'artist_email': 'contato@seu-site.com', 'artist_location': 'Sua Cidade, Seu Estado',
+                'artist_bio': 'Bem-vindo ao meu portfólio! Sou um artista apaixonado por criar obras únicas. Explore minha galeria para conhecer mais sobre meu trabalho.',
+                'artist_process': 'Meu processo criativo envolve uma combinação de técnicas digitais e tradicionais para dar vida às minhas ideias.',
+                'artist_inspirations': 'Minhas inspirações vêm da natureza, da cultura pop e das emoções humanas.',
+                'home_headline': 'Bem-vindo à minha Galeria Digital',
+                'home_subheadline': 'Explore um universo de cores e formas.',
+                'social_links': '[]', 'commission_types': '[]', 'commission_extras': '[]',
+                'default_phases': json.dumps([{"name": "Esboço", "revisions_limit": 3}, {"name": "Arte Final", "revisions_limit": 1}]),
+                'refund_policy': 'Pedidos cancelados antes do início da fase de esboço são elegíveis para um reembolso de 50%.',
+                'revision_alert_text': 'Você possui <strong>{revisions_left} de {revisions_limit}</strong> revisões restantes para esta fase.',
+                'custom_css_theme': '', 'paypal_email': os.environ.get('PAYPAL_EMAIL', ''), 'paypal_hosted_button_id': os.environ.get('PAYPAL_HOSTED_BUTTON_ID', ''),
+                'payment_currency_code': 'BRL', 'pix_key': '', 'TELEGRAM_ENABLED': 'false', 'TELEGRAM_BOT_TOKEN': os.environ.get('TELEGRAM_BOT_TOKEN', ''),
+                'TELEGRAM_CHAT_ID': os.environ.get('TELEGRAM_CHAT_ID', ''),
+                'TELEGRAM_TEMPLATE_CONTACT': '🔔 *Nova mensagem de contato!*\n\n*De:* {name}\n*Email:* {email}\n\n*Mensagem:*\n{message}',
+                'TELEGRAM_TEMPLATE_NEW_COMMISSION': '🎨 *Novo Pedido Recebido!*\n\n*ID:* {commission_id}\n*Cliente:* {client_name}\n*Tipo:* {commission_type}\n*Valor:* R$ {price}'
+            }
+            query_settings = f"INSERT INTO settings (key, value) VALUES ({placeholder}, {placeholder})"
+            for key, value in default_settings.items():
+                cursor.execute(query_settings, (key, value))
+            print("Configurações padrão inseridas.")
         else:
-            cursor.execute(query_users, ('admin', hashed_password, True))
-        print("Usuário 'admin' padrão criado. Senha: Admin@123")
+            print("Banco de dados já populado. Nenhuma ação de população necessária.")
 
-        default_settings = {
-            'site_mode': 'individual', 'studio_name': 'Nome do Estúdio', 'artist_name': 'Seu Nome Artístico',
-            'artist_email': 'contato@seu-site.com', 'artist_location': 'Sua Cidade, Seu Estado',
-            'artist_bio': 'Bem-vindo ao meu portfólio! Sou um artista apaixonado por criar obras únicas. Explore minha galeria para conhecer mais sobre meu trabalho.',
-            'artist_process': 'Meu processo criativo envolve uma combinação de técnicas digitais e tradicionais para dar vida às minhas ideias.',
-            'artist_inspirations': 'Minhas inspirações vêm da natureza, da cultura pop e das emoções humanas.',
-            'home_headline': 'Bem-vindo à minha Galeria Digital',
-            'home_subheadline': 'Explore um universo de cores e formas.',
-            'social_links': '[]',
-            'commission_types': '[]',
-            'commission_extras': '[]',
-            'default_phases': json.dumps([{"name": "Esboço", "revisions_limit": 3}, {"name": "Arte Final", "revisions_limit": 1}]),
-            'refund_policy': 'Pedidos cancelados antes do início da fase de esboço são elegíveis para um reembolso de 50%. Após o início do trabalho, nenhum reembolso será concedido.',
-            'revision_alert_text': 'Você possui <strong>{revisions_left} de {revisions_limit}</strong> revisões restantes para esta fase.',
-            'custom_css_theme': '',
-            'paypal_email': os.environ.get('PAYPAL_EMAIL', ''),
-            'paypal_hosted_button_id': os.environ.get('PAYPAL_HOSTED_BUTTON_ID', ''),
-            'payment_currency_code': 'BRL', 'pix_key': '',
-            'TELEGRAM_ENABLED': 'false',
-            'TELEGRAM_BOT_TOKEN': os.environ.get('TELEGRAM_BOT_TOKEN', ''),
-            'TELEGRAM_CHAT_ID': os.environ.get('TELEGRAM_CHAT_ID', ''),
-            'TELEGRAM_TEMPLATE_CONTACT': '🔔 *Nova mensagem de contato!*\n\n*De:* {name}\n*Email:* {email}\n\n*Mensagem:*\n{message}',
-            'TELEGRAM_TEMPLATE_NEW_COMMISSION': '🎨 *Novo Pedido Recebido!*\n\n*ID:* {commission_id}\n*Cliente:* {client_name}\n*Tipo:* {commission_type}\n*Valor:* R$ {price}'
-        }
-        
-        query_settings = f"INSERT INTO settings (key, value) VALUES ({placeholder}, {placeholder})"
-        for key, value in default_settings.items():
-            cursor.execute(query_settings, (key, value))
-        print("Configurações padrão inseridas.")
-        
         conn.commit()
-        print("Banco de dados inicializado e populado com sucesso!")
+        print("Setup do banco de dados concluído com sucesso!")
 
     except Exception as e:
         print(f"ERRO CRÍTICO durante a inicialização do banco de dados: {e}")
