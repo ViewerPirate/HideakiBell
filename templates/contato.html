@@ -21,7 +21,6 @@
     .contact-info p { color: var(--cor-texto-secundario); margin-bottom: 2rem; }
     .form-textarea { min-height: 120px; resize: vertical; }
 
-    /* NOVOS ESTILOS PARA REDES SOCIAIS */
     .social-links {
         margin-top: 2rem;
         padding-top: 2rem;
@@ -70,23 +69,11 @@
                     <h3>Siga-me</h3>
                     <ul class="social-icon-list">
                         {% for link in social_links %}
-                            {% set network_lower = link.network | lower %}
-                            {% set icon_class = 'fas fa-link' %} {# Ícone padrão #}
-                            {% if 'instagram' in network_lower %}{% set icon_class = 'fab fa-instagram' %}{% endif %}
-                            {% if 'twitter' in network_lower %}{% set icon_class = 'fab fa-twitter' %}{% endif %}
-                            {% if 'artstation' in network_lower %}{% set icon_class = 'fab fa-artstation' %}{% endif %}
-                            {% if 'behance' in network_lower %}{% set icon_class = 'fab fa-behance' %}{% endif %}
-                            {% if 'facebook' in network_lower %}{% set icon_class = 'fab fa-facebook' %}{% endif %}
-                            {% if 'linkedin' in network_lower %}{% set icon_class = 'fab fa-linkedin' %}{% endif %}
-                            {% if 'pinterest' in network_lower %}{% set icon_class = 'fab fa-pinterest' %}{% endif %}
-                            {# --- INÍCIO DA MODIFICAÇÃO --- #}
-                            {% if 'whatsapp' in network_lower %}{% set icon_class = 'fab fa-whatsapp' %}{% endif %}
-                            {% if 'telegram' in network_lower %}{% set icon_class = 'fab fa-telegram' %}{% endif %}
-                            {% if 'ko-fi' in network_lower or 'kofi' in network_lower %}{% set icon_class = 'fas fa-coffee' %}{% endif %}
-                            {# --- FIM DA MODIFICAÇÃO --- #}
                             <li>
                                 <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" title="{{ link.network }}">
-                                    <i class="{{ icon_class }}"></i>
+                                    {# --- INÍCIO DA CORREÇÃO: Lógica de ícones simplificada --- #}
+                                    <i class="{{ link.network | social_icon }}"></i>
+                                    {# --- FIM DA CORREÇÃO --- #}
                                 </a>
                             </li>
                         {% endfor %}
