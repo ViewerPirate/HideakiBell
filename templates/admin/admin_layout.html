@@ -24,7 +24,7 @@
     
     {% if custom_css %}
     <style id="custom-css-block-admin">
-      {{ custom_css | safe }} 
+        {{ custom_css | safe }} 
     </style>
     {% endif %}
 
@@ -139,9 +139,11 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
     <script>
-        // Combina os plugins públicos e de admin em uma única lista para o CMS carregar.
-        // O operador '+' no Jinja2 concatena as duas listas.
-        window.INJECTED_PLUGINS = {{ (public_plugins + admin_plugins) | tojson | safe }};
+        // --- INÍCIO DA CORREÇÃO ---
+        // Adicionamos "or []" para fornecer uma lista vazia como valor padrão
+        // caso as variáveis não sejam definidas pelo backend. Isso evita o UndefinedError.
+        window.INJECTED_PLUGINS = {{ ((public_plugins or []) + (admin_plugins or [])) | tojson | safe }};
+        // --- FIM DA CORREÇÃO ---
     </script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="{{ url_for('static', filename='js/admin_js/api.js') }}"></script>
