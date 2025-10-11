@@ -3,7 +3,7 @@ import os
 import urllib3
 from flask import Flask, session
 from flask_socketio import SocketIO
-from .utils import get_db_connection
+from .utils import get_db_connection, get_icon_for_network  # MODIFICADO: Importa a nova função
 from .db_setup import initialize_database
 
 # Cria a instância do SocketIO globalmente
@@ -30,6 +30,10 @@ def create_app():
 
     socketio.init_app(app)
 
+    # --- INÍCIO DA ADIÇÃO: Registra a função como um filtro do Jinja2 ---
+    app.jinja_env.filters['social_icon'] = get_icon_for_network
+    # --- FIM DA ADIÇÃO ---
+
     from .auth.routes import auth_bp
     from .public.routes import public_bp
     from .client.routes import client_bp
@@ -50,13 +54,10 @@ def create_app():
             settings_db = cursor.fetchall()
             settings = {row['key']: row['value'] for row in settings_db}
 
-            # --- INÍCIO DA CORREÇÃO: Busca dinâmica do admin principal ---
-            # Em vez de assumir ID=1, busca o primeiro admin criado.
             cursor.execute('SELECT * FROM users WHERE is_admin = TRUE ORDER BY id ASC LIMIT 1')
             main_artist = cursor.fetchone()
             main_artist_profile = dict(main_artist) if main_artist else {}
             main_artist_id = main_artist['id'] if main_artist else None
-            # --- FIM DA CORREÇÃO ---
 
             site_mode = settings.get('site_mode', 'individual')
 
@@ -87,7 +88,6 @@ def create_app():
                 admin_plugins = [dict(row) for row in admin_plugins_db]
             
             public_plugin_data = {}
-            # --- INÍCIO DA CORREÇÃO: Usar o ID dinâmico ---
             if main_artist_id:
                 is_postgres = hasattr(conn, 'cursor_factory')
                 placeholder = '%s' if is_postgres else '?'
@@ -105,17 +105,13 @@ def create_app():
                 additional_contacts = public_plugin_data.get('additional_contacts')
                 if additional_contacts and isinstance(additional_contacts, list):
                     social_links.extend(additional_contacts)
-            # --- FIM DA CORREÇÃO ---
 
             cursor.close()
             conn.close()
  
             return dict(
-                artist_name=display_name,
-                artist_avatar=artist_avatar,
-                artist_bio=artist_bio,
-                social_links=social_links,
-                site_mode=site_mode,
+                artist_name=display_name, artist_avatar=artist_avatar, artist_bio=artist_bio,
+                social_links=social_links, site_mode=site_mode,
                 session_avatar_url=session.get('avatar_url', None),
                 artist_email=settings.get('artist_email', 'contato@email.com'),
                 artist_location=settings.get('artist_location', 'Localização Padrão'),
@@ -123,23 +119,16 @@ def create_app():
                 artist_inspirations=settings.get('artist_inspirations', 'Inspirações padrão.'),
                 home_headline=settings.get('home_headline', 'Bem-vindo à Galeria'),
                 home_subheadline=settings.get('home_subheadline', 'Explore as obras.'),
-                public_plugin_data=public_plugin_data,
-                custom_css=settings.get('custom_css_theme', None),
-                paypal_email=settings.get('paypal_email'),
-                paypal_hosted_button_id=settings.get('paypal_hosted_button_id'),
-                pix_key=settings.get('pix_key'),
-                payment_currency_code=settings.get('payment_currency_code', 'BRL'),
-                public_plugins=public_plugins,
-                admin_plugins=admin_plugins
+                public_plugin_data=public_plugin_data, custom_css=settings.get('custom_css_theme', None),
+                paypal_email=settings.get('paypal_email'), paypal_hosted_button_id=settings.get('paypal_hosted_button_id'),
+                pix_key=settings.get('pix_key'), payment_currency_code=settings.get('payment_currency_code', 'BRL'),
+                public_plugins=public_plugins, admin_plugins=admin_plugins
             )
         except Exception as e:
             print(f"Aviso: Não foi possível injetar configurações do site (pode ser o primeiro build): {e}")
             return {
-                'artist_name': 'Site de Arte',
-                'site_mode': 'individual',
-                'social_links': [],
-                'public_plugins': [],
-                'admin_plugins': []
+                'artist_name': 'Site de Arte', 'site_mode': 'individual',
+                'social_links': [], 'public_plugins': [], 'admin_plugins': []
             }
 
     return app
