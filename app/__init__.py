@@ -50,69 +50,66 @@ def create_app():
             settings_db = cursor.fetchall()
             settings = {row['key']: row['value'] for row in settings_db}
 
-            # --- INÍCIO DA CORREÇÃO: Centralizando a fonte de dados ---
-            # Busca o perfil do artista principal (ID 1) para usar como fonte primária
-            cursor.execute('SELECT * FROM users WHERE id = 1')
+            # --- INÍCIO DA CORREÇÃO: Busca dinâmica do admin principal ---
+            # Em vez de assumir ID=1, busca o primeiro admin criado.
+            cursor.execute('SELECT * FROM users WHERE is_admin = TRUE ORDER BY id ASC LIMIT 1')
             main_artist = cursor.fetchone()
             main_artist_profile = dict(main_artist) if main_artist else {}
+            main_artist_id = main_artist['id'] if main_artist else None
+            # --- FIM DA CORREÇÃO ---
 
             site_mode = settings.get('site_mode', 'individual')
 
             if site_mode == 'individual':
-                # No modo individual, os dados do perfil do artista principal (ID 1) têm prioridade.
-                # A tabela 'settings' é usada apenas como fallback.
                 display_name = main_artist_profile.get('username') or settings.get('artist_name')
                 artist_avatar = main_artist_profile.get('artist_avatar') or settings.get('artist_avatar')
                 artist_bio = main_artist_profile.get('artist_bio') or settings.get('artist_bio')
                 links_json_str = main_artist_profile.get('social_links') or settings.get('social_links', '[]')
             else:
-                # No modo estúdio, os dados principais vêm das configurações.
                 display_name = settings.get('studio_name', 'Nome do Estúdio')
                 artist_avatar = settings.get('artist_avatar')
                 artist_bio = settings.get('artist_bio')
                 links_json_str = settings.get('social_links', '[]')
             
-            # Tenta decodificar o JSON das redes sociais
             try:
                 social_links = json.loads(links_json_str) if links_json_str else []
             except (json.JSONDecodeError, TypeError):
                 social_links = []
             
-            # Busca os plugins públicos
             cursor.execute("SELECT id, code FROM plugins WHERE is_active = 1 AND scope = 'public'")
             public_plugins_db = cursor.fetchall()
             public_plugins = [dict(row) for row in public_plugins_db]
 
-            # Busca os plugins de admin se o usuário for admin
             admin_plugins = []
             if session.get('is_admin'):
                 cursor.execute("SELECT id, code FROM plugins WHERE is_active = 1 AND scope = 'admin'")
                 admin_plugins_db = cursor.fetchall()
                 admin_plugins = [dict(row) for row in admin_plugins_db]
             
-            # Lógica para mesclar dados de plugins públicos
             public_plugin_data = {}
-            is_postgres = hasattr(conn, 'cursor_factory')
-            placeholder = '%s' if is_postgres else '?'
-            query_plugin = f"SELECT key, value FROM plugin_data WHERE user_id = {placeholder} AND key LIKE {placeholder}"
-            cursor.execute(query_plugin, (1, 'public_%'))
-            plugin_data_rows = cursor.fetchall()
-            
-            for row in plugin_data_rows:
-                clean_key = row['key'].replace('public_', '', 1)
-                try:
-                    public_plugin_data[clean_key] = json.loads(row['value'])
-                except (json.JSONDecodeError, TypeError):
-                    public_plugin_data[clean_key] = row['value']
+            # --- INÍCIO DA CORREÇÃO: Usar o ID dinâmico ---
+            if main_artist_id:
+                is_postgres = hasattr(conn, 'cursor_factory')
+                placeholder = '%s' if is_postgres else '?'
+                query_plugin = f"SELECT key, value FROM plugin_data WHERE user_id = {placeholder} AND key LIKE {placeholder}"
+                cursor.execute(query_plugin, (main_artist_id, 'public_%'))
+                plugin_data_rows = cursor.fetchall()
+                
+                for row in plugin_data_rows:
+                    clean_key = row['key'].replace('public_', '', 1)
+                    try:
+                        public_plugin_data[clean_key] = json.loads(row['value'])
+                    except (json.JSONDecodeError, TypeError):
+                        public_plugin_data[clean_key] = row['value']
 
-            additional_contacts = public_plugin_data.get('additional_contacts')
-            if additional_contacts and isinstance(additional_contacts, list):
-                social_links.extend(additional_contacts)
+                additional_contacts = public_plugin_data.get('additional_contacts')
+                if additional_contacts and isinstance(additional_contacts, list):
+                    social_links.extend(additional_contacts)
+            # --- FIM DA CORREÇÃO ---
 
             cursor.close()
             conn.close()
  
-            # Retorna o dicionário completo para os templates
             return dict(
                 artist_name=display_name,
                 artist_avatar=artist_avatar,
@@ -135,10 +132,8 @@ def create_app():
                 public_plugins=public_plugins,
                 admin_plugins=admin_plugins
             )
-            # --- FIM DA CORREÇÃO ---
         except Exception as e:
             print(f"Aviso: Não foi possível injetar configurações do site (pode ser o primeiro build): {e}")
-            # Retorna valores padrão seguros para evitar que o site quebre
             return {
                 'artist_name': 'Site de Arte',
                 'site_mode': 'individual',
