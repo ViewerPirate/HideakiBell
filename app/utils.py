@@ -9,6 +9,37 @@ from datetime import datetime
 from functools import wraps
 from flask import flash, session, redirect, url_for
 
+# --- INÍCIO DA ADIÇÃO: Dicionário central de ícones ---
+def get_icon_for_network(network_name):
+    """
+    Retorna a classe do ícone Font Awesome para um determinado nome de rede.
+    Esta função centraliza a lógica de ícones para todo o site.
+    """
+    if not network_name:
+        return 'fas fa-link' # Ícone padrão
+
+    ICON_MAP = {
+        'instagram': 'fab fa-instagram',
+        'twitter': 'fab fa-twitter',
+        'artstation': 'fab fa-artstation',
+        'facebook': 'fab fa-facebook',
+        'behance': 'fab fa-behance',
+        'discord': 'fab fa-discord',
+        'email': 'fas fa-envelope',
+        'linkedin': 'fab fa-linkedin',
+        'pinterest': 'fab fa-pinterest',
+        'youtube': 'fab fa-youtube',
+        'website': 'fas fa-globe',
+        'whatsapp': 'fab fa-whatsapp',
+        'telegram': 'fab fa-telegram',
+        'ko-fi': 'fas fa-coffee',
+        'kofi': 'fas fa-coffee' # Alias para Ko-fi
+    }
+    # Procura pela chave em minúsculas e retorna o ícone correspondente ou o padrão
+    return ICON_MAP.get(network_name.lower(), 'fas fa-link')
+# --- FIM DA ADIÇÃO ---
+
+
 # --- Funções Auxiliares e Decorators ---
 
 def get_db_connection():
