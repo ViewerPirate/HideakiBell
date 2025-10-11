@@ -20,19 +20,16 @@ def create_app():
     
     app.secret_key = 'sua_chave_secreta_super_aleatoria_aqui'
 
-    # === INÍCIO DA CORREÇÃO PARA URLLIB3/EVENTLET/SSL NO PYTHON RECENTE ===
     if hasattr(urllib3.util.ssl_, 'DEFAULT_CIPHERS'):
         urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH!aNULL'
     if hasattr(urllib3.util.ssl_, 'minimum_version'):
         del urllib3.util.ssl_.minimum_version
-    # === FIM DA CORREÇÃO ===
 
     with app.app_context():
         initialize_database()
 
     socketio.init_app(app)
 
-    # Importa e registra os Blueprints
     from .auth.routes import auth_bp
     from .public.routes import public_bp
     from .client.routes import client_bp
@@ -43,7 +40,6 @@ def create_app():
     app.register_blueprint(client_bp)
     app.register_blueprint(admin_bp)
 
-    # --- Injetor de Contexto Global ---
     @app.context_processor
     def inject_site_settings():
         try:
@@ -53,51 +49,54 @@ def create_app():
             cursor.execute('SELECT key, value FROM settings')
             settings_db = cursor.fetchall()
             settings = {row['key']: row['value'] for row in settings_db}
- 
+
+            # --- INÍCIO DA CORREÇÃO: Centralizando a fonte de dados ---
+            # Busca o perfil do artista principal (ID 1) para usar como fonte primária
+            cursor.execute('SELECT * FROM users WHERE id = 1')
+            main_artist = cursor.fetchone()
+            main_artist_profile = dict(main_artist) if main_artist else {}
+
+            site_mode = settings.get('site_mode', 'individual')
+
+            if site_mode == 'individual':
+                # No modo individual, os dados do perfil do artista principal (ID 1) têm prioridade.
+                # A tabela 'settings' é usada apenas como fallback.
+                display_name = main_artist_profile.get('username') or settings.get('artist_name')
+                artist_avatar = main_artist_profile.get('artist_avatar') or settings.get('artist_avatar')
+                artist_bio = main_artist_profile.get('artist_bio') or settings.get('artist_bio')
+                links_json_str = main_artist_profile.get('social_links') or settings.get('social_links', '[]')
+            else:
+                # No modo estúdio, os dados principais vêm das configurações.
+                display_name = settings.get('studio_name', 'Nome do Estúdio')
+                artist_avatar = settings.get('artist_avatar')
+                artist_bio = settings.get('artist_bio')
+                links_json_str = settings.get('social_links', '[]')
+            
+            # Tenta decodificar o JSON das redes sociais
+            try:
+                social_links = json.loads(links_json_str) if links_json_str else []
+            except (json.JSONDecodeError, TypeError):
+                social_links = []
+            
+            # Busca os plugins públicos
             cursor.execute("SELECT id, code FROM plugins WHERE is_active = 1 AND scope = 'public'")
             public_plugins_db = cursor.fetchall()
             public_plugins = [dict(row) for row in public_plugins_db]
 
+            # Busca os plugins de admin se o usuário for admin
             admin_plugins = []
             if session.get('is_admin'):
                 cursor.execute("SELECT id, code FROM plugins WHERE is_active = 1 AND scope = 'admin'")
                 admin_plugins_db = cursor.fetchall()
                 admin_plugins = [dict(row) for row in admin_plugins_db]
             
-            site_mode = settings.get('site_mode', 'individual')
-   
-            if site_mode == 'studio':
-                display_name = settings.get('studio_name', 'Nome do Estúdio')
-            else:
-                display_name = settings.get('artist_name', 'Nome Padrão')
-           
-            session_avatar_url = session.get('avatar_url', None)
-          
-            social_links = []
-            links_json_str = settings.get('social_links', '[]')
-            
-            if site_mode == 'individual':
-                cursor.execute('SELECT social_links FROM users WHERE id = 1')
-                main_artist = cursor.fetchone()
-                if main_artist and main_artist['social_links']:
-                    links_json_str = main_artist['social_links']
-
-            try:
-                social_links = json.loads(links_json_str) if links_json_str else []
-            except json.JSONDecodeError:
-                social_links = []
-
-            # --- INÍCIO DA CORREÇÃO 1: Consulta ao banco de dados mais segura ---
+            # Lógica para mesclar dados de plugins públicos
             public_plugin_data = {}
             is_postgres = hasattr(conn, 'cursor_factory')
             placeholder = '%s' if is_postgres else '?'
-            
-            # A query agora usa placeholders para todos os parâmetros.
             query_plugin = f"SELECT key, value FROM plugin_data WHERE user_id = {placeholder} AND key LIKE {placeholder}"
-            # O padrão do LIKE é passado como um parâmetro.
-            cursor.execute(query_plugin, (1, 'public_%')) 
+            cursor.execute(query_plugin, (1, 'public_%'))
             plugin_data_rows = cursor.fetchall()
-            # --- FIM DA CORREÇÃO 1 ---
             
             for row in plugin_data_rows:
                 clean_key = row['key'].replace('public_', '', 1)
@@ -113,19 +112,20 @@ def create_app():
             cursor.close()
             conn.close()
  
+            # Retorna o dicionário completo para os templates
             return dict(
-                artist_name=display_name, 
+                artist_name=display_name,
+                artist_avatar=artist_avatar,
+                artist_bio=artist_bio,
+                social_links=social_links,
                 site_mode=site_mode,
-                session_avatar_url=session_avatar_url,
+                session_avatar_url=session.get('avatar_url', None),
                 artist_email=settings.get('artist_email', 'contato@email.com'),
                 artist_location=settings.get('artist_location', 'Localização Padrão'),
-                artist_avatar=settings.get('artist_avatar', 'https://placehold.co/400x400'),
-                artist_bio=settings.get('artist_bio', 'Biografia padrão.'),
                 artist_process=settings.get('artist_process', 'Processo criativo padrão.'),
                 artist_inspirations=settings.get('artist_inspirations', 'Inspirações padrão.'),
                 home_headline=settings.get('home_headline', 'Bem-vindo à Galeria'),
                 home_subheadline=settings.get('home_subheadline', 'Explore as obras.'),
-                social_links=social_links,
                 public_plugin_data=public_plugin_data,
                 custom_css=settings.get('custom_css_theme', None),
                 paypal_email=settings.get('paypal_email'),
@@ -135,10 +135,10 @@ def create_app():
                 public_plugins=public_plugins,
                 admin_plugins=admin_plugins
             )
+            # --- FIM DA CORREÇÃO ---
         except Exception as e:
             print(f"Aviso: Não foi possível injetar configurações do site (pode ser o primeiro build): {e}")
-            # --- INÍCIO DA CORREÇÃO 2: Retornar valores padrão em caso de erro ---
-            # Em vez de um dicionário vazio, retorna valores padrão para evitar o UndefinedError.
+            # Retorna valores padrão seguros para evitar que o site quebre
             return {
                 'artist_name': 'Site de Arte',
                 'site_mode': 'individual',
@@ -146,6 +146,5 @@ def create_app():
                 'public_plugins': [],
                 'admin_plugins': []
             }
-            # --- FIM DA CORREÇÃO 2 ---
 
     return app
