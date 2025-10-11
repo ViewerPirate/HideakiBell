@@ -6,7 +6,6 @@ function initializeAdvancedViewer() {
     const IMAGE_SELECTORS = '.art-card, .preview-thumbnail, .preview-thumbnail-admin, .preview-card img';
 
     const viewer = document.getElementById('widget-adv-viewer');
-    // Se o elemento do visualizador não existir no HTML, interrompe a execução
     if (!viewer) {
         return;
     }
@@ -35,8 +34,13 @@ function initializeAdvancedViewer() {
         posY: 0,
         isDragging: false,
         dragStart: { x: 0, y: 0 },
-        isPinching: false,
-        initialPinchDistance: 0
+        // --- INÍCIO DA CORREÇÃO: Novas variáveis de estado para toque ---
+        initialPinchDistance: 0,
+        touchStart: { x: 0, y: 0 },
+        initialScale: 1,
+        initialPosX: 0,
+        initialPosY: 0
+        // --- FIM DA CORREÇÃO ---
     };
 
     // --- Funções de Lógica ---
@@ -64,7 +68,6 @@ function initializeAdvancedViewer() {
         titleEl.textContent = item.title;
         descriptionEl.textContent = item.description;
         
-        // Constrói a legenda de créditos
         let creditsHTML = '';
         const lineartArtist = item.lineartArtist;
         const colorArtist = item.colorArtist;
@@ -95,7 +98,6 @@ function initializeAdvancedViewer() {
                 lineartArtist: el.dataset.lineartArtist || null,
                 colorArtist: el.dataset.colorArtist || null
             };
-            // Adapta a busca de dados para diferentes tipos de cards
             if (el.matches('.preview-card img')) {
                 const card = el.closest('.preview-card');
                 item.src = el.src;
@@ -107,7 +109,7 @@ function initializeAdvancedViewer() {
                 item.description = el.dataset.description || '';
             }
             return item;
-        }).filter(item => item.src); // Garante que apenas itens com 'src' válido entrem na galeria
+        }).filter(item => item.src);
 
         const clickedSrc = clickedElement.src || clickedElement.dataset.imgSrc || clickedElement.dataset.fullSrc || clickedElement.querySelector('img')?.src;
         state.currentIndex = state.gallery.findIndex(item => item.src === clickedSrc);
@@ -135,31 +137,23 @@ function initializeAdvancedViewer() {
         updateImageTransform();
     };
 
-    const getPinchDistance = (touches) => {
-        return Math.hypot(touches[0].clientX - touches[1].clientX, touches[0].clientY - touches[1].clientY);
-    };
-
     // --- Event Listeners ---
     
-    // Listener principal que ativa o viewer
     document.body.addEventListener('click', (e) => {
         if (e.target.closest('.social-icons a')) {
             return;
         }
-
         const clickedImage = e.target.closest(IMAGE_SELECTORS);
         if (clickedImage) {
             if (clickedImage.classList.contains('nsfw-blur') && !clickedImage.classList.contains('revealed')) {
                 return;
             }
-
             e.preventDefault();
             e.stopPropagation();
             openViewer(clickedImage);
         }
     });
 
-    // Listeners dos controles do viewer
     closeBtn.addEventListener('click', closeViewer);
     nextBtn.addEventListener('click', nextImage);
     prevBtn.addEventListener('click', prevImage);
@@ -174,7 +168,6 @@ function initializeAdvancedViewer() {
         }
     });
 
-    // Zoom com o scroll do mouse
     imageContainer.addEventListener('wheel', (e) => {
         e.preventDefault();
         zoom(e.deltaY > 0 ? -0.1 : 0.1);
@@ -182,22 +175,18 @@ function initializeAdvancedViewer() {
 
     // Lógica para arrastar (pan) com MOUSE
     imageContainer.addEventListener('mousedown', (e) => {
-        if (state.scale > 1) {
-            e.preventDefault();
-            state.isDragging = true;
-            state.dragStart.x = e.clientX - state.posX;
-            state.dragStart.y = e.clientY - state.posY;
-            imageContainer.classList.add('grabbing');
-        }
+        e.preventDefault();
+        state.isDragging = true;
+        state.dragStart.x = e.clientX - state.posX;
+        state.dragStart.y = e.clientY - state.posY;
+        imageContainer.classList.add('grabbing');
     });
 
     window.addEventListener('mousemove', (e) => {
         if (state.isDragging) {
             e.preventDefault();
-            const newPosX = e.clientX - state.dragStart.x;
-            const newPosY = e.clientY - state.dragStart.y;
-            state.posX = newPosX;
-            state.posY = newPosY;
+            state.posX = e.clientX - state.dragStart.x;
+            state.posY = e.clientY - state.dragStart.y;
             updateImageTransform();
         }
     });
@@ -207,44 +196,67 @@ function initializeAdvancedViewer() {
         imageContainer.classList.remove('grabbing');
     });
     
-    // Lógica para arrastar e zoom com TOQUE
+    // --- INÍCIO DA CORREÇÃO: Lógica de toque para Zoom e Pan totalmente reescrita ---
+    const getPinchDistance = (touches) => {
+        return Math.hypot(touches[0].clientX - touches[1].clientX, touches[0].clientY - touches[1].clientY);
+    };
+
+    const getPinchCenter = (touches) => {
+        return {
+            x: (touches[0].clientX + touches[1].clientX) / 2,
+            y: (touches[0].clientY + touches[1].clientY) / 2
+        };
+    };
+
     imageContainer.addEventListener('touchstart', (e) => {
-        if (e.touches.length === 1 && state.scale > 1) {
+        e.preventDefault(); // Previne o comportamento padrão do toque
+        
+        if (e.touches.length === 1) { // Pan (arrastar)
             state.isDragging = true;
-            state.dragStart.x = e.touches[0].clientX - state.posX;
-            state.dragStart.y = e.touches[0].clientY - state.posY;
-            imageContainer.classList.add('grabbing');
-        } else if (e.touches.length === 2) {
-            state.isPinching = true;
-            state.isDragging = false; // Impede o arraste durante a pinça
+            state.touchStart.x = e.touches[0].clientX;
+            state.touchStart.y = e.touches[0].clientY;
+            state.initialPosX = state.posX;
+            state.initialPosY = state.posY;
+        } else if (e.touches.length === 2) { // Zoom (pinça)
+            state.isDragging = false; // Garante que não arraste enquanto faz zoom
             state.initialPinchDistance = getPinchDistance(e.touches);
+            state.initialScale = state.scale;
         }
     }, { passive: false });
     
-    window.addEventListener('touchmove', (e) => {
+    imageContainer.addEventListener('touchmove', (e) => {
         e.preventDefault();
-        if (state.isPinching && e.touches.length === 2) {
+        
+        if (state.isDragging && e.touches.length === 1) { // Movimento de Pan
+            const dx = e.touches[0].clientX - state.touchStart.x;
+            const dy = e.touches[0].clientY - state.touchStart.y;
+            state.posX = state.initialPosX + dx;
+            state.posY = state.initialPosY + dy;
+            updateImageTransform();
+        } else if (e.touches.length === 2) { // Movimento de Zoom
             const newPinchDistance = getPinchDistance(e.touches);
-            const zoomFactor = newPinchDistance / state.initialPinchDistance;
-            const newScale = Math.max(0.5, Math.min(5, state.scale * zoomFactor));
-            state.scale = newScale;
+            const scaleRatio = newPinchDistance / state.initialPinchDistance;
+            const newScale = state.initialScale * scaleRatio;
+            
+            state.scale = Math.max(0.5, Math.min(5, newScale)); // Limita o zoom
             zoomLevelEl.textContent = `${Math.round(state.scale * 100)}%`;
             updateImageTransform();
-            state.initialPinchDistance = newPinchDistance; // Atualiza para o próximo movimento
-        } else if (state.isDragging && e.touches.length === 1) {
-            const newPosX = e.touches[0].clientX - state.dragStart.x;
-            const newPosY = e.touches[0].clientY - state.dragStart.y;
-            state.posX = newPosX;
-            state.posY = newPosY;
-            updateImageTransform();
         }
     }, { passive: false });
     
-    window.addEventListener('touchend', (e) => {
+    imageContainer.addEventListener('touchend', (e) => {
         state.isDragging = false;
-        state.isPinching = false;
-        imageContainer.classList.remove('grabbing');
+        state.initialPinchDistance = 0;
+        // Se ainda houver um dedo na tela, prepara para um novo pan
+        if (e.touches.length === 1) {
+            state.isDragging = true;
+            state.touchStart.x = e.touches[0].clientX;
+            state.touchStart.y = e.touches[0].clientY;
+            state.initialPosX = state.posX;
+            state.initialPosY = state.posY;
+        }
     });
+    // --- FIM DA CORREÇÃO ---
 
     // Atalhos de teclado
     document.addEventListener('keydown', (e) => {
@@ -255,5 +267,4 @@ function initializeAdvancedViewer() {
     });
 }
 
-// Inicia o script quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', initializeAdvancedViewer);
