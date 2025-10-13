@@ -14,11 +14,9 @@ function initializeUIHandlers() {
     const addExtraBtn = document.getElementById('add-extra-btn');
     const extraTemplate = document.getElementById('commission-extra-template');
 
-    // --- INÍCIO DA MODIFICAÇÃO: Novas referências para redes sociais ---
     const socialLinksContainer = document.getElementById('social-links-container');
     const addSocialBtn = document.getElementById('add-social-btn');
     const socialTemplate = document.getElementById('social-link-template');
-    // --- FIM DA MODIFICAÇÃO ---
 
     const contactsContainer = document.getElementById('support-contacts-container');
     const addContactBtn = document.getElementById('add-contact-btn');
@@ -28,7 +26,6 @@ function initializeUIHandlers() {
     const addFaqBtn = document.getElementById('add-faq-btn');
     const faqTemplate = document.getElementById('faq-template');
 
-    // --- INÍCIO DA MODIFICAÇÃO: Adicionada a lista de redes sociais ---
     const SUPPORTED_SOCIAL_NETWORKS = [
         { name: 'Instagram', icon: 'fab fa-instagram' },
         { name: 'Twitter', icon: 'fab fa-twitter' },
@@ -46,11 +43,9 @@ function initializeUIHandlers() {
         { name: 'Ko-fi', icon: 'fas fa-coffee' },
         { name: 'Outro', icon: 'fas fa-link' }
     ];
-    // --- FIM DA MODIFICAÇÃO ---
 
     // --- 2. Funções de Criação de Elementos ---
 
-    // --- INÍCIO DA MODIFICAÇÃO: Adicionadas funções para redes sociais ---
     function updateSocialIcon(selectElement) {
         const selectedNetworkName = selectElement.value;
         const iconElement = selectElement.closest('.social-link-item').querySelector('.social-icon-display i');
@@ -82,7 +77,6 @@ function initializeUIHandlers() {
         socialLinksContainer.appendChild(clone);
         updateSocialIcon(select);
     }
-    // --- FIM DA MODIFICAÇÃO ---
 
     function createExtraElement(data = {}) {
         const clone = extraTemplate.content.cloneNode(true);
@@ -148,14 +142,9 @@ function initializeUIHandlers() {
 
     if(addTypeBtn) addTypeBtn.addEventListener('click', () => createCommissionTypeElement());
     if(addExtraBtn) addExtraBtn.addEventListener('click', () => createExtraElement());
-    
-    // --- INÍCIO DA MODIFICAÇÃO: Ativa o novo botão de redes sociais ---
     if(addSocialBtn) addSocialBtn.addEventListener('click', () => createSocialElement());
-    // --- FIM DA MODIFICAÇÃO ---
-
     if(addContactBtn) addContactBtn.addEventListener('click', () => createSupportContactElement());
     if(addFaqBtn) addFaqBtn.addEventListener('click', () => createFaqElement());
-
 
     if(typesContainer) typesContainer.addEventListener('click', (e) => {
         if (e.target.classList.contains('add-phase-btn')) {
@@ -173,13 +162,27 @@ function initializeUIHandlers() {
         }
     });
 
+    // --- INÍCIO DA MODIFICAÇÃO: Listener para preview do avatar ---
+    const avatarInput = document.getElementById('artist_avatar');
+    const avatarPreview = document.getElementById('avatar-preview');
+
+    if (avatarInput && avatarPreview) {
+        avatarInput.addEventListener('input', () => {
+            const newUrl = avatarInput.value.trim();
+            avatarPreview.src = newUrl || 'https://placehold.co/150x150/1e1e1e/ffffff?text=Preview';
+        });
+
+        avatarPreview.onerror = () => {
+            avatarPreview.src = 'https://placehold.co/150x150/ff0000/ffffff?text=Inválido';
+        };
+    }
+    // --- FIM DA MODIFICAÇÃO ---
+
     // Expondo as funções de criação para que o data_manager possa usá-las
     window.settingsUI = {
         createCommissionTypeElement,
         createExtraElement,
-        // --- INÍCIO DA MODIFICAÇÃO: Expõe a nova função ---
         createSocialElement,
-        // --- FIM DA MODIFICAÇÃO ---
         createSupportContactElement,
         createFaqElement
     };

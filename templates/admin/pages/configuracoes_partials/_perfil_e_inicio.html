@@ -36,6 +36,18 @@
         <label for="artist_name">Nome do Site / Nome Artístico</label>
         <input type="text" id="artist_name" name="artist_name" class="form-input">
     </div>
+    
+    <div class="form-group">
+        <label for="artist_avatar">URL da Imagem de Avatar/Logo (Modo Individual)</label>
+        <input type="url" id="artist_avatar" name="artist_avatar" class="form-input" placeholder="https://exemplo.com/sua-imagem.jpg">
+        <div style="margin-top: 15px; text-align: center;">
+             <img id="avatar-preview" 
+                  src="https://placehold.co/150x150/1e1e1e/ffffff?text=Preview" 
+                  alt="Pré-visualização do Avatar" 
+                  referrerpolicy="no-referrer" 
+                  style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--cor-surface); box-shadow: var(--sombra-suave);">
+        </div>
+    </div>
     <div class="form-group">
         <label for="artist_email">E-mail de Contato Principal do Site</label>
         <input type="email" id="artist_email" name="artist_email" class="form-input">

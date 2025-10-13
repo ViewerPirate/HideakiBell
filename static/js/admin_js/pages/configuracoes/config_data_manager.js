@@ -43,10 +43,13 @@ async function loadAndPopulateSettings() {
         document.getElementById('TELEGRAM_CHAT_ID').value = settings.TELEGRAM_CHAT_ID || '';
         document.getElementById('TELEGRAM_TEMPLATE_CONTACT').value = settings.TELEGRAM_TEMPLATE_CONTACT || '';
         
-        // --- INÍCIO DA MODIFICAÇÃO: Campos da página "Sobre" adicionados ---
         document.getElementById('artist_bio').value = settings.artist_bio || '';
         document.getElementById('artist_process').value = settings.artist_process || '';
         document.getElementById('artist_inspirations').value = settings.artist_inspirations || '';
+
+        // --- INÍCIO DA MODIFICAÇÃO: Popula o campo de avatar ---
+        document.getElementById('artist_avatar').value = settings.artist_avatar || '';
+        document.getElementById('avatar-preview').src = settings.artist_avatar || 'https://placehold.co/150x150/1e1e1e/ffffff?text=Preview';
         // --- FIM DA MODIFICAÇÃO ---
         
         // Usa as funções do módulo de UI para criar os elementos dinâmicos
@@ -56,11 +59,9 @@ async function loadAndPopulateSettings() {
         if (settings.commission_extras && Array.isArray(settings.commission_extras)) {
             settings.commission_extras.forEach(data => window.settingsUI.createExtraElement(data));
         }
-        // --- INÍCIO DA MODIFICAÇÃO: Carrega as redes sociais ---
         if (settings.social_links && Array.isArray(settings.social_links)) {
             settings.social_links.forEach(data => window.settingsUI.createSocialElement(data));
         }
-        // --- FIM DA MODIFICAÇÃO ---
         if (settings.support_contacts && Array.isArray(settings.support_contacts)) {
             settings.support_contacts.forEach(data => window.settingsUI.createSupportContactElement(data));
         }
@@ -102,18 +103,18 @@ function initializeFormSaver(form) {
             'TELEGRAM_BOT_TOKEN': document.getElementById('TELEGRAM_BOT_TOKEN').value,
             'TELEGRAM_CHAT_ID': document.getElementById('TELEGRAM_CHAT_ID').value,
             'TELEGRAM_TEMPLATE_CONTACT': document.getElementById('TELEGRAM_TEMPLATE_CONTACT').value,
-            // --- INÍCIO DA MODIFICAÇÃO: Campos de "Sobre" e "Redes Sociais" adicionados ao salvamento ---
             'artist_bio': document.getElementById('artist_bio').value,
             'artist_process': document.getElementById('artist_process').value,
             'artist_inspirations': document.getElementById('artist_inspirations').value,
-            'social_links': [],
+            // --- INÍCIO DA MODIFICAÇÃO: Adiciona o campo de avatar ao salvamento ---
+            'artist_avatar': document.getElementById('artist_avatar').value,
             // --- FIM DA MODIFICAÇÃO ---
+            'social_links': [],
             'commission_types': [], 
             'commission_extras': [], 
             'support_contacts': []
         };
         
-        // --- INÍCIO DA MODIFICAÇÃO: Coleta os dados das redes sociais ---
         document.querySelectorAll('#social-links-container .social-link-item').forEach(item => {
             const network = item.querySelector('.network-input').value.trim();
             const url = item.querySelector('.url-input').value.trim();
@@ -121,7 +122,6 @@ function initializeFormSaver(form) {
                 settingsData.social_links.push({ network, url });
             }
         });
-        // --- FIM DA MODIFICAÇÃO ---
 
         document.querySelectorAll('#commission-types-container .commission-type-item-wrapper').forEach(wrapper => {
             const serviceItem = wrapper.querySelector('.commission-type-item');
