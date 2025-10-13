@@ -54,10 +54,8 @@
                      onerror="this.onerror=null;this.src='https://placehold.co/400x400/374151/ffffff?text=Avatar';">
             </div>
             <div class="about-text">
-                {# --- INÍCIO DA MODIFICAÇÃO: Título "Biografia" adicionado --- #}
                 <h2>Biografia</h2>
                 <p>{{ artist_bio }}</p>
-                {# --- FIM DA MODIFICAÇÃO --- #}
                 
                 <h2>Meu Processo Criativo</h2>
                 <p>{{ artist_process }}</p>
@@ -79,12 +77,16 @@
                     </ul>
                 </div>
                 {% endif %}
-                <div style="margin-top: 2.5rem;">
+                
+                {# --- INÍCIO DA MODIFICAÇÃO: Botão reestruturado para responsividade --- #}
+                <div class="responsive-cta-wrapper">
+                    <p class="cta-mobile-title">Interessado (a) em uma arte?</p>
                     <a href="{{ url_for('public.comissoes_artista', username=artist_name) }}" class="cta-button">
                         <i class="fas fa-tags"></i>
                         <span class="cta-button-text">Ver Comissões e Preços</span>
                     </a>
                 </div>
+                {# --- FIM DA MODIFICAÇÃO --- #}
             </div>
         </div>
     </div>

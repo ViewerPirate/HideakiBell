@@ -92,29 +92,10 @@
     .back-link:hover {
         color: var(--cor-principal);
     }
-
-    /* --- INÍCIO DA MODIFICAÇÃO: Estilos para o novo botão responsivo --- */
-    .responsive-cta-wrapper {
-        margin-top: 3rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1.5rem;
-    }
-    .cta-mobile-title {
-        display: none; /* Escondido em telas grandes */
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: var(--cor-texto-principal);
-        text-align: center;
-    }
-
-    @media (max-width: 768px) {
-        .cta-mobile-title {
-            display: block; /* Visível apenas em telas pequenas */
-            margin-bottom: -1rem; /* Aproxima o título do botão */
-        }
-    }
+    
+    /* --- INÍCIO DA MODIFICAÇÃO: Estilos duplicados removidos --- */
+    /* As regras para .responsive-cta-wrapper e .cta-mobile-title foram removidas 
+       pois agora estão no arquivo global public.css */
     /* --- FIM DA MODIFICAÇÃO --- */
 </style>
 
@@ -132,6 +113,7 @@
         <a href="{{ url_for('public.artistas') }}" class="back-link">
             <i class="fas fa-arrow-left"></i> Voltar para a Lista de Artistas
         </a>
+
         <div class="artist-header">
             <img src="{{ artist.artist_avatar or '' }}" alt="Avatar de {{ artist.username }}" referrerpolicy="no-referrer"
                  onerror="this.onerror=null;this.src='https://placehold.co/150x150/ff69b4/ffffff?text={{ artist.username[0] }}';">
@@ -187,6 +169,7 @@
                 <span class="cta-button-text">Pedir Comissão</span>
             </a>
         </div>
-        </div>
+
+    </div>
 </main>
 {% endblock %}

@@ -355,7 +355,7 @@ html[data-theme="dark"] .theme-switcher .icon-moon { display: block; }
     transform: scale(1.2);
 }
 
-/* --- INÍCIO DA MODIFICAÇÃO: Estilos para lista de ícones sociais --- */
+/* --- Estilos para lista de ícones sociais --- */
 .social-links {
     margin-top: 2rem;
     padding-top: 2rem;
@@ -382,6 +382,22 @@ html[data-theme="dark"] .theme-switcher .icon-moon { display: block; }
 .social-icon-list a:hover {
     color: var(--cor-principal);
     transform: scale(1.2);
+}
+
+/* --- INÍCIO DA MODIFICAÇÃO: Estilos para o botão de CTA responsivo com título --- */
+.responsive-cta-wrapper {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+.cta-mobile-title {
+    display: none; /* Escondido em telas grandes */
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--cor-texto-principal);
+    text-align: center;
 }
 /* --- FIM DA MODIFICAÇÃO --- */
 
@@ -449,4 +465,11 @@ html[data-theme="dark"] .theme-switcher .icon-moon { display: block; }
     .btn i {
          margin: 0;
     }
+
+    /* --- INÍCIO DA MODIFICAÇÃO: Exibe o título do CTA responsivo --- */
+    .cta-mobile-title {
+        display: block; /* Visível apenas em telas pequenas */
+        margin-bottom: -0.5rem; /* Aproxima o título do botão */
+    }
+    /* --- FIM DA MODIFICAÇÃO --- */
 }
