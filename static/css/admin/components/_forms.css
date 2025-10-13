@@ -1,0 +1,397 @@
+/* ADMIN COMPONENT: Forms */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--cor-texto-secundario);
+    font-size: 0.9rem;
+}
+
+/* --- UNIFICADO --- */
+/* Consistência: qualquer .form-input recebe estilo */
+.form-group input,
+.form-group select,
+.form-group textarea,
+.form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    font-family: inherit;
+    transition: var(--transicao);
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto-principal);
+    font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus,
+.form-input:focus {
+    outline: none;
+    border-color: var(--cor-principal);
+    box-shadow: 0 0 0 3px var(--cor-fundo-claro);
+}
+
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background-color: var(--cor-borda);
+    transition: .4s;
+    border-radius: 34px;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+input:checked + .slider {
+    background-color: var(--cor-principal);
+}
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+/* Layout da página de configurações */
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 30px;
+}
+.settings-full-width {
+    grid-column: 1 / -1;
+}
+#custom_css_theme {
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+/* ================================================================== */
+/* === ESTILOS ATUALIZADOS PARA O CARD DE TIPOS DE COMISSÃO (CONFIGURAÇÕES) === */
+/* ================================================================== */
+
+.commission-type-header, .phase-item-header {
+    display: grid;
+    gap: 15px;
+    padding: 0 15px 8px 15px;
+    color: var(--cor-texto-secundario);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.commission-type-header {
+    grid-template-columns: 1.5fr 2fr 130px 130px;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.phase-item-header {
+    grid-template-columns: 1fr 140px;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.commission-type-item-wrapper {
+    background-color: var(--cor-surface);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-borda);
+    margin-bottom: 20px;
+    padding: 20px;
+}
+.commission-type-item {
+    display: grid;
+    grid-template-columns: 1.5fr 2fr 130px 130px;
+    gap: 15px;
+    align-items: center;
+    position: relative;
+    padding-right: 45px;
+}
+
+.commission-type-item .remove-type-btn {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    background-color: transparent;
+    color: var(--cor-texto-secundario);
+    border: none;
+    width: 30px;
+    height: 30px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: var(--transicao);
+}
+.commission-type-item .remove-type-btn:hover {
+    color: var(--danger);
+}
+
+.phases-container {
+    padding-left: 15px;
+    margin-top: 15px;
+    border-top: 1px dashed var(--cor-borda);
+}
+.phases-header h6 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: var(--cor-texto-secundario);
+    font-weight: 700;
+    margin-bottom: 10px;
+    margin-top: 15px;
+    margin-left: 5px;
+}
+.phases-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px 0;
+}
+.phase-item {
+    display: grid;
+    grid-template-columns: 1fr 140px;
+    gap: 10px;
+    align-items: center;
+    padding: 6px 0;
+    position: relative;
+    padding-right: 45px;
+}
+.phase-item .remove-phase-btn {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    background-color: transparent;
+    color: var(--cor-texto-secundario);
+    border: none;
+    width: 30px;
+    height: 30px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: var(--transicao);
+}
+.phase-item .remove-phase-btn:hover {
+    color: var(--danger);
+}
+
+#add-type-btn {
+    background-color: var(--cor-principal);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+#commission-extras-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#commission-extras-container .commission-type-item {
+    display: grid;
+    grid-template-columns: 1fr 120px auto;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--cor-borda);
+    background-color: var(--cor-surface);
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-right: 15px;
+    position: static;
+}
+
+#commission-extras-container .commission-type-item .remove-type-btn {
+    position: static;
+    transform: none;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    width: 30px;
+    height: 30px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#commission-extras-container .commission-type-item .remove-type-btn:hover {
+    background-color: #c82333;
+}
+
+#add-extra-btn,
+#add-social-btn {
+    background-color: var(--cor-principal-clara);
+    color: var(--cor-texto-principal);
+    border: 1px solid var(--cor-principal);
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+#add-extra-btn:hover,
+#add-social-btn:hover {
+    background-color: var(--cor-principal);
+    color: white;
+}
+
+/* ================================================================== */
+/* === ESTILOS FINAIS PARA REDES SOCIAIS (COM ÍCONE) === */
+/* ================================================================== */
+#social-links-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.social-link-item {
+    display: grid;
+    grid-template-columns: 48px 220px 1fr auto;
+    gap: 0;
+    align-items: center;
+    background-color: var(--cor-fundo);
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    transition: var(--transicao);
+    height: 48px;
+    overflow: hidden;
+}
+
+.social-link-item:focus-within {
+    border-color: var(--cor-principal);
+    box-shadow: 0 0 0 3px var(--cor-fundo-claro);
+}
+
+.social-icon-display {
+    width: 48px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--cor-texto-secundario);
+    border-right: 1px solid var(--cor-borda);
+}
+
+.social-link-item select.form-input,
+.social-link-item input.form-input {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    height: 100%;
+    padding: 0 12px;
+}
+
+.social-link-item select.form-input {
+    border-right: 1px solid var(--cor-borda);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 16px 12px;
+    /* ========================================================== */
+    /* INÍCIO DA MODIFICAÇÃO: Correção da seta duplicada          */
+    /* ========================================================== */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* ======================================================== */
+    /* FIM DA MODIFICAÇÃO                                       */
+    /* ======================================================== */
+}
+
+.social-link-item .remove-type-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 0;
+    width: 48px;
+    height: 100%;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.social-link-item .remove-type-btn:hover {
+    background-color: #c82333;
+}
+
+/* ================================================================== */
+/* === CORREÇÕES PARA MODO ESCURO === */
+/* ================================================================== */
+
+html[data-theme="dark"] .commission-type-item > .form-input {
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto-principal);
+    border-color: var(--cor-borda);
+}
+
+html[data-theme="dark"] .social-icon-display,
+html[data-theme="dark"] .social-link-item select.form-input {
+    border-color: var(--cor-borda);
+}
+
+html[data-theme="dark"] .social-link-item select.form-input {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e9ecef' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+}
+
+/* ========================================================== */
+/* INÍCIO DA MODIFICAÇÃO: Correção do texto branco no dropdown*/
+/* ========================================================== */
+html[data-theme="dark"] .social-link-item select.form-input option {
+    background-color: var(--cor-surface);
+    color: var(--cor-texto-principal);
+}
+/* ======================================================== */
+/* FIM DA MODIFICAÇÃO                                       */
+/* ======================================================== */

@@ -1,0 +1,80 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block title %}
+Relatórios - Painel do Artista
+{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <div class="section-title">Central de Relatórios</div>
+    <div class="filter-container">
+        <label for="year-filter">Ano:</label>
+        <select id="year-filter" class="form-input"></select>
+    </div>
+</div>
+
+<!-- KPIs (Indicadores) -->
+<div class="dashboard-cards" id="visao-geral-cards">
+    <!-- Os cards de KPI serão carregados aqui pelo JavaScript -->
+    <div class="card">
+        <div class="card-value">Carregando...</div>
+    </div>
+    <div class="card">
+        <div class="card-value">Carregando...</div>
+    </div>
+    <div class="card">
+        <div class="card-value">Carregando...</div>
+    </div>
+    <div class="card">
+        <div class="card-value">Carregando...</div>
+    </div>
+</div>
+
+<!-- Grid para os Gráficos e Tabela -->
+<div class="reports-grid">
+    <!-- Card para o gráfico de Receita por Tipo -->
+    <div class="recent-orders">
+        <div class="section-header">
+            <h3 class="section-title">Receita por Tipo de Arte</h3>
+        </div>
+        <div class="chart-container">
+            <canvas id="servicosChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Card para a tabela de Top Clientes -->
+    <div class="recent-orders">
+        <div class="section-header">
+            <h3 class="section-title">Top 5 Clientes por Receita</h3>
+        </div>
+        <div class="table-responsive">
+             <table id="top-clientes-table">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Receita Gerada</th>
+                    </tr>
+                </thead>
+                <!-- O tbody é essencial para o JS funcionar -->
+                <tbody>
+                    <!-- Conteúdo carregado por JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Card para o gráfico de Volume Mensal -->
+<div class="recent-orders" style="margin-top: 30px;">
+    <div class="section-header">
+        <h3 class="section-title">Volume de Comissões por Mês</h3>
+    </div>
+    <div class="chart-container">
+        <canvas id="produtividadeChart"></canvas>
+     </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/admin_js/pages/relatorios.js') }}"></script>
+{% endblock %}

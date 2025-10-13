@@ -1,0 +1,19 @@
+PAYPAL>
+E-mail da Conta PayPal: 6MCHRAFUQBN8W
+ID do Botão Hospedado PayPal: SRUGS925FP8GA
+
+Telegram>
+Token do Bot do Telegram: 7459800242:AAGlBzYC1hwsDI2w3Qb97p3CShcv8_6GdOA
+Seu Chat ID: 8072555685
+--------------
+Login Padrão
+
+O sistema criará um usuário administrador padrão na primeira execução:
+
+Email/Usuário: admin
+Senha: Admin@123
+
+É ALTAMENTE RECOMENDADO ALTERAR ESTA SENHA IMEDIATAMENTE APÓS O PRIMEIRO LOGIN.
+--------------
+Banco de dados post neon:
+postgresql://neondb_owner:npg_NdLkwoe2tEU7@ep-odd-sea-adixhira-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require

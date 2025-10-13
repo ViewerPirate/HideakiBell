@@ -1,0 +1,424 @@
+/*
+==========================================================================
+  ESTILOS DO SITE PÚBLICO - ARTISTA ADMIN
+==========================================================================
+*/
+
+/* 1. FONTES E VARIÁVEIS GLOBAIS */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+:root {
+    --font-body: 'Nunito', sans-serif;
+    --font-heading: 'Nunito', sans-serif;
+    --cor-fundo: #f8f9fa;
+    --cor-surface: #ffffff;
+    --cor-texto-principal: #212529;
+    --cor-texto-secundario: #6c757d;
+    --cor-borda: #dee2e6;
+    --cor-principal: #ff69b4;
+    --cor-principal-escura: #ff1493;
+    --cor-fundo-claro: #fff0f7;
+    --cor-branco: #ffffff;
+    --sombra-suave: 0 4px 15px rgba(0, 0, 0, 0.06);
+    --sombra-media: 0 8px 30px rgba(0, 0, 0, 0.1);
+    --raio-borda: 12px;
+    --transicao: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+html[data-theme="dark"] {
+    --cor-fundo: #121212;
+    --cor-surface: #1e1e1e;
+    --cor-texto-principal: #e9ecef;
+    --cor-texto-secundario: #adb5bd;
+    --cor-borda: #343a40;
+    --sombra-suave: 0 4px 15px rgba(0, 0, 0, 0.2);
+    --sombra-media: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* 2. ESTILOS DE BASE */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background-color: var(--cor-fundo);
+    font-family: var(--font-body);
+    color: var(--cor-texto-principal);
+    line-height: 1.7;
+    transition: background-color 0.3s, color 0.3s;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3 { 
+    font-family: var(--font-heading); 
+    font-weight: 700;
+}
+
+/* 3. LAYOUT E COMPONENTES PÚBLICOS */
+.main-wrapper { display: flex; flex-direction: column; min-height: 100vh; }
+.content-wrapper { flex-grow: 1; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+.public-main { padding: 5rem 0; }
+
+.page-header { text-align: center; margin-bottom: 4rem; animation: fadeInUp 0.8s ease-out; }
+.page-header h1 { font-size: clamp(2.5rem, 5vw, 3.5rem); margin-bottom: 1rem; font-weight: 800; }
+.page-header p { font-size: 1.15rem; color: var(--cor-texto-secundario); max-width: 700px; margin: 0 auto; }
+
+/* Cabeçalho */
+.public-header {
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--cor-borda);
+    position: sticky; top: 0; z-index: 1000;
+    transition: var(--transicao);
+}
+html[data-theme="dark"] .public-header { background-color: rgba(18, 18, 18, 0.7); }
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 75px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    width: 100%;
+}
+
+.nav-logo { font-family: var(--font-heading); font-size: 1.7rem; color: var(--cor-principal); text-decoration: none; font-weight: 800; }
+.nav-right { display: flex; align-items: center; gap: 2rem; }
+.desktop-nav { display: flex; align-items: center; gap: 2rem; }
+.nav-links { display: flex; gap: 2rem; }
+.nav-links a {
+    text-decoration: none; color: var(--cor-texto-secundario); font-weight: 600;
+    position: relative; padding-bottom: 8px; transition: var(--transicao);
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espaço entre ícone e texto */
+}
+.nav-links a::after {
+    content: ''; position: absolute; bottom: 0; left: 0;
+    width: 0; height: 2px; background-color: var(--cor-principal);
+    transition: width 0.3s ease;
+}
+.nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+.nav-links a:hover, .nav-links a.active { color: var(--cor-texto-principal); }
+
+/* Botão de Tema */
+.theme-switcher {
+    background: transparent; border: 1px solid var(--cor-borda);
+    border-radius: 50%; cursor: pointer;
+    color: var(--cor-texto-secundario);
+    display: flex; align-items: center; justify-content: center;
+    width: 42px; height: 42px; transition: var(--transicao);
+}
+.theme-switcher:hover {
+    color: var(--cor-principal); border-color: var(--cor-principal);
+    transform: rotate(20deg) scale(1.1); box-shadow: 0 0 15px var(--cor-fundo-claro);
+}
+.theme-switcher svg { width: 22px; height: 22px; }
+.theme-switcher .icon-sun, .theme-switcher .icon-moon { display: none; }
+html[data-theme="light"] .theme-switcher .icon-sun { display: block; }
+html[data-theme="dark"] .theme-switcher .icon-moon { display: block; }
+
+/* Botão CTA */
+.cta-button {
+    background-image: linear-gradient(45deg, var(--cor-principal), var(--cor-principal-escura));
+    color: var(--cor-branco);
+    padding: 12px 30px; border-radius: 50px;
+    text-decoration: none; font-weight: 700; transition: var(--transicao);
+    border: none; box-shadow: var(--sombra-suave);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.cta-button:hover { transform: scale(1.05) translateY(-2px); box-shadow: var(--sombra-media); }
+
+/* Rodapé */
+.public-footer { text-align: center; padding: 3rem; background-color: var(--cor-surface); margin-top: auto; border-top: 1px solid var(--cor-borda); color: var(--cor-texto-secundario); }
+
+/* Formulários */
+.form-container {
+    max-width: 500px; margin: 2rem auto; background-color: var(--cor-surface);
+    padding: 3rem; border-radius: var(--raio-borda); box-shadow: var(--sombra-media);
+    border: 1px solid var(--cor-borda);
+}
+.form-container h1 { text-align: center; margin-bottom: 2rem; font-size: 2.2em; }
+.form-group { margin-bottom: 1.5rem; }
+.form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--cor-texto-secundario); }
+.form-input {
+    width: 100%; background-color: var(--cor-fundo);
+    border: 1px solid var(--cor-borda);
+    color: var(--cor-texto-principal); border-radius: 8px; padding: 14px 18px;
+    transition: var(--transicao); font-family: var(--font-body); font-size: 1rem;
+}
+.form-input:focus {
+    outline: none; border-color: var(--cor-principal);
+    box-shadow: 0 0 0 3px var(--cor-fundo-claro);
+}
+.form-container p { text-align: center; margin-top: 1.5rem; color: var(--cor-texto-secundario); }
+.form-container .link-destaque { color: var(--cor-principal); font-weight: 700; text-decoration: none; }
+
+/* Mensagens Flash */
+.flash-message { padding: 1rem; margin-bottom: 1.5rem; border-radius: 8px; text-align: center; font-weight: 600; border: 1px solid transparent; }
+.flash-message.error { background-color: rgba(220, 38, 38, 0.1); color: #dc2626; border-color: rgba(220, 38, 38, 0.2); }
+.flash-message.success { background-color: rgba(34, 197, 94, 0.1); color: #16a34a; border-color: rgba(34, 197, 94, 0.2); }
+.flash-message.info { background-color: rgba(59, 130, 246, 0.1); color: #3b82f6; border-color: rgba(59, 130, 246, 0.2); }
+
+/* --- GALERIA ESTILO PINTEREST --- */
+.gallery-grid {
+    margin: 0 auto;
+}
+
+.art-card {
+    width: calc(33.333% - 14px);
+    margin-bottom: 20px;
+    break-inside: avoid;
+    background-color: var(--cor-surface);
+    border-radius: var(--raio-borda);
+    box-shadow: var(--sombra-suave);
+    transition: var(--transicao);
+    cursor: pointer;
+    overflow: hidden;
+}
+
+@media (max-width: 992px) {
+    .art-card { width: calc(50% - 10px); }
+}
+@media (max-width: 768px) {
+    .art-card { width: 100%; }
+}
+
+.art-card:hover { 
+    transform: translateY(-8px);
+    box-shadow: var(--sombra-media); 
+}
+
+.art-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.art-card-info {
+    padding: 15px;
+}
+
+.art-card-info h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0 0 5px 0;
+    color: var(--cor-texto-principal);
+}
+
+.art-card-info p {
+    font-size: 0.9rem;
+    color: var(--cor-texto-secundario);
+    line-height: 1.5;
+}
+
+/* Animações */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+
+/* --- 5. ESTILOS DO FILTRO NSFW --- */
+.art-card.nsfw-blur {
+    position: relative;
+}
+.art-card.nsfw-blur > img {
+    filter: blur(20px);
+    transition: filter 0.3s ease;
+}
+.art-card.nsfw-blur:hover > img {
+    filter: blur(15px);
+}
+.art-card.nsfw-blur.revealed > img {
+    filter: blur(0px);
+}
+.nsfw-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none; /* Não interage com o mouse por padrão */
+}
+.art-card.nsfw-blur .nsfw-overlay {
+    opacity: 1;
+}
+.art-card.nsfw-blur.revealed .nsfw-overlay {
+    opacity: 0;
+}
+.nsfw-overlay-text {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+.nsfw-toggle-icon-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 5;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+.nsfw-toggle-icon-btn:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+    transform: scale(1.1);
+}
+#nsfw-age-gate {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(18, 18, 18, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 9999;
+    display: none; /* Controlado por JS */
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+.age-gate-content {
+    background-color: var(--cor-surface);
+    color: var(--cor-texto-principal);
+    padding: 3rem;
+    border-radius: var(--raio-borda);
+    text-align: center;
+    max-width: 500px;
+    box-shadow: var(--sombra-media);
+    border: 1px solid var(--cor-borda);
+}
+.age-gate-content h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+.age-gate-content p {
+    color: var(--cor-texto-secundario);
+    margin-bottom: 2rem;
+}
+.age-gate-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+/* --- 6. ESTILOS DOS CRÉDITOS DE ARTISTA NO CARD --- */
+.art-card-credits {
+    border-top: 1px solid var(--cor-borda);
+    margin-top: 15px;
+    padding-top: 15px;
+    font-size: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.artist-credit-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--cor-texto-secundario);
+}
+.artist-credit-line strong {
+    color: var(--cor-texto-principal);
+}
+.social-icons {
+    display: flex;
+    gap: 10px;
+}
+.social-icons a {
+    color: var(--cor-texto-secundario);
+    font-size: 1rem;
+    transition: var(--transicao);
+}
+.social-icons a:hover {
+    color: var(--cor-principal);
+    transform: scale(1.2);
+}
+
+/* --- INÍCIO DA MODIFICAÇÃO: Bloco de responsividade unificado --- */
+/* Estilos aplicados em telas de até 768px de largura */
+@media (max-width: 768px) {
+    /* Ajusta o padding do container do cabeçalho */
+    .nav-container {
+        padding: 0 1rem;
+    }
+
+    /* Esconde o texto dos links de navegação */
+    .nav-link-text {
+        display: none;
+    }
+
+    /* Garante que o ícone fique visível e com um bom tamanho */
+    .nav-link i {
+        font-size: 1.4rem; /* Aumenta o tamanho do ícone para ser mais tocável */
+        margin: 0;
+    }
+    
+    /* Remove o espaçamento original entre ícone e texto */
+    .nav-link {
+        gap: 0;
+    }
+    
+    /* Diminui o espaço entre os ícones */
+    .nav-links {
+        gap: 0.75rem;
+    }
+    
+    .nav-right, .desktop-nav {
+        gap: 1rem; /* Diminui o espaço entre a navegação e as ações */
+    }
+
+    /* Esconde o texto do botão de login/CTA */
+    .cta-button-text {
+        display: none;
+    }
+
+    /* Ajusta o botão de login para ser um círculo com ícone */
+    .cta-button {
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        border-radius: 50%;
+        font-size: 1.1rem;
+    }
+    
+    /* Garante que o ícone no botão CTA não fique muito pequeno */
+    .cta-button i {
+        margin: 0;
+        font-size: 1.1rem;
+    }
+    
+    /* Regra genérica para outros botões com ícone e texto */
+    .btn .btn-text {
+        display: none;
+    }
+    .btn {
+        min-width: 42px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    .btn i {
+         margin: 0;
+    }
+}
+/* --- FIM DA MODIFICAÇÃO --- */

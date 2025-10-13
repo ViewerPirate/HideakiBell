@@ -1,0 +1,52 @@
+<div class="modal" id="client-details-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title" id="client-modal-title">Gerenciar Cliente</div>
+            <button class="close-modal">&times;</button>
+        </div>
+        
+        <form id="client-details-form">
+            <div class="modal-body">
+                <input type="hidden" id="client-id-input">
+                
+                <div class="order-section">
+                    <div class="order-section-title" id="client-modal-name">Nome do Cliente</div>
+                    <div class="order-info">
+                        <div class="order-info-label">Cliente Desde:</div>
+                        <div id="client-modal-created-at"></div>
+                    </div>
+                </div>
+
+                <div class="order-section">
+                    <div class="order-section-title">Preferências de Notificação</div>
+                    <div class="form-group">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="client-notify-on-site">
+                            <span class="slider"></span>
+                            Notificações no Site
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="client-notify-by-email">
+                            <span class="slider"></span>
+                            Notificações por E-mail
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="order-section">
+                    <div class="order-section-title">Ações de Moderação</div>
+                    <div class="action-buttons" style="justify-content: flex-start;">
+                        <button type="button" class="btn btn-warning" id="client-block-btn">Bloquear Pedidos</button>
+                        <button type="button" class="btn btn-danger" id="client-ban-btn">Banir Usuário</button>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" class="btn btn-light close-modal">Fechar</button>
+                <button type="submit" class="btn btn-primary" id="client-save-btn">Salvar Alterações</button>
+            </div>
+        </form>
+    </div>
+</div>

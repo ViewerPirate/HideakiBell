@@ -1,0 +1,69 @@
+/*
+==========================================================================
+  ARQUIVO PRINCIPAL DE ESTILOS - PAINEL ADMINISTRATIVO
+  Este arquivo importa todos os componentes de estilo.
+==========================================================================
+*/
+
+@import url("components/_base.css");
+@import url("components/_sidebar.css");
+@import url("components/_top_nav.css");
+@import url("components/_cards.css");
+@import url("components/_tables.css");
+@import url("components/_widgets.css");
+@import url("components/_modals.css");
+@import url("components/_forms.css");
+@import url("components/_utilities.css");
+@import url("components/_agenda.css");
+@import url("../chat_widget.css");
+@import url("components/_settings_page.css");
+@import url("../avatar_menu.css");
+@import url("components/_crm_clientes.css");
+
+/* ============================================================= */
+/* ===== INÍCIO DO BLOCO DE CÓDIGO DE RESPONSIVIDADE TOTAL ===== */
+/* ============================================================= */
+
+/*
+  Este bloco garante que o layout do painel se ajuste corretamente
+  em telas menores, sobrepondo as regras de layout padrão.
+*/
+@media (max-width: 992px) {
+    /* A regra mais importante:
+      Muda o layout do painel para uma única coluna, permitindo que
+      o conteúdo principal ocupe 100% da largura.
+    */
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    /* Faz com que a barra de topo e o conteúdo principal
+      se alinhem corretamente nessa única coluna.
+    */
+    .top-nav, .main-content {
+        grid-column: 1;
+    }
+
+    /*
+      Posiciona a sidebar fora da tela por padrão.
+    */
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        height: 100%;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-out;
+        z-index: 1001;
+        box-shadow: var(--sombra-media);
+        width: 260px; /* Garante a largura correta quando visível */
+    }
+
+    /*
+      Mostra a sidebar quando a classe 'is-open' é adicionada via JavaScript.
+    */
+    .sidebar.is-open {
+        transform: translateX(0);
+    }
+}

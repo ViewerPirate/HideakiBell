@@ -1,0 +1,114 @@
+/*
+==========================================================================
+  ESTILOS DO VISUALIZADOR DE MÍDIA AVANÇADO
+==========================================================================
+*/
+
+#widget-adv-viewer {
+    position: fixed; inset: 0; z-index: 9999;
+    background-color: rgba(18, 18, 18, 0.85);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    display: flex; flex-direction: column;
+    opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
+    user-select: none; /* Impede a seleção de texto durante o arraste */
+}
+#widget-adv-viewer.visible { opacity: 1; visibility: visible; }
+
+/* Container da Imagem */
+.viewer-image-container {
+    position: relative; /* Necessário para o z-index da imagem */
+    flex-grow: 1; display: flex; align-items: center; justify-content: center;
+    overflow: hidden; cursor: grab;
+}
+.viewer-image-container.grabbing { cursor: grabbing; }
+.viewer-image {
+    max-width: 95vw; max-height: 85vh;
+    object-fit: contain;
+    transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    z-index: 1; /* Garante que a imagem fique abaixo dos controles */
+}
+
+/* Controles com z-index maior */
+.viewer-nav, .viewer-toolbar, .viewer-caption {
+    z-index: 10;
+}
+
+/* Botões de Navegação (Próximo/Anterior) */
+.viewer-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 48px; height: 48px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: white; font-size: 1.5rem;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+}
+.viewer-nav:hover { background-color: rgba(255, 255, 255, 0.2); }
+#viewer-prev { left: 20px; }
+#viewer-next { right: 20px; }
+
+/* Barra de Ferramentas Superior */
+.viewer-toolbar {
+    position: absolute; top: 0; left: 0; right: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 20px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.4), transparent);
+}
+.viewer-toolbar-group { display: flex; align-items: center; gap: 10px; }
+.viewer-toolbar .btn {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white; width: 42px; height: 42px; border-radius: 50%;
+    font-size: 1.1rem; padding: 0;
+}
+.viewer-toolbar .btn:hover { background-color: rgba(255, 255, 255, 0.2); }
+#viewer-zoom-level {
+    background: rgba(0,0,0,0.3); padding: 5px 12px;
+    border-radius: 20px; font-size: 0.9em; color: white;
+}
+
+/* Legenda Inferior */
+.viewer-caption {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 20px; text-align: center; color: white;
+    background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+}
+.viewer-caption h3 { margin: 0 0 5px 0; font-size: 1.2em; }
+.viewer-caption p { margin: 0; font-size: 0.9em; opacity: 0.8; }
+
+/* --- ESTILOS DE RESPONSIVIDADE PARA DISPOSITIVOS MÓVEIS --- */
+@media (max-width: 768px) {
+    .viewer-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+    #viewer-prev { left: 10px; }
+    #viewer-next { right: 10px; }
+
+    .viewer-toolbar {
+        padding: 10px;
+    }
+    .viewer-toolbar-group {
+        gap: 5px;
+    }
+    .viewer-toolbar .btn {
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+    }
+    #viewer-zoom-level {
+        display: none; /* Esconde o nível de zoom para economizar espaço */
+    }
+
+    .viewer-caption {
+        padding: 15px;
+    }
+    .viewer-caption h3 { font-size: 1em; }
+    .viewer-caption p { font-size: 0.8em; }
+    #viewer-credits { font-size: 0.8em; } /* Estilo para os créditos futuros */
+}

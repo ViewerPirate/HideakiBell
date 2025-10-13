@@ -1,0 +1,111 @@
+/*
+==========================================================================
+  COMPONENT STYLES: CRM Clientes Plus
+==========================================================================
+*/
+
+.crm-view .kpi-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+    gap: 20px; 
+    margin-bottom: 30px; 
+}
+
+.crm-view .kpi-card { 
+    background-color: var(--cor-surface); 
+    border: 1px solid var(--cor-borda); 
+    border-radius: var(--raio-borda); 
+    padding: 20px; 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+}
+
+.crm-view .kpi-icon { 
+    width: 48px; 
+    height: 48px; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 1.5rem; 
+}
+
+.crm-view .kpi-value { 
+    font-size: 1.8rem; 
+    font-weight: 700; 
+    color: var(--cor-texto-principal); 
+}
+
+.crm-view .kpi-label { 
+    font-size: 0.9rem; 
+    color: var(--cor-texto-secundario); 
+}
+
+.crm-view .client-table-container { 
+    background-color: var(--cor-surface); 
+    border-radius: var(--raio-borda); 
+    border: 1px solid var(--cor-borda); 
+    padding: 20px; 
+}
+
+.crm-view .client-health-indicator { 
+    width: 12px; 
+    height: 12px; 
+    border-radius: 50%; 
+    display: inline-block; 
+    margin-right: 8px; 
+}
+
+.crm-view .health-good { background-color: var(--success); }
+.crm-view .health-ok { background-color: var(--warning); }
+.crm-view .health-risk { background-color: var(--danger); }
+
+.crm-view .switch { 
+    position: relative; 
+    display: inline-block; 
+    width: 44px; 
+    height: 24px; 
+}
+
+.crm-view .switch input { 
+    opacity: 0; 
+    width: 0; 
+    height: 0; 
+}
+
+.crm-view .slider { 
+    position: absolute; 
+    cursor: pointer; 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    bottom: 0; 
+    background-color: #ccc; 
+    transition: .4s; 
+    border-radius: 24px; 
+}
+
+.crm-view .slider:before { 
+    position: absolute; 
+    content: ""; 
+    height: 18px; 
+    width: 18px; 
+    left: 3px; 
+    bottom: 3px; 
+    background-color: white; 
+    transition: .4s; 
+    border-radius: 50%; 
+}
+
+.crm-view input:checked + .slider { 
+    background-color: var(--cor-principal); 
+}
+
+.crm-view input:checked + .slider:before { 
+    transform: translateX(20px); 
+}
+
+#client-notes-modal-textarea { 
+    min-height: 200px; 
+}

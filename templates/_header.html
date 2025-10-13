@@ -1,0 +1,59 @@
+<header class="public-header">
+    <nav class="nav-container">
+        <a href="{{ url_for('public.home') }}" class="nav-logo">{{ artist_name }}</a>
+
+        <div class="nav-right">
+
+            <div class="desktop-nav">
+                <div class="nav-links">
+                    <a href="{{ url_for('public.home') }}" class="nav-link">
+                        <i class="fas fa-images"></i>
+                        <span class="nav-link-text">Galeria</span>
+                    </a>
+                    
+                    {# --- INÍCIO DA MODIFICAÇÃO --- #}
+                    {# Verifica o modo do site para exibir o link correto #}
+                    {% if site_mode == 'studio' %}
+                        <a href="{{ url_for('public.artistas') }}" class="nav-link">
+                            <i class="fas fa-users"></i>
+                            <span class="nav-link-text">Artistas</span>
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('public.sobre') }}" class="nav-link">
+                            <i class="fas fa-info-circle"></i>
+                            <span class="nav-link-text">Sobre</span>
+                        </a>
+                    {% endif %}
+                    {# --- FIM DA MODIFICAÇÃO --- #}
+
+                    <a href="{{ url_for('public.contato') }}" class="nav-link">
+                        <i class="fas fa-envelope"></i>
+                        <span class="nav-link-text">Contato</span>
+                    </a>
+
+                    {% if 'user_id' in session and session.get('is_admin') %}
+                        <a href="{{ url_for('admin.admin_dashboard') }}" class="nav-link">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span class="nav-link-text">Painel Admin</span>
+                        </a>
+                    {% endif %}
+                </div>
+                
+                <div class="header-actions" style="display: flex; align-items: center; gap: 1.5rem;">
+                    <button class="theme-switcher" aria-label="Mudar tema">
+                        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.106a.75.75 0 010 1.06l-1.591 1.59a.75.75 0 11-1.06-1.06l1.59-1.591a.75.75 0 011.06 0zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5h2.25a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 01-1.06 0l-1.59-1.591a.75.75 0 111.06-1.06l1.591 1.59a.75.75 0 010 1.061zM12 18a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM5.106 17.834a.75.75 0 010-1.06l1.591-1.59a.75.75 0 111.06 1.06l-1.59 1.591a.75.75 0 01-1.06 0zM4.5 12a.75.75 0 01-.75.75H1.5a.75.75 0 010-1.5h2.25a.75.75 0 01.75.75zM6.106 5.106a.75.75 0 011.06 0l1.59 1.591a.75.75 0 11-1.06 1.06L6.106 6.166a.75.75 0 010-1.06z"/></svg>
+                        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21.752 15.002A9.72 9.72 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 10.5c0 5.385 4.365 9.75 9.75 9.75 2.135 0 4.137-.69 5.808-1.846z"/></svg>
+                    </button>
+
+                    {% if 'user_id' not in session %}
+                        <a href="{{ url_for('auth.login') }}" class="cta-button">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span class="cta-button-text">Login / Pedir Comissão</span>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+        </div>
+    </nav>
+</header>

@@ -1,0 +1,58 @@
+<!-- Componente de Cards de Estatísticas do Dashboard -->
+<div class="dashboard-cards">
+    <!-- Card: Comissões Totais -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">Comissões Totais</div>
+            <div class="card-icon primary">
+                <i class="fas fa-paint-brush"></i>
+            </div>
+        </div>
+        <div class="card-value" id="card-total-comissoes">0</div>
+        <div class="card-footer">
+            <span>Total de pedidos registados.</span>
+        </div>
+    </div>
+    
+    <!-- Card: Em Andamento -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">Em Andamento</div>
+            <div class="card-icon warning">
+                <i class="fas fa-spinner"></i>
+            </div>
+        </div>
+        <div class="card-value" id="card-em-andamento">0</div>
+        <div class="card-footer">
+            <span>Pedidos a serem produzidos.</span>
+        </div>
+    </div>
+    
+    <!-- Card: Aguardando Aprovação -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">Aguardando Aprovação</div>
+            <div class="card-icon info"> <!-- Classe de cor 'info' para variar -->
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+        <div class="card-value" id="card-aguardando-aprovacao">0</div>
+        <div class="card-footer">
+            <span>Aguardando o feedback do cliente.</span>
+        </div>
+    </div>
+    
+    <!-- Card: Receita Mensal -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">Receita Mensal</div>
+            <div class="card-icon success"> <!-- Classe de cor 'success' -->
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+        </div>
+        <div class="card-value" id="card-receita-mensal">R$ 0,00</div>
+        <div class="card-footer">
+            <span>Receita no mês corrente.</span>
+        </div>
+    </div>
+</div>

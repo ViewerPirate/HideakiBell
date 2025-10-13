@@ -1,0 +1,83 @@
+<template id="commission-type-template">
+    <div class="commission-type-item-wrapper">
+        <div class="commission-type-header">
+            <label>Nome do Serviço</label>
+            <label>Descrição</label>
+            <label>Preço</label>
+            <label>Prazo (dias)</label>
+        </div>
+        <div class="commission-type-item">
+            <input type="text" class="form-input type-input" placeholder="Ex: Retrato">
+            <input type="text" class="form-input description-input" placeholder="Descrição Breve">
+            <input type="number" step="0.01" class="form-input price-input" placeholder="Ex: 350.00">
+            <input type="number" step="1" class="form-input deadline-input" placeholder="Prazo">
+            <button type="button" class="btn btn-sm btn-danger remove-type-btn" title="Remover Serviço">&times;</button>
+        </div>
+        <div class="phases-container">
+            <div class="phases-header">
+                <h6>Fases & Revisões</h6>
+                <div class="phase-item-header">
+                    <label>Nome da Fase</label>
+                    <label>Nº de Revisões</label>
+                </div>
+                </div>
+            <div class="phases-list">
+            </div>
+            <button type="button" class="btn btn-sm btn-light add-phase-btn" style="width: 100%; margin-top: 10px;">
+                <i class="fas fa-plus"></i> Adicionar Fase
+            </button>
+        </div>
+    </div>
+</template>
+
+<template id="phase-item-template">
+    <div class="phase-item">
+        <input type="text" class="form-input phase-name" placeholder="Ex: Esboço">
+        <input type="number" min="0" class="form-input phase-revisions" placeholder="Limite">
+        <button type="button" class="btn btn-sm btn-danger remove-phase-btn" title="Remover Fase">&times;</button>
+    </div>
+</template>
+
+<template id="commission-extra-template">
+    <div class="commission-type-item">
+        <input type="text" class="form-input type-input" placeholder="Nome do Extra (Ex: Fundo Detalhado)">
+        <input type="number" step="0.01" class="form-input price-input" placeholder="Preço Adicional">
+        <button type="button" class="btn btn-sm btn-danger remove-type-btn">&times;</button>
+    </div>
+</template>
+
+<template id="social-link-template">
+    <div class="social-link-item">
+        <div class="social-icon-display">
+            <i class="fas fa-link"></i>
+        </div>
+        <select class="form-input network-input">
+        </select>
+        <input type="url" class="form-input url-input" placeholder="URL do seu perfil (https://...)">
+        <button type="button" class="btn btn-sm btn-danger remove-type-btn">&times;</button>
+    </div>
+</template>
+
+<template id="support-contact-template">
+    <div class="commission-type-item" style="padding-right: 15px; grid-template-columns: 1fr 2fr auto;">
+        <input type="text" class="form-input contact-method" placeholder="Método (Ex: Email, WhatsApp)">
+        <input type="text" class="form-input contact-value" placeholder="Valor (Ex: contato@site.com)">
+        <button type="button" class="btn btn-sm btn-danger remove-item-btn">&times;</button>
+    </div>
+</template>
+
+<template id="faq-template">
+    <div class="commission-type-item-wrapper">
+        <div class="form-group">
+            <label>Pergunta</label>
+            <input type="text" class="form-input faq-question" placeholder="Escreva a pergunta aqui...">
+        </div>
+        <div class="form-group">
+            <label>Resposta</label>
+            <textarea class="form-input faq-answer" rows="3" placeholder="Escreva a resposta aqui..."></textarea>
+        </div>
+        <div style="text-align: right;">
+            <button type="button" class="btn btn-sm btn-light remove-item-btn">Remover FAQ</button>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,87 @@
+/* CLIENT COMPONENT: Base e Layout */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+:root {
+    --font-body: 'Nunito', sans-serif;
+    --font-heading: 'Nunito', sans-serif;
+    --cor-fundo: #f8f9fa;
+    --cor-surface: #ffffff;
+    --cor-texto-principal: #212529;
+    --cor-texto-escuro-fixo: #212529; /* DEPOIS: Nova variável adicionada */
+    --cor-texto-secundario: #6c757d;
+    --cor-borda: #dee2e6;
+    --cor-principal: #ff69b4;
+    --cor-principal-escura: #ff1493;
+    --cor-secundaria: #f3a5c8; /* Tom mais claro do principal */
+    --cor-fundo-claro: #fff0f7;
+    --cor-branco: #ffffff;
+    --sombra-suave: 0 4px 15px rgba(0, 0, 0, 0.06);
+    --sombra-media: 0 8px 30px rgba(0, 0, 0, 0.1);
+    --raio-borda: 12px;
+    --transicao: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    --success: #4caf50;
+    --warning: #ff9800;
+    --danger: #f44336;
+    --info: #2196F3;
+}
+
+html[data-theme="dark"] {
+    --cor-fundo: #121212;
+    --cor-surface: #1e1e1e;
+    --cor-texto-principal: #e9ecef;
+    --cor-texto-secundario: #adb5bd;
+    --cor-borda: #343a40;
+    --sombra-suave: 0 4px 15px rgba(0, 0, 0, 0.2);
+    --sombra-media: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+}
+
+body {
+    background-color: var(--cor-fundo);
+    font-family: var(--font-body);
+    color: var(--cor-texto-principal);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.main-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content-wrapper {
+    flex-grow: 1;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.page-header {
+    text-align: center;
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.page-header h1 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+.page-header p {
+    font-size: 1.15rem;
+    color: var(--cor-texto-secundario);
+    max-width: 700px;
+    margin: 0 auto;
+}

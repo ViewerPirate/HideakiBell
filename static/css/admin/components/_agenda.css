@@ -1,0 +1,82 @@
+/* ADMIN COMPONENT: Agenda Timeline */
+.timeline-container {
+    position: relative;
+    padding: 20px 0;
+}
+
+.timeline-item {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+}
+
+.timeline-date-marker {
+    text-align: center;
+    padding-top: 5px;
+}
+
+.timeline-day {
+    font-size: 2.2em;
+    font-weight: 700;
+    color: var(--cor-texto-principal);
+    line-height: 1;
+}
+
+.timeline-month {
+    font-size: 0.9em;
+    text-transform: uppercase;
+    color: var(--cor-texto-secundario);
+    font-weight: 500;
+}
+
+.timeline-card {
+    background-color: var(--cor-surface);
+    border-radius: var(--raio-borda);
+    padding: 20px;
+    box-shadow: var(--sombra-suave);
+    width: 100%;
+    border-left: 4px solid var(--cor-principal);
+    transition: var(--transicao);
+}
+
+.timeline-card:hover {
+    box-shadow: var(--sombra-media);
+    transform: translateY(-5px);
+}
+
+.timeline-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.timeline-card-title {
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+.timeline-card-client {
+    font-size: 0.9em;
+    color: var(--cor-texto-secundario);
+    margin-bottom: 15px;
+}
+
+.timeline-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+    color: var(--cor-texto-secundario);
+}
+
+.timeline-card.status-due-soon { border-left-color: var(--warning); }
+.timeline-card.status-overdue { border-left-color: var(--danger); }
+
+#agenda-filters .btn.active {
+    background-color: var(--cor-principal);
+    color: white;
+    border-color: var(--cor-principal);
+}

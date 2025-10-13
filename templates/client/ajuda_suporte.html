@@ -1,0 +1,54 @@
+{% extends "client/client_layout.html" %}
+
+{% block title %}Ajuda & Suporte{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2rem; padding-bottom: 2rem;">
+    <div class="section-header" style="margin-bottom: 2rem; border: none; flex-direction: column; text-align: center;">
+        <h1 class="section-title">Central de Ajuda & Suporte</h1>
+        <p style="color: var(--cor-texto-secundario); max-width: 600px; margin-top: 0.5rem;">
+            Encontre respostas para as perguntas mais comuns sobre o processo de comissão.
+        </p>
+    </div>
+
+    <div class="faq-container">
+        {% if faqs %}
+            {% for faq in faqs %}
+            <div class="faq-item">
+                <button class="faq-question">{{ faq.question }} <i class="fas fa-chevron-down icon"></i></button>
+                <div class="faq-answer">
+                    <p>{{ faq.answer }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="card" style="text-align: center; padding: 2rem;">
+                <p>Nenhuma pergunta frequente foi adicionada pelo artista ainda.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if support_contacts %}
+    <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--cor-borda);">
+        <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Ainda com dúvidas?</h3>
+        <p style="color: var(--cor-texto-secundario); margin-bottom: 1.5rem;">Entre em contato por um dos canais abaixo:</p>
+        <div class="action-buttons" style="justify-content: center;">
+            {% for contact in support_contacts %}
+                <div class="btn btn-light" style="cursor: default; text-transform: none;">
+                    <strong>{{ contact.method }}:</strong>&nbsp;{{ contact.value }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    <div style="text-align: center; margin-top: 3rem;">
+        <a href="{{ url_for('client.client_dashboard') }}" class="btn btn-light">
+            <i class="fas fa-arrow-left"></i> Voltar para o Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/client/pages/ajuda_suporte.js') }}"></script>
+{% endblock %}

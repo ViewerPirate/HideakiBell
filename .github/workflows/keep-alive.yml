@@ -1,0 +1,12 @@
+name: Keep Render Service Alive
+
+on:
+  schedule:
+    - cron: '*/14 * * * *'
+
+jobs:
+  ping-site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping the web service
+        run: curl -s https://artbyte-studio.onrender.com/ping

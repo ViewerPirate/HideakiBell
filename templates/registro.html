@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Criar Conta | {{ super() }}{% endblock %}
+
+{% block content %}
+<main>
+    <div class="form-container">
+        <h1>Criar Conta</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('auth.registro') }}">
+            <div class="form-group">
+                <label for="username">Nome de usuário</label>
+                <input type="text" id="username" name="username" required class="form-input">
+            </div>
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" required class="form-input">
+            </div>
+            <button type="submit" class="cta-button" style="width: 100%;">Registrar</button>
+        </form>
+
+        <p>Já tem uma conta? <a href="{{ url_for('auth.login') }}" class="link-destaque">Faça login</a></p>
+    </div>
+</main>
+{% endblock %}

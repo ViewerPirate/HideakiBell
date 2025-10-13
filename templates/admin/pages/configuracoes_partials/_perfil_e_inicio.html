@@ -1,0 +1,79 @@
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title" style="font-size: 1.2rem; font-weight: 600;">Modo do Site</h3>
+    </div>
+    <div class="form-group">
+        <label>Selecione como o site deve se comportar:</label>
+        <div style="display: flex; gap: 20px; margin-top: 10px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="radio" id="mode_individual" name="site_mode" value="individual" checked>
+                <span>Artista Individual</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="radio" id="mode_studio" name="site_mode" value="studio">
+                <span>Estúdio / Coletivo</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group" id="studio_name_wrapper" style="display: none;">
+        <label for="studio_name">Nome do Estúdio</label>
+        <input type="text" id="studio_name" name="studio_name" class="form-input">
+        <p style="font-size: 0.85em; color: var(--cor-texto-secundario); margin-top: 5px;">
+            Este nome será usado globalmente no site (cabeçalho, rodapé, etc.) quando o modo Estúdio estiver ativo.
+        </p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title" style="font-size: 1.2rem; font-weight: 600;">Informações Padrão (Modo Individual)</h3>
+    </div>
+    <p id="artist_profile_note" style="color: var(--cor-texto-secundario); font-size: 0.9rem; margin-top: -1rem; margin-bottom: 1.5rem;">
+        Estas informações são usadas como padrão para o site quando o modo "Artista Individual" está selecionado. Para editar seu perfil público individual (usado no modo Estúdio), acesse a página <a href="{{ url_for('admin.admin_meu_perfil') }}">Meu Perfil</a>.
+    </p>
+    <div class="form-group">
+        <label for="artist_name">Nome do Site / Nome Artístico</label>
+        <input type="text" id="artist_name" name="artist_name" class="form-input">
+    </div>
+    <div class="form-group">
+        <label for="artist_email">E-mail de Contato Principal do Site</label>
+        <input type="email" id="artist_email" name="artist_email" class="form-input">
+    </div>
+    <div class="form-group">
+        <label for="artist_location">Localização Principal (Ex: Cidade, Estado)</label>
+        <input type="text" id="artist_location" name="artist_location" class="form-input">
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title" style="font-size: 1.2rem; font-weight: 600;">Conteúdo da Página Inicial</h3>
+    </div>
+    <div class="form-group">
+        <label for="home_headline">Título Principal</label>
+        <input type="text" id="home_headline" name="home_headline" class="form-input">
+    </div>
+    <div class="form-group">
+        <label for="home_subheadline">Subtítulo (texto de apoio)</label>
+        <textarea id="home_subheadline" name="home_subheadline" class="form-input" rows="4"></textarea>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modeRadios = document.querySelectorAll('input[name="site_mode"]');
+        const studioNameWrapper = document.getElementById('studio_name_wrapper');
+        
+        function toggleModeFields() {
+            if (document.getElementById('mode_studio').checked) {
+                studioNameWrapper.style.display = 'block';
+            } else {
+                studioNameWrapper.style.display = 'none';
+            }
+        }
+
+        modeRadios.forEach(radio => radio.addEventListener('change', toggleModeFields));
+        toggleModeFields();
+    });
+</script>

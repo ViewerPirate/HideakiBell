@@ -1,0 +1,33 @@
+<div class="modal" id="portfolioModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Portfólio do Artista</h2>
+            <button class="close-modal">&times;</button>
+        </div>
+        
+     
+        <div class="modal-body">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.2em; margin-bottom: 10px; color: var(--cor-texto-principal);">Confira exemplos de trabalhos anteriores</h3>
+                <p style="color: var(--cor-texto-secundario);">Estes exemplos podem ajudar você a decidir o estilo que deseja para sua arte.</p>
+            </div>
+           
+            <div class="filter-options" style="justify-content: center; margin-bottom: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <select id="portfolioArtistFilter" class="form-input">
+                    <option value="all">Todos os Artistas</option>
+                </select>
+                <select id="portfolioFilter" class="form-input">
+                    <option value="all">Todos os Estilos</option>
+                    <option value="retrato">Retratos</option>
+                    <option value="personagem">Personagens</option>
+                    <option value="fanart">Fanarts</option>
+                    <option value="logo">Logos</option>
+                    <option value="outro">Outros</option>
+                </select>
+            </div>
+        
+            <div id="portfolioGallery" class="portfolio-grid">
+                </div>
+        </div>
+    </div>
+</div>

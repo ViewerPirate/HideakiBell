@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Login | {{ super() }}{% endblock %}
+
+{% block content %}
+<main>
+    <div class="form-container">
+        <h1>Login de Cliente</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            <div class="form-group">
+                <label for="username">Nome de Usuário</label>
+                <input type="text" id="username" name="username" required class="form-input">
+            </div>
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" required class="form-input">
+            </div>
+            <button type="submit" class="cta-button" style="width: 100%;">Entrar</button>
+        </form>
+
+        <p>Não tem uma conta? <a href="{{ url_for('auth.registro') }}" class="link-destaque">Crie uma agora</a></p>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,104 @@
+{# CORREÇÃO: A linha {% extends "base.html" %} foi removida deste arquivo. Um arquivo base não pode herdar de si mesmo. #}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ artist_name }}{% endblock %}</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/public.css') }}">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/viewer.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/avatar_menu.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (theme === 'dark' || (!theme && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+
+    {% if custom_css %}
+    <style id="custom-css-block">
+        {{ custom_css | safe }}
+    </style>
+    {% endif %}
+
+    {% block page_styles %}{% endblock %}
+</head>
+
+<body {% if session.user_id %}
+      data-username="{{ session.username }}" 
+      data-user-role="{% if session.is_admin %}Admin{% else %}Cliente{% endif %}" 
+      data-avatar-url="{{ session_avatar_url or '' }}"
+      {% endif %}>
+
+<div class="main-wrapper">
+        
+        {% include '_header.html' %}
+
+        <div class="content-wrapper">
+            {% block content %}{% endblock %}
+        </div>
+
+        <footer class="public-footer">
+            <p>&copy; <span id="current-year"></span> {{ artist_name }}. Todos os direitos reservados.</p>
+        </footer>
+
+    </div>
+
+    {% block modals %}{% endblock %}
+
+    <div id="nsfw-age-gate" style="display: none;">
+        <div class="age-gate-content">
+            <h2>Verificação de Idade</h2>
+            <p>Este site contém conteúdo que pode ser inadequado para menores de 18 anos. Você confirma que tem 18 anos ou mais para continuar?</p>
+            <div class="age-gate-actions">
+                <button id="nsfw-cancel-btn" class="btn btn-light">Sair</button>
+                <button id="nsfw-confirm-btn" class="cta-button">Tenho 18 anos ou mais</button>
+            </div>
+        </div>
+    </div>
+
+    {% include '_viewer.html' %}
+    <div class="notification" id="notification" style="display: none;">
+        <i class="fas fa-check-circle" id="notificationIcon"></i>
+        <span id="notificationMessage">Operação realizada com sucesso!</span>
+    </div>
+
+    <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    
+    {% if public_plugins %}
+    <script>
+        window.INJECTED_PLUGINS = {{ public_plugins | tojson | safe }};
+    </script>
+    {% endif %}
+    
+    <script src="{{ url_for('static', filename='js/admin_js/cms_core.js') }}"></script>
+
+    {% if session.user_id and not session.is_admin %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='js/client/dom.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/client/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/client/helpers.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/client/handlers.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/client/main.js') }}"></script>
+    {% endif %}
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='js/viewer.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/avatar_menu.js') }}"></script>
+
+    {% block page_scripts %}{% endblock %}
+</body>
+</html>

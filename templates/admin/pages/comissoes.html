@@ -1,0 +1,41 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block title %}
+Gerenciar Comissões - Painel do Artista
+{% endblock %}
+
+{% block content %}
+<!-- A classe 'recent-orders' aplica o estilo de card/container -->
+<div class="recent-orders">
+    <div class="section-header">
+        <div class="section-title">Gerenciamento de Comissões</div>
+        <!-- Classe 'btn-primary' para o estilo correto do botão -->
+        <a href="#" class="btn btn-primary" id="new-commission-btn"><i class="fas fa-plus"></i> Nova Comissão</a>
+    </div>
+    
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Tipo</th>
+                    <th>Data</th>
+                    <th>Prazo</th>
+                    <th>Valor</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="comissoes-table-body">
+                <!-- Conteúdo renderizado pelo render.js -->
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Carrega o script específico desta página -->
+<script src="{{ url_for('static', filename='js/admin_js/pages/comissoes.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Sobre | {{ super() }}{% endblock %}
+
+{% block content %}
+<style>
+    /* --- ESTILOS PARA O MODO INDIVIDUAL --- */
+    .about-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 3rem;
+        align-items: center;
+    }
+    @media (min-width: 768px) {
+        .about-content { grid-template-columns: 1fr 2fr; }
+    }
+    .about-avatar img {
+        width: 100%;
+        max-width: 300px;
+        border-radius: 50%;
+        border: 5px solid var(--cor-surface);
+        box-shadow: var(--sombra-media);
+        margin: 0 auto;
+        display: block;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+    }
+    .about-text h2 {
+        font-size: 2em;
+        font-weight: 700;
+        color: var(--cor-principal);
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    .about-text p {
+        color: var(--cor-texto-secundario);
+        font-size: 1.1rem;
+        white-space: pre-wrap;
+    }
+
+    /* --- ESTILOS PARA AS REDES SOCIAIS (COPIADO DE contato.html) --- */
+    .social-links {
+        margin-top: 2.5rem;
+    }
+    .social-links h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+        color: var(--cor-texto-principal);
+        font-weight: 700;
+    }
+    .social-icon-list {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+        padding: 0;
+    }
+    .social-icon-list a {
+        color: var(--cor-texto-secundario);
+        font-size: 2rem;
+        transition: var(--transicao);
+    }
+    .social-icon-list a:hover {
+        color: var(--cor-principal);
+        transform: scale(1.2);
+    }
+</style>
+
+<main class="public-main">
+    <div class="container">
+
+        <div class="page-header">
+            <h1>A história por trás da arte</h1>
+        </div>
+
+        <div class="about-content">
+            <div class="about-avatar">
+                <img src="{{ main_artist_profile.artist_avatar or artist_avatar }}" 
+                     alt="Avatar de {{ main_artist_profile.username or artist_name }}" 
+                     referrerpolicy="no-referrer"
+                     onerror="this.onerror=null;this.src='https://placehold.co/400x400/374151/ffffff?text=Avatar';">
+            </div>
+            <div class="about-text">
+                <p>{{ main_artist_profile.artist_bio or artist_bio }}</p>
+                
+                <h2>Meu Processo Criativo</h2>
+                <p>{{ artist_process }}</p>
+
+                <h2>Inspirações</h2>
+                <p>{{ artist_inspirations }}</p>
+
+                {% if social_links %}
+                <div class="social-links">
+                    <h3>Siga-me</h3>
+                    <ul class="social-icon-list">
+                        {# --- INÍCIO DA MODIFICAÇÃO: Lógica de ícones simplificada --- #}
+                        {% for link in social_links %}
+                            <li>
+                                <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" title="{{ link.network }}">
+                                    <i class="{{ link.network | social_icon }}"></i>
+                                </a>
+                            </li>
+                        {% endfor %}
+                        {# --- FIM DA MODIFICAÇÃO --- #}
+                    </ul>
+                </div>
+                {% endif %}
+                <div style="margin-top: 2.5rem;">
+                    <a href="{{ url_for('public.comissoes_artista', username=main_artist_profile.username) }}" class="cta-button">
+                        <i class="fas fa-tags"></i> Ver Comissões e Preços
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

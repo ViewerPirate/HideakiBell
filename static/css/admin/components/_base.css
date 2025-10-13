@@ -1,0 +1,209 @@
+/* ADMIN COMPONENT: Base e Layout */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+:root {
+    --font-body: 'Nunito', sans-serif;
+    --font-heading: 'Nunito', sans-serif;
+    --cor-fundo: #f8f9fa;
+    --cor-surface: #ffffff;
+    --cor-texto-principal: #212529;
+    --cor-texto-secundario: #6c757d;
+    --cor-borda: #dee2e6;
+    --cor-principal: #ff69b4;
+    --cor-principal-escura: #ff1493;
+    --cor-fundo-claro: #fff0f7;
+    --cor-branco: #ffffff;
+    --sombra-suave: 0 4px 15px rgba(0, 0, 0, 0.06);
+    --sombra-media: 0 8px 30px rgba(0, 0, 0, 0.1);
+    --raio-borda: 12px;
+    --transicao: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    --success: #4caf50;
+    --warning: #ff9800;
+    --danger: #f44336;
+    --info: #2196F3;
+}
+
+html[data-theme="dark"] {
+    --cor-fundo: #121212;
+    --cor-surface: #1e1e1e;
+    --cor-texto-principal: #e9ecef;
+    --cor-texto-secundario: #adb5bd;
+    --cor-borda: #343a40;
+    --sombra-suave: 0 4px 15px rgba(0, 0, 0, 0.2);
+    --sombra-media: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+* { 
+    box-sizing: border-box;
+    margin: 0; 
+    padding: 0; 
+}
+
+body, button, input, select, textarea {
+    background-color: var(--cor-fundo);
+    font-family: var(--font-body);
+    color: var(--cor-texto-principal);
+    line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    grid-template-rows: auto 1fr;
+    min-height: 100vh;
+}
+
+.main-content {
+    grid-column: 2;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+/* * ===================================================================
+ * INÍCIO DO BLOCO DE RESPONSIVIDADE TOTAL
+ * Este código substitui as antigas regras de responsividade.
+ * ===================================================================
+*/
+
+/* Habilita a rolagem do menu em telas de baixa altura */
+.sidebar-menu {
+    overflow-y: auto;
+}
+.sidebar-menu::-webkit-scrollbar {
+    width: 6px;
+}
+.sidebar-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+.sidebar-menu::-webkit-scrollbar-thumb {
+    background-color: var(--cor-borda);
+    border-radius: 10px;
+}
+
+/* Controla a visibilidade do botão hambúrguer e do overlay */
+.hamburger-btn {
+    display: none; 
+    font-size: 1.5rem; 
+    background: none; 
+    border: none;
+    color: var(--cor-texto-secundario); 
+    cursor: pointer;
+    padding: 0 15px; 
+    margin-left: -15px;
+}
+.responsive-overlay {
+    display: none; 
+    position: fixed; 
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5); 
+    z-index: 1000;
+}
+.responsive-overlay.is-visible {
+    display: block;
+}
+
+
+/* Regras para telas de tablet e menores */
+@media (max-width: 992px) {
+    .hamburger-btn { display: block; }
+    .dashboard { grid-template-columns: 1fr; }
+    .sidebar {
+        position: fixed; 
+        left: 0; top: 0; bottom: 0; height: 100%;
+        transform: translateX(-100%); 
+        transition: transform 0.3s ease-out;
+        z-index: 1001; 
+        box-shadow: var(--sombra-media);
+        width: 260px;
+    }
+    .sidebar.is-open { transform: translateX(0); }
+    
+    .sidebar.is-open .sidebar-header h3 span, 
+    .sidebar.is-open .sidebar-menu h4, 
+    .sidebar.is-open .sidebar-menu li a span {
+        opacity: 1 !important; 
+        display: inline-block !important;
+    }
+    .sidebar.is-open .sidebar-menu li a { justify-content: flex-start !important; }
+    
+    .top-nav, .main-content { grid-column: 1; }
+}
+
+/* Regras para telas de celular */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 20px;
+    }
+    
+    /* Esconde o texto dos botões */
+    .btn .btn-text {
+        display: none;
+    }
+    .btn {
+        min-width: 42px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    .btn i {
+         margin: 0;
+    }
+
+    /* Transforma tabelas em cards */
+    .table-responsive table, 
+    .table-responsive thead, 
+    .table-responsive tbody, 
+    .table-responsive th, 
+    .table-responsive td, 
+    .table-responsive tr {
+        display: block;
+    }
+    .table-responsive thead {
+        display: none;
+    }
+    .table-responsive tr {
+        border: 1px solid var(--cor-borda);
+        border-radius: var(--raio-borda);
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background-color: var(--cor-surface);
+    }
+    .table-responsive td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: right;
+        padding: 0.75rem 0.5rem;
+        border-bottom: 1px dashed var(--cor-borda);
+    }
+    .table-responsive td:last-child {
+        border-bottom: none;
+        padding-top: 1rem;
+    }
+    .table-responsive td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        text-align: left;
+        color: var(--cor-texto-principal);
+    }
+    .table-responsive .action-buttons {
+        justify-content: flex-end;
+        width: 100%;
+    }
+
+    /* Empilha os grids de conteúdo */
+    .dashboard-cards,
+    .reports-grid,
+    .settings-wrapper,
+    .gallery-management-grid,
+    .recent-orders + div[style*="grid"] {
+        grid-template-columns: 1fr;
+    }
+    .settings-nav {
+        position: static;
+        width: 100%;
+        border-bottom: 1px solid var(--cor-borda);
+    }
+}

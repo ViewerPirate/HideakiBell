@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block title %}Artistas | {{ super() }}{% endblock %}
+
+{% block content %}
+<style>
+    /* --- ESTILOS PARA O MODO INDIVIDUAL --- */
+    .about-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 3rem;
+        align-items: center;
+    }
+    @media (min-width: 768px) {
+        .about-content { grid-template-columns: 1fr 2fr; }
+    }
+    .about-avatar img {
+        width: 100%;
+        max-width: 300px;
+        border-radius: 50%;
+        border: 5px solid var(--cor-surface);
+        box-shadow: var(--sombra-media);
+        margin: 0 auto;
+        display: block;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+    }
+    .about-text h2 {
+        font-size: 2em;
+        font-weight: 700;
+        color: var(--cor-principal);
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    .about-text p {
+        color: var(--cor-texto-secundario);
+        font-size: 1.1rem;
+        white-space: pre-wrap; /* Mantém as quebras de linha do textarea */
+    }
+
+    /* --- ESTILOS PARA O MODO ESTÚDIO --- */
+    .studio-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+    .artist-card-sobre {
+        background-color: var(--cor-surface);
+        border: 1px solid var(--cor-borda);
+        border-radius: var(--raio-borda);
+        padding: 2rem;
+        text-align: center;
+        transition: var(--transicao);
+        box-shadow: var(--sombra-suave);
+        display: flex;
+        flex-direction: column;
+    }
+    .artist-card-sobre:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--sombra-media);
+        border-color: var(--cor-principal);
+    }
+    .artist-card-sobre img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 1.5rem;
+        border: 4px solid var(--cor-surface);
+        box-shadow: var(--sombra-media);
+    }
+    .artist-card-sobre h3 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--cor-texto-principal);
+    }
+    .artist-card-sobre .artist-bio {
+        color: var(--cor-texto-secundario);
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+        flex-grow: 1; 
+    }
+    .artist-specialties {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--cor-borda);
+    }
+    .specialty-tag {
+        background-color: var(--cor-fundo-claro);
+        color: var(--cor-principal);
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: 600;
+    }
+    .artist-socials {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--cor-borda);
+    }
+    .artist-socials ul {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .artist-socials a {
+        color: var(--cor-texto-secundario);
+        font-size: 1.5rem;
+        transition: var(--transicao);
+    }
+    .artist-socials a:hover {
+        color: var(--cor-principal);
+        transform: scale(1.2);
+    }
+    
+    .artist-commission-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 12px 20px;
+        border-radius: 8px;
+        background-color: transparent;
+        border: 1px solid var(--cor-principal);
+        color: var(--cor-principal);
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    .artist-commission-btn:hover {
+        background-color: var(--cor-principal);
+        color: var(--cor-branco);
+        box-shadow: 0 0 15px rgba(255, 105, 180, 0.4);
+        transform: translateY(-2px);
+    }
+</style>
+
+<main class="public-main">
+    <div class="container">
+
+        {% if site_mode == 'studio' and artists %}
+            <div class="page-header">
+                <h1>Nossa Equipe de Artistas</h1>
+                <p>Conheça os talentos que fazem parte do nosso estúdio.</p>
+            </div>
+
+            <div class="studio-grid">
+                {% for artist in artists %}
+                <div class="artist-card-sobre">
+                    <img src="{{ artist.artist_avatar }}" 
+                         alt="Avatar de {{ artist.username }}" 
+                         referrerpolicy="no-referrer"
+                         onerror="this.onerror=null;this.src='https://placehold.co/150x150/ff69b4/ffffff?text={{ artist.username[0] }}';">
+                    <h3>{{ artist.username }}</h3>
+                    <p class="artist-bio">{{ artist.artist_bio or 'Artista do nosso estúdio.' }}</p>
+                    
+                    {% if artist.artist_specialties %}
+                    <div class="artist-specialties">
+                        {% for specialty in artist.artist_specialties %}
+                        <span class="specialty-tag">{{ specialty }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% if artist.social_links %}
+                    <div class="artist-socials">
+                        <ul>
+                            {# --- INÍCIO DA MODIFICAÇÃO: Lógica de ícones simplificada --- #}
+                            {% for link in artist.social_links %}
+                            <li>
+                                <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" title="{{ link.network }}">
+                                    <i class="{{ link.network | social_icon }}"></i>
+                                </a>
+                            </li>
+                            {% endfor %}
+                            {# --- FIM DA MODIFICAÇÃO --- #}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <div style="margin-top: 1.5rem; border-top: 1px solid var(--cor-borda); padding-top: 1.5rem;">
+                        <a href="{{ url_for('public.comissoes_artista', username=artist.username) }}" class="artist-commission-btn">
+                            <i class="fas fa-tags"></i> Ver Comissões
+                        </a>
+                    </div>
+
+                </div>
+                {% endfor %}
+            </div>
+
+        {% else %}
+            <div class="page-header">
+                <h1>A história por trás da arte</h1>
+            </div>
+            <div class="about-content">
+                <div class="about-avatar">
+                    <img src="{{ main_artist_profile.artist_avatar or settings.artist_avatar }}" 
+                         alt="Avatar de {{ main_artist_profile.username or settings.artist_name }}" 
+                         referrerpolicy="no-referrer"
+                         onerror="this.onerror=null;this.src='https://placehold.co/400x400/374151/ffffff?text=Avatar';">
+                </div>
+                <div class="about-text">
+                    <p>{{ main_artist_profile.artist_bio or settings.artist_bio }}</p>
+                    
+                    <h2>Meu Processo Criativo</h2>
+                    <p>{{ settings.artist_process }}</p>
+
+                    <h2>Inspirações</h2>
+                    <p>{{ settings.artist_inspirations }}</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

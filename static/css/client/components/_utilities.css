@@ -1,0 +1,70 @@
+/* CLIENT COMPONENT: Utilities (Overlays, Notifications) */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: var(--raio-borda);
+    color: white;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: var(--sombra-media);
+    z-index: 4000;
+    animation: slideIn 0.3s ease, fadeOut 0.5s ease 3s forwards;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* --- REGRAS UNIFICADAS --- */
+.notification.success,
+.notification.error,
+.notification.warning,
+.notification.info {
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.notification.success { background-color: rgba(76, 175, 80, 0.9); }
+.notification.error { background-color: rgba(244, 67, 54, 0.9); }
+.notification.warning { background-color: rgba(255, 152, 0, 0.9); }
+.notification.info { background-color: rgba(59, 130, 246, 0.9); }
+
+
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+}
+
+html[data-theme="dark"] .loading-overlay {
+    background-color: rgba(18, 18, 18, 0.8);
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid var(--cor-borda);
+    border-top: 5px solid var(--cor-principal);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

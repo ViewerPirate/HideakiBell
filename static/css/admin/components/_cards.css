@@ -1,0 +1,77 @@
+/* ADMIN COMPONENT: Cards */
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.card {
+    background-color: var(--cor-surface);
+    border-radius: var(--raio-borda);
+    padding: 25px;
+    box-shadow: var(--sombra-suave);
+    border: 1px solid var(--cor-borda);
+    transition: var(--transicao);
+    position: relative;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--sombra-media);
+    border-color: var(--cor-principal);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.card-title {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--cor-texto-secundario);
+}
+
+.card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    transition: var(--transicao);
+}
+
+.card:hover .card-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.card-icon.primary { background-color: var(--cor-fundo-claro); color: var(--cor-principal); }
+.card-icon.success { background-color: rgba(76, 175, 80, 0.1); color: var(--success); }
+.card-icon.warning { background-color: rgba(255, 152, 0, 0.1); color: var(--warning); }
+.card-icon.danger { background-color: rgba(244, 67, 54, 0.1); color: var(--danger); }
+
+.card-value {
+    font-family: var(--font-body);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--cor-texto-principal);
+}
+
+.card-footer {
+    font-size: 0.85rem;
+    color: var(--cor-texto-secundario);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 1rem;
+}
+
+.card-footer.positive { color: var(--success); }
+.card-footer.negative { color: var(--danger); }

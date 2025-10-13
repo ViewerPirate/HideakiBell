@@ -1,0 +1,38 @@
+<div class="modal" id="createCommissionModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">Nova Comissão</div>
+            <button class="close-modal" data-target-modal="createCommissionModal">&times;</button>
+        </div>
+        
+        <form id="create-commission-form">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="create-client">Nome do Cliente*</label>
+                    <input type="text" id="create-client" required>
+                </div>
+                <div class="form-group">
+                    <label for="create-type">Tipo de Arte*</label>
+                    <input type="text" id="create-type" placeholder="Ex: Retrato, Personagem, Logo" required>
+                </div>
+                <div class="form-group">
+                    <label for="create-price">Preço (Ex: 450.00)*</label>
+                    <input type="number" step="0.01" id="create-price" required>
+                </div>
+                <div class="form-group">
+                    <label for="create-deadline">Prazo Final*</label>
+                    <input type="date" id="create-deadline" required>
+                </div>
+                <div class="form-group">
+                    <label for="create-description">Descrição</label>
+                    <textarea id="create-description" placeholder="Descreva os detalhes do pedido..."></textarea>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" class="btn btn-light close-modal" data-target-modal="createCommissionModal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Criar Comissão</button>
+            </div>
+        </form>
+    </div>
+</div>

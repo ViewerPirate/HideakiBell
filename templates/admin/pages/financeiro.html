@@ -1,0 +1,74 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block title %}
+Análise Financeira - Painel do Artista
+{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <div class="section-title">Análise Financeira</div>
+    <!-- Container de filtros com classes para alinhamento e estilo -->
+    <div class="filter-container" id="finance-filters">
+        <input type="date" id="start-date" class="form-input">
+        <span>até</span>
+        <input type="date" id="end-date" class="form-input">
+        <button class="btn btn-primary" id="filter-btn"><i class="fas fa-filter"></i> Aplicar</button>
+    </div>
+</div>
+
+<div class="dashboard-cards">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">Receita no Período</div>
+            <div class="card-icon success"><i class="fas fa-dollar-sign"></i></div>
+        </div>
+        <div class="card-value" id="kpi-receita-total">R$ 0,00</div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">Comissões Pagas</div>
+            <div class="card-icon primary"><i class="fas fa-check-double"></i></div>
+        </div>
+        <div class="card-value" id="kpi-comissoes-pagas">0</div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">Ticket Médio</div>
+            <div class="card-icon warning"><i class="fas fa-receipt"></i></div>
+        </div>
+        <div class="card-value" id="kpi-ticket-medio">R$ 0,00</div>
+    </div>
+</div>
+
+<div class="recent-orders">
+    <div class="section-header">
+        <div class="section-title">Receita Mensal (Gráfico)</div>
+    </div>
+    <div class="chart-container">
+        <canvas id="revenueChart"></canvas>
+    </div>
+</div>
+
+<div class="recent-orders">
+    <div class="section-header">
+        <div class="section-title">Extrato de Transações</div>
+    </div>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Data da Conclusão</th>
+                    <th>Valor Pago</th>
+                </tr>
+            </thead>
+            <tbody id="transactions-table-body">
+                <!-- Conteúdo gerado por JS -->
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/admin_js/pages/financeiro.js') }}"></script>
+{% endblock %}

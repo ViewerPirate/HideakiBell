@@ -1,0 +1,87 @@
+/*
+==========================================================================
+  COMPONENT STYLES: Página "Ajuda & Suporte" do Cliente
+==========================================================================
+*/
+
+.faq-container {
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.faq-item {
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-borda);
+    margin-bottom: 15px;
+    overflow: hidden;
+    transition: var(--transicao);
+}
+
+.faq-item:hover {
+    border-color: var(--cor-principal);
+    box-shadow: var(--sombra-suave);
+}
+
+.faq-question {
+    width: 100%;
+    text-align: left;
+    background-color: var(--cor-surface);
+    padding: 18px 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--cor-texto-principal); /* Usa a cor de texto principal do tema */
+    transition: var(--transicao);
+}
+
+.faq-question:hover {
+    color: var(--cor-principal); /* Destaque rosa no hover */
+}
+
+.faq-answer {
+    padding: 0 25px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+    background-color: var(--cor-fundo);
+}
+
+.faq-answer p {
+    margin-bottom: 1.5rem;
+    color: var(--cor-texto-secundario); /* Usa a cor de texto secundária do tema */
+    line-height: 1.7;
+}
+
+.faq-item.active .faq-answer {
+    max-height: 300px;
+    padding: 20px 25px;
+}
+
+.faq-item.active .faq-question {
+    color: var(--cor-principal); /* Destaque rosa quando ativo */
+}
+
+.faq-question .icon {
+    transition: transform 0.3s ease-out;
+    color: var(--cor-texto-secundario);
+}
+
+.faq-item.active .faq-question .icon {
+    transform: rotate(180deg);
+    color: var(--cor-principal);
+}
+
+/* --- INÍCIO DA MODIFICAÇÃO (Tema Escuro) --- */
+/*
+  Garante que no tema escuro as fontes do parágrafo da resposta
+  sejam claras, herdando a variável correta, e que o fundo da resposta
+  também se adapte.
+*/
+html[data-theme="dark"] .faq-answer {
+    background-color: var(--cor-surface); /* Usa um fundo um pouco mais claro para contraste */
+}
+/* --- FIM DA MODIFICAÇÃO --- */

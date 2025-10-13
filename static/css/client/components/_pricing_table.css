@@ -1,0 +1,105 @@
+/* CLIENT COMPONENT: Pricing Table */
+
+.pricing-section {
+    margin-bottom: 2rem;
+}
+
+.pricing-section h3 {
+    color: var(--cor-principal);
+    margin-bottom: 1rem;
+    font-size: 1.2em;
+    font-weight: 700;
+}
+
+.pricing-table-wrapper {
+    overflow-x: auto; /* Garante que a tabela seja rolável em telas pequenas */
+}
+
+.pricing-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95em;
+}
+
+.pricing-table th,
+.pricing-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.pricing-table thead tr {
+    background-color: var(--cor-fundo); /* Usa a cor de fundo do tema */
+}
+
+.pricing-table th {
+    font-weight: 700;
+    color: var(--cor-texto-secundario);
+    text-transform: uppercase;
+    font-size: 0.8em;
+    letter-spacing: 0.5px;
+}
+
+.pricing-table td {
+    color: var(--cor-texto-secundario);
+}
+
+.pricing-table td.item-name {
+    font-weight: 600;
+    color: var(--cor-texto-principal);
+}
+
+.pricing-table .price,
+.pricing-table .deadline {
+    font-weight: 600;
+    color: var(--cor-texto-principal);
+}
+
+.pricing-table .price {
+    text-align: right;
+}
+
+.pricing-table .deadline {
+    text-align: center;
+}
+
+.extras-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.extras-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--cor-borda);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.extras-list li:last-child {
+    border-bottom: none;
+}
+
+.extras-list span:last-child {
+    font-weight: bold;
+    color: var(--cor-texto-principal);
+}
+
+.policy-box {
+    background-color: var(--cor-fundo);
+    padding: 1.5rem;
+    border-radius: var(--raio-borda);
+    border: 1px solid var(--cor-borda);
+}
+
+.policy-box h4 {
+    margin-top: 0;
+    color: var(--cor-principal);
+    margin-bottom: 0.5rem;
+}
+
+.policy-box p {
+    margin-bottom: 0;
+    font-size: 0.9em;
+    line-height: 1.6;
+    color: var(--cor-texto-secundario);
+}

@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Galeria de Arte | {{ super() }}{% endblock %}
+
+{% block content %}
+<main class="public-main">
+    <div class="container">
+        <div class="page-header">
+            <h1>{{ home_headline }}</h1>
+            <p>{{ home_subheadline }}</p>
+        </div>
+    </div>
+
+    <section id="galeria" style="padding: 4rem 0; background-color: rgba(0,0,0,0.02);">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 3rem; font-family: var(--font-heading);">Obras Recentes</h2>
+            
+            <div class="gallery-grid">
+                {% if arts %}
+                    {% for art in arts %}
+                    <div class="art-card {% if art.is_nsfw %}nsfw-blur{% endif %}" 
+                         data-img-src="{{ art.image_url }}" 
+                         data-title="{{ art.title }}" 
+                         data-description="{{ art.description or '' }}"
+                         data-nsfw="{{ 'true' if art.is_nsfw else 'false' }}"
+                         {% if art.lineart_artist_name %}data-lineart-artist="{{ art.lineart_artist_name }}"{% endif %}
+                         {% if art.color_artist_name %}data-color-artist="{{ art.color_artist_name }}"{% endif %}>
+                        
+                        <img src="{{ art.image_url }}" alt="{{ art.title }}" referrerpolicy="no-referrer" loading="lazy"
+                               onerror="this.onerror=null;this.src='https://placehold.co/400x300/ff0000/ffffff?text=Erro+ao+carregar';">
+                        
+                        {% if art.is_nsfw %}
+                        <div class="nsfw-overlay">
+                            <div class="nsfw-overlay-text">
+                                <i class="fas fa-exclamation-triangle" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                                <p>Conteúdo +18</p>
+                            </div>
+                        </div>
+                        <button class="nsfw-toggle-icon-btn" aria-label="Revelar ou ocultar conteúdo">
+                            <i class="fas fa-eye-slash"></i>
+                        </button>
+                        {% endif %}
+
+                        <div class="art-card-info">
+                            <h3>{{ art.title }}</h3>
+                            {% if art.description %}
+                                <p>{{ art.description | truncate(80) }}</p>
+                            {% endif %}
+
+                            {% if art.lineart_artist_name or art.color_artist_name %}
+                            <div class="art-card-credits">
+                                {# Macro reutilizável para renderizar os ícones sociais #}
+                                {% macro render_social_icons(social_links) %}
+                                    <div class="social-icons">
+                                        {% for link in social_links %}
+                                            {% set network_lower = link.network | lower %}
+                                            {% set icon_class = 'fas fa-link' %}
+                                            {% if 'instagram' in network_lower %}{% set icon_class = 'fab fa-instagram' %}{% endif %}
+                                            {% if 'twitter' in network_lower %}{% set icon_class = 'fab fa-twitter' %}{% endif %}
+                                            {% if 'artstation' in network_lower %}{% set icon_class = 'fab fa-artstation' %}{% endif %}
+                                            {% if 'behance' in network_lower %}{% set icon_class = 'fab fa-behance' %}{% endif %}
+                                            {% if 'facebook' in network_lower %}{% set icon_class = 'fab fa-facebook' %}{% endif %}
+                                            {# --- INÍCIO DA MODIFICAÇÃO --- #}
+                                            {% if 'whatsapp' in network_lower %}{% set icon_class = 'fab fa-whatsapp' %}{% endif %}
+                                            {% if 'telegram' in network_lower %}{% set icon_class = 'fab fa-telegram' %}{% endif %}
+                                            {% if 'ko-fi' in network_lower or 'kofi' in network_lower %}{% set icon_class = 'fas fa-coffee' %}{% endif %}
+                                            {# --- FIM DA MODIFICAÇÃO --- #}
+                                            <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" title="{{ link.network }}"><i class="{{ icon_class }}"></i></a>
+                                        {% endfor %}
+                                    </div>
+                                {% endmacro %}
+
+                                {# Lógica principal de exibição #}
+                                {% if art.lineart_artist_id and art.lineart_artist_id == art.color_artist_id %}
+                                    {# Caso 1: O mesmo artista para arte e cores #}
+                                    <div class="artist-credit-line">
+                                        <span>Arte e Cores por: <strong>{{ art.lineart_artist_name }}</strong></span>
+                                        {{ render_social_icons(art.lineart_artist_socials) }}
+                                    </div>
+                                {% else %}
+                                    {# Caso 2: Artistas diferentes ou apenas um artista definido #}
+                                    {% if art.lineart_artist_name %}
+                                        <div class="artist-credit-line">
+                                            <span>Arte por: <strong>{{ art.lineart_artist_name }}</strong></span>
+                                            {{ render_social_icons(art.lineart_artist_socials) }}
+                                        </div>
+                                    {% endif %}
+                                    {% if art.color_artist_name %}
+                                        <div class="artist-credit-line">
+                                            <span>Cores por: <strong>{{ art.color_artist_name }}</strong></span>
+                                            {{ render_social_icons(art.color_artist_socials) }}
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="text-align: center; color: var(--cor-texto-secundario); width: 100%;">Ainda não há artes na galeria. Volte em breve!</p>
+                {% endif %}
+            </div>
+
+        </div>
+    </section>
+</main>
+{% endblock %}

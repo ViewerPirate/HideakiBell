@@ -1,0 +1,30 @@
+<div class="modal modal-xl" id="orderDetailsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title" id="modal-title">Detalhes da Comissão</div>
+            <button class="close-modal">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+            <div id="modal-content-placeholder">
+                <div class="loading-overlay" style="display: flex; position: relative; background: none; min-height: 400px;">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <button class="btn btn-light close-modal">Fechar</button>
+            <button class="btn btn-primary" id="modal-save-button">Salvar Alterações</button>
+        </div>
+    </div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+</div>
+
+<div class="notification" id="notification">
+    <i class="fas fa-check-circle" id="notificationIcon"></i>
+    <span id="notificationMessage">Operação realizada com sucesso!</span>
+</div>
