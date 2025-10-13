@@ -100,8 +100,7 @@ function initializeStepperModal() {
     const btnPrev = document.getElementById('stepper-prev');
     const btnSubmit = document.getElementById('stepper-submit');
     const form = document.getElementById('stepper-order-form');
-
-    const state = { services: [], extras: [], artists: [], totalPrice: 0 };
+    const state = { services: [], extras: [], artists: [], totalPrice: 0, paymentSettings: {} };
     const steps = [
         { id: 'artist', label: 'Artista' },
         { id: 'details', label: 'Detalhes' },
@@ -115,26 +114,29 @@ function initializeStepperModal() {
         stepperContainer.innerHTML = steps.map((step, index) => `
             <div class="stepper-modal-step ${currentStepIndex === index ? 'active' : ''} ${completedSteps.has(index) ? 'completed' : ''}" data-index="${index}">
                 <div class="stepper-modal-step-number">${completedSteps.has(index) ? '<i class="fas fa-check"></i>' : index + 1}</div>
-                 <span class="stepper-modal-step-label">${step.label}</span>
+                <span class="stepper-modal-step-label">${step.label}</span>
             </div>`).join('');
     }
 
+    // --- INÍCIO DA MODIFICAÇÃO: Lógica de navegação e carregamento de dados ---
     async function navigateToStep(index) {
         if (index < 0 || index >= steps.length) return;
 
-        // Ao sair da etapa de Artista, carrega os serviços
+        // Validação ao avançar
+        if (index > currentStepIndex) {
+            if (!validateStep()) return;
+        }
+        
+        // Lógica de carregamento de dados ao sair do passo "Artista"
         if (steps[currentStepIndex].id === 'artist' && index > currentStepIndex) {
             const selectedArtistRadio = modal.querySelector('input[name="stepper-artist-selection"]:checked');
-            if (!selectedArtistRadio) return; // Não avança se ninguém for selecionado
+            const artistIds = JSON.parse(selectedArtistRadio.value);
             
             toggleLoading(true);
-            const artistIds = JSON.parse(selectedArtistRadio.value);
-            // Por simplicidade, se for colaboração (múltiplos IDs), busca os serviços do primeiro artista (que pode conter os preços de colaboração)
-            await loadServicesForArtist(artistIds[0]);
+            await loadServicesAndSettings(artistIds);
             toggleLoading(false);
         }
 
-        // Ao sair da etapa de Opções, renderiza o resumo
         if (steps[currentStepIndex].id === 'options' && index > currentStepIndex) {
             renderReviewSummary();
         }
@@ -147,6 +149,7 @@ function initializeStepperModal() {
         btnNext.style.display = index < steps.length - 1 ? 'inline-flex' : 'none';
         btnSubmit.style.display = index === steps.length - 1 ? 'inline-flex' : 'none';
     }
+    // --- FIM DA MODIFICAÇÃO ---
 
     function validateStep() {
         const currentStepId = steps[currentStepIndex].id;
@@ -167,41 +170,61 @@ function initializeStepperModal() {
         return true;
     }
 
-    async function loadServicesForArtist(artistId) {
+    // --- INÍCIO DA MODIFICAÇÃO: Nova função para carregar serviços e configurações ---
+    async function loadServicesAndSettings(artistIds) {
         try {
-            const response = await fetch(`/api/client/artist_services/${artistId}`);
-            if (!response.ok) throw new Error('Falha ao buscar serviços do artista.');
-            
-            const services = await response.json();
-            state.services = services;
-            
+            let data;
+            if (artistIds.length === 1) {
+                // Se for um único artista, busca os dados dele
+                const response = await fetch(`/api/client/artist_settings/${artistIds[0]}`);
+                if (!response.ok) throw new Error('Falha ao buscar configurações do artista.');
+                const artistData = await response.json();
+                data = {
+                    commission_types: artistData.services || [],
+                    commission_extras: artistData.settings.extras || [], // Supondo que extras possam ser individuais
+                    ...artistData.settings
+                };
+            } else {
+                // Se for colaboração, busca os dados globais (de "Configurações Gerais")
+                data = await window.fetchPricing();
+            }
+
+            state.services = data.commission_types || [];
+            state.extras = data.commission_extras || [];
+            state.paymentSettings = {
+                pix_key: data.pix_key,
+                paypal_email: data.paypal_email
+            };
+
             // Popula o dropdown de serviços (Tipo de Arte)
             const typeSelect = modal.querySelector(`#stepper-type`);
             typeSelect.innerHTML = '<option value="">Selecione o tipo de arte</option>';
-            services.forEach(service => {
+            state.services.forEach(service => {
+                const serviceName = service.service_name || service.name; // Compatibilidade
                 const priceF = parseFloat(service.price).toFixed(2).replace('.', ',');
-                const deadlineText = service.deadline_days ? `(${service.deadline_days} dias)` : '';
+                const deadlineText = (service.deadline_days || service.deadline) ? `(${(service.deadline_days || service.deadline)} dias)` : '';
                 const option = document.createElement('option');
-                option.value = service.service_name;
-                option.textContent = `${service.service_name} - R$ ${priceF} ${deadlineText}`;
+                option.value = serviceName;
+                option.textContent = `${serviceName} - R$ ${priceF} ${deadlineText}`;
                 
                 option.dataset.price = service.price;
-                option.dataset.deadline = service.deadline_days || 0;
+                option.dataset.deadline = service.deadline_days || service.deadline || 0;
                 typeSelect.appendChild(option);
             });
             
-            // Popula os extras (ainda vem das configurações globais, como fallback)
-            const globalSettings = await window.fetchPricing();
-            state.extras = globalSettings.commission_extras || [];
+            // Popula os extras
             const extrasSelect = modal.querySelector(`#stepper-extras`);
-            extrasSelect.innerHTML = '<option value="0.00" data-price="0">Nenhum extra</option>';
+            extrasSelect.innerHTML = '<option value="0" data-price="0">Nenhum extra</option>';
             state.extras.forEach(e => extrasSelect.innerHTML += `<option value="${e.price}" data-price="${e.price}">${e.name} - (+ R$ ${e.price.toFixed(2).replace('.',',')})</option>`);
+            
+            updatePrice(); // Atualiza o preço inicial
 
         } catch (error) {
             console.error(error);
-            showNotification('Não foi possível carregar os serviços deste artista.', 'error');
+            showNotification(error.message || 'Não foi possível carregar os serviços.', 'error');
         }
     }
+    // --- FIM DA MODIFICAÇÃO ---
 
     function updatePrice() {
         let total = 0;
@@ -258,14 +281,14 @@ function initializeStepperModal() {
                 </div>`).join('');
 
             if (artists.length > 1) {
-                // O valor aqui será um array JSON com todos os IDs
                 const allArtistIds = JSON.stringify(artists.map(a => a.id));
-                artistCardsHTML += `
+                artistCardsHTML = `
                     <div class="artist-card" data-artist-id="all">
                         <input type="radio" name="stepper-artist-selection" value='${allArtistIds}'>
                         <div class="stepper-modal-avatar-icon"><i class="fas fa-users"></i></div>
                         <div class="artist-name">Colaboração</div>
-                    </div>`;
+                    </div>
+                ` + artistCardsHTML;
             }
             artistContainer.innerHTML = artistCardsHTML;
             
@@ -310,7 +333,7 @@ function initializeStepperModal() {
     if(DOM.createFirstOrderBtn) DOM.createFirstOrderBtn.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
 
     modal.querySelector('.close-modal').addEventListener('click', () => hideModal(modal));
-    btnNext.addEventListener('click', () => { if (validateStep()) navigateToStep(currentStepIndex + 1); });
+    btnNext.addEventListener('click', () => navigateToStep(currentStepIndex + 1));
     btnPrev.addEventListener('click', () => navigateToStep(currentStepIndex - 1));
     form.addEventListener('submit', (e) => { e.preventDefault(); submitOrder(); });
     
@@ -322,7 +345,6 @@ function initializeStepperModal() {
         if (stepEl) {
             const index = parseInt(stepEl.dataset.index);
             if (completedSteps.has(index) || index < currentStepIndex) {
-                // Permite voltar, mas não pular etapas
                 navigateToStep(index);
             }
         }
@@ -393,7 +415,6 @@ async function init() {
         console.log("Página do Dashboard detectada. Carregando dados de pedidos e configurações...");
         toggleLoading(true);
         try {
-            // MODIFICAÇÃO: Carrega os artistas em paralelo com os outros dados
             const [orders, settings, artists] = await Promise.all([
                 window.fetchOrders(),
                 window.fetchPricing(),
@@ -402,7 +423,7 @@ async function init() {
             
             state.orders = orders;
             state.settings = settings; 
-            state.artists = artists; // Armazena os artistas no estado global
+            state.artists = artists;
             
             renderOrders();
             setupEventListeners();

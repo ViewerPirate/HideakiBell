@@ -59,19 +59,24 @@ def create_app():
 
             site_mode = settings.get('site_mode', 'individual')
 
+            # --- INÍCIO DA MODIFICAÇÃO: Lógica de carregamento de dados estritamente separada ---
             if site_mode == 'individual':
-                display_name = main_artist_profile.get('username') or settings.get('artist_name')
-                artist_avatar = main_artist_profile.get('artist_avatar') or settings.get('artist_avatar')
-                artist_bio = main_artist_profile.get('artist_bio') or settings.get('artist_bio')
-                links_json_str = main_artist_profile.get('social_links') or settings.get('social_links', '[]')
+                # No modo Individual, todos os dados vêm EXCLUSIVAMENTE das configurações gerais.
+                display_name = settings.get('artist_name', 'Nome do Artista')
+                artist_avatar = settings.get('artist_avatar') 
+                artist_bio = settings.get('artist_bio', '')
+                links_json_str = settings.get('social_links', '[]')
             else:
+                # No modo Estúdio, o nome é o do estúdio, e os links são os globais (para header/footer).
+                # Os dados de cada artista são carregados em suas respectivas páginas.
                 display_name = settings.get('studio_name', 'Nome do Estúdio')
                 artist_avatar = settings.get('artist_avatar')
                 artist_bio = settings.get('artist_bio')
                 links_json_str = settings.get('social_links', '[]')
+            # --- FIM DA MODIFICAÇÃO ---
             
             try:
-                social_links = json.loads(links_json_str) if links_json_str else []
+                social_links = json.loads(links_json_str) if links_json_str and links_json_str != '[]' else []
             except (json.JSONDecodeError, TypeError):
                 social_links = []
             
@@ -99,10 +104,6 @@ def create_app():
                         public_plugin_data[clean_key] = json.loads(row['value'])
                     except (json.JSONDecodeError, TypeError):
                         public_plugin_data[clean_key] = row['value']
-
-            # --- INÍCIO DA MODIFICAÇÃO: Bloco de código do plugin removido ---
-            # A lógica que buscava 'additional_contacts' e os adicionava a 'social_links' foi removida daqui.
-            # --- FIM DA MODIFICAÇÃO ---
 
             cursor.close()
             conn.close()

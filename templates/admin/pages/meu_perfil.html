@@ -12,7 +12,7 @@ Meu Perfil - Painel do Artista
     </div>
 
     <p style="color: var(--cor-texto-secundario); font-size: 0.9rem; margin-top: -1rem; margin-bottom: 1.5rem;">
-        As informações preenchidas aqui serão exibidas publicamente na sua página "Sobre" (no modo Estúdio) e na seleção de artistas para comissões.
+        As informações preenchidas aqui serão exibidas publicamente na sua página de artista e na seleção de comissões quando o site estiver no modo "Estúdio".
     </p>
 
     <div class="settings-wrapper">
@@ -56,13 +56,21 @@ Meu Perfil - Painel do Artista
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title" style="font-size: 1.2rem; font-weight: 600;">Conteúdo da Página "Sobre"</h3>
+                    <h3 class="card-title" style="font-size: 1.2rem; font-weight: 600;">Conteúdo da Página de Artista</h3>
                 </div>
                 <div class="form-group">
                     <label for="artist_bio">Biografia Principal</label>
                     <textarea id="artist_bio" name="artist_bio" class="form-input" rows="5"></textarea>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label for="artist_process">Meu Processo Criativo</label>
+                    <textarea id="artist_process" name="artist_process" class="form-input" rows="5"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="artist_inspirations">Minhas Inspirações</label>
+                    <textarea id="artist_inspirations" name="artist_inspirations" class="form-input" rows="5"></textarea>
+                </div>
+                </div>
 
             <div class="card">
                 <div class="card-header">
@@ -82,13 +90,35 @@ Meu Perfil - Painel do Artista
                     Defina os serviços que você oferece individualmente. Eles aparecerão para os clientes quando seu perfil for selecionado.
                 </p>
                 <div id="artist-services-container">
-                    </div>
+                </div>
                 <button type="button" id="add-artist-service-btn" class="btn btn-light" style="margin-top: 15px; width: 100%;">
                     <i class="fas fa-plus" style="margin-right: 8px;"></i> Adicionar Serviço
                 </button>
             </div>
 
-        </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title" style="font-size: 1.2rem; font-weight: 600;">Minhas Informações de Pagamento</h3>
+                </div>
+                <p style="color: var(--cor-texto-secundario); font-size: 0.9rem; margin-top: -1rem; margin-bottom: 1.5rem;">
+                    Configure os métodos de pagamento que serão usados para as suas comissões individuais.
+                </p>
+                <div class="settings-grid">
+                    <div class="form-group">
+                        <label for="profile_pix_key">Sua Chave PIX</label>
+                        <input type="text" id="profile_pix_key" name="profile_pix_key" class="form-input" placeholder="Seu CPF, e-mail, telefone...">
+                    </div>
+                    <div class="form-group">
+                        <label for="profile_payment_currency_code">Código da Moeda (Ex: BRL, USD)</label>
+                        <input type="text" id="profile_payment_currency_code" name="profile_payment_currency_code" class="form-input" placeholder="BRL">
+                    </div>
+                    <div class="form-group">
+                        <label for="profile_paypal_email">Seu E-mail da Conta PayPal</label>
+                        <input type="text" id="profile_paypal_email" name="profile_paypal_email" class="form-input" placeholder="seu-email@paypal.com">
+                    </div>
+                </div>
+            </div>
+            </div>
     </div>
 </form>
 
@@ -127,7 +157,7 @@ Meu Perfil - Painel do Artista
                 </div>
             </div>
             <div class="service-phases-list">
-                </div>
+            </div>
             <button type="button" class="btn btn-sm btn-light add-service-phase-btn" style="width: 100%; margin-top: 10px;">
                 <i class="fas fa-plus"></i> Adicionar Fase
             </button>
@@ -149,7 +179,6 @@ Meu Perfil - Painel do Artista
         <button type="button" class="btn btn-sm btn-danger remove-phase-btn" title="Remover Fase">&times;</button>
     </div>
 </template>
-
 {% endblock %}
 
 {% block scripts %}

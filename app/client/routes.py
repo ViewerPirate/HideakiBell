@@ -158,8 +158,6 @@ def client_get_pricing():
     is_postgres = hasattr(conn, 'cursor_factory')
     placeholder = '%s' if is_postgres else '?'
     
-    # --- INÍCIO DA CORREÇÃO ---
-    # Busca todas as chaves de configuração necessárias de uma vez
     keys_to_fetch = [
         'commission_types', 'commission_extras', 'refund_policy', 'default_phases', 
         'revision_alert_text', 'pix_key', 'paypal_email', 'payment_currency_code', 
@@ -171,11 +169,9 @@ def client_get_pricing():
     settings_db = cursor.fetchall()
     settings = {row['key']: row['value'] for row in settings_db}
 
-    # Lógica para unificar os contatos (similar a __init__.py)
     final_social_links = []
     site_mode = settings.get('site_mode', 'individual')
     
-    # 1. Pega os links do perfil do artista principal (se modo individual)
     if site_mode == 'individual':
         cursor.execute('SELECT social_links FROM users WHERE is_admin = TRUE ORDER BY id ASC LIMIT 1')
         main_artist = cursor.fetchone()
@@ -188,7 +184,6 @@ def client_get_pricing():
     except (json.JSONDecodeError, TypeError):
         final_social_links = []
         
-    # 2. Pega os links do plugin de contatos adicionais
     cursor.execute(f"SELECT value FROM plugin_data WHERE user_id = (SELECT id FROM users WHERE is_admin = TRUE ORDER BY id ASC LIMIT 1) AND key = 'public_additional_contacts'")
     plugin_data_row = cursor.fetchone()
     if plugin_data_row and plugin_data_row['value']:
@@ -197,9 +192,8 @@ def client_get_pricing():
             if isinstance(additional_contacts, list):
                 final_social_links.extend(additional_contacts)
         except (json.JSONDecodeError, TypeError):
-            pass # Ignora se os dados do plugin estiverem mal formatados
+            pass
 
-    # Monta a resposta final
     response_data = {
         'commission_types': json.loads(settings.get('commission_types', '[]')),
         'commission_extras': json.loads(settings.get('commission_extras', '[]')),
@@ -209,10 +203,9 @@ def client_get_pricing():
         'paypal_email': settings.get('paypal_email'),
         'payment_currency_code': settings.get('payment_currency_code'),
         'paypal_hosted_button_id': settings.get('paypal_hosted_button_id'),
-        'support_contacts': json.loads(settings.get('support_contacts', '[]')), # Mantido por compatibilidade
-        'social_links': final_social_links # A nova lista unificada
+        'support_contacts': json.loads(settings.get('support_contacts', '[]')),
+        'social_links': final_social_links
     }
-    # --- FIM DA CORREÇÃO ---
     
     cursor.close()
     conn.close()
@@ -274,7 +267,8 @@ def client_create_commission():
         initial_event = [{"timestamp": datetime.now().isoformat(), "actor": "Cliente", "message": "Pedido criado. Aguardando pagamento."}]
         
         query_insert = f"""
-            INSERT INTO comissoes (id, client, type, date, deadline, price, status, description, preview, comments, 
+            INSERT INTO comissoes (id, client, type, date, deadline, price, 
+            status, description, preview, comments, 
             client_id, phases, current_phase_index, revisions_used, event_log, payment_status, assigned_artist_ids) 
             VALUES ({placeholder}, {placeholder}, {placeholder}, {placeholder}, {placeholder}, {placeholder}, {placeholder}, {placeholder}, {placeholder}, {placeholder}, {placeholder}, {placeholder}, {placeholder}, {placeholder}, {placeholder}, {placeholder}, {placeholder})
         """
@@ -583,3 +577,58 @@ def mark_commission_notifications_as_read(commission_id):
         conn.close()
 
 from . import api_account_routes
+
+# --- INÍCIO DA MODIFICAÇÃO: Nova rota para buscar configurações do artista ---
+@client_bp.route('/api/client/artist_settings/<int:artist_id>')
+@login_required
+def get_artist_settings(artist_id):
+    """
+    Busca todas as configurações públicas de um artista, incluindo serviços e pagamentos.
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    is_postgres = hasattr(conn, 'cursor_factory')
+    placeholder = '%s' if is_postgres else '?'
+    
+    try:
+        # 1. Buscar os serviços do artista
+        query_services = f"SELECT * FROM artist_services WHERE artist_id = {placeholder} AND is_active = TRUE"
+        cursor.execute(query_services, (artist_id,))
+        services_db = cursor.fetchall()
+        
+        services_list = []
+        for row in services_db:
+            service = dict(row)
+            try:
+                service['phases'] = json.loads(service['phases']) if service['phases'] else []
+            except (json.JSONDecodeError, TypeError):
+                service['phases'] = []
+            services_list.append(service)
+
+        # 2. Buscar as configurações adicionais (pagamentos, etc.)
+        query_settings = f"SELECT value FROM plugin_data WHERE plugin_id = 'artist_profile_settings' AND key = 'all_settings' AND user_id = {placeholder}"
+        cursor.execute(query_settings, (artist_id,))
+        settings_row = cursor.fetchone()
+
+        artist_settings = {}
+        if settings_row and settings_row['value']:
+            try:
+                artist_settings = json.loads(settings_row['value'])
+            except (json.JSONDecodeError, TypeError):
+                artist_settings = {}
+
+        # 3. Montar a resposta final
+        response_data = {
+            'services': services_list,
+            'settings': artist_settings
+        }
+        
+        return jsonify(response_data)
+
+    except Exception as e:
+        print(f"Erro ao buscar configurações do artista {artist_id}: {e}")
+        return jsonify({'success': False, 'message': 'Erro no servidor.'}), 500
+    finally:
+        cursor.close()
+        conn.close()
+# --- FIM DA MODIFICAÇÃO ---

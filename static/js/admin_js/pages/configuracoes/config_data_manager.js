@@ -16,18 +16,16 @@ async function loadAndPopulateSettings() {
             throw new Error("Os dados de configuração não foram recebidos.");
         }
 
-        // --- INÍCIO DA MODIFICAÇÃO: Campos de perfil de artista foram removidos ---
-        // Preenche os novos campos de modo do site
+        // Preenche os campos de modo do site
         if (settings.site_mode === 'studio') {
             document.getElementById('mode_studio').checked = true;
         } else {
             document.getElementById('mode_individual').checked = true;
         }
         document.getElementById('studio_name').value = settings.studio_name || '';
-        // Dispara o evento 'change' para que o script no HTML atualize a UI
         document.getElementById('mode_studio').dispatchEvent(new Event('change'));
 
-        // Preenche os campos de texto e inputs simples que restaram
+        // Preenche os campos de texto e inputs simples
         document.getElementById('artist_name').value = settings.artist_name || '';
         document.getElementById('artist_email').value = settings.artist_email || '';
         document.getElementById('artist_location').value = settings.artist_location || '';
@@ -45,23 +43,30 @@ async function loadAndPopulateSettings() {
         document.getElementById('TELEGRAM_CHAT_ID').value = settings.TELEGRAM_CHAT_ID || '';
         document.getElementById('TELEGRAM_TEMPLATE_CONTACT').value = settings.TELEGRAM_TEMPLATE_CONTACT || '';
         
-        // As lógicas para carregar avatar, bio, especialidades, etc., foram removidas.
+        // --- INÍCIO DA MODIFICAÇÃO: Campos da página "Sobre" adicionados ---
+        document.getElementById('artist_bio').value = settings.artist_bio || '';
+        document.getElementById('artist_process').value = settings.artist_process || '';
+        document.getElementById('artist_inspirations').value = settings.artist_inspirations || '';
+        // --- FIM DA MODIFICAÇÃO ---
         
-        // Usa as funções do módulo de UI para criar os elementos dinâmicos restantes
+        // Usa as funções do módulo de UI para criar os elementos dinâmicos
         if (settings.commission_types && Array.isArray(settings.commission_types)) {
             settings.commission_types.forEach(data => window.settingsUI.createCommissionTypeElement(data));
         }
         if (settings.commission_extras && Array.isArray(settings.commission_extras)) {
             settings.commission_extras.forEach(data => window.settingsUI.createExtraElement(data));
         }
+        // --- INÍCIO DA MODIFICAÇÃO: Carrega as redes sociais ---
+        if (settings.social_links && Array.isArray(settings.social_links)) {
+            settings.social_links.forEach(data => window.settingsUI.createSocialElement(data));
+        }
+        // --- FIM DA MODIFICAÇÃO ---
         if (settings.support_contacts && Array.isArray(settings.support_contacts)) {
             settings.support_contacts.forEach(data => window.settingsUI.createSupportContactElement(data));
         }
         if (faqs && Array.isArray(faqs)) {
             faqs.forEach(data => window.settingsUI.createFaqElement(data));
         }
-        // A lógica para popular as redes sociais foi removida.
-        // --- FIM DA MODIFICAÇÃO ---
 
     } catch (error) {
         console.error("Erro ao carregar configurações:", error);
@@ -78,7 +83,6 @@ function initializeFormSaver(form) {
         e.preventDefault();
         console.log("Coletando dados do formulário para salvar...");
 
-        // --- INÍCIO DA MODIFICAÇÃO: Campos de perfil de artista foram removidos do objeto de salvamento ---
         const settingsData = {
             'site_mode': document.querySelector('input[name="site_mode"]:checked').value,
             'studio_name': document.getElementById('studio_name').value,
@@ -98,11 +102,25 @@ function initializeFormSaver(form) {
             'TELEGRAM_BOT_TOKEN': document.getElementById('TELEGRAM_BOT_TOKEN').value,
             'TELEGRAM_CHAT_ID': document.getElementById('TELEGRAM_CHAT_ID').value,
             'TELEGRAM_TEMPLATE_CONTACT': document.getElementById('TELEGRAM_TEMPLATE_CONTACT').value,
-            'commission_types': [], 'commission_extras': [], 'support_contacts': []
-            // A chave 'social_links' foi removida daqui.
+            // --- INÍCIO DA MODIFICAÇÃO: Campos de "Sobre" e "Redes Sociais" adicionados ao salvamento ---
+            'artist_bio': document.getElementById('artist_bio').value,
+            'artist_process': document.getElementById('artist_process').value,
+            'artist_inspirations': document.getElementById('artist_inspirations').value,
+            'social_links': [],
+            // --- FIM DA MODIFICAÇÃO ---
+            'commission_types': [], 
+            'commission_extras': [], 
+            'support_contacts': []
         };
-
-        // A coleta de dados de perfil (avatar, bio, especialidades, etc.) foi removida.
+        
+        // --- INÍCIO DA MODIFICAÇÃO: Coleta os dados das redes sociais ---
+        document.querySelectorAll('#social-links-container .social-link-item').forEach(item => {
+            const network = item.querySelector('.network-input').value.trim();
+            const url = item.querySelector('.url-input').value.trim();
+            if (network && url) {
+                settingsData.social_links.push({ network, url });
+            }
+        });
         // --- FIM DA MODIFICAÇÃO ---
 
         document.querySelectorAll('#commission-types-container .commission-type-item-wrapper').forEach(wrapper => {

@@ -14,11 +14,12 @@ function initializeUIHandlers() {
     const addExtraBtn = document.getElementById('add-extra-btn');
     const extraTemplate = document.getElementById('commission-extra-template');
 
+    // --- INÍCIO DA MODIFICAÇÃO: Novas referências para redes sociais ---
     const socialLinksContainer = document.getElementById('social-links-container');
     const addSocialBtn = document.getElementById('add-social-btn');
     const socialTemplate = document.getElementById('social-link-template');
+    // --- FIM DA MODIFICAÇÃO ---
 
-    // --- INÍCIO DA MODIFICAÇÃO (Novas referências) ---
     const contactsContainer = document.getElementById('support-contacts-container');
     const addContactBtn = document.getElementById('add-contact-btn');
     const contactTemplate = document.getElementById('support-contact-template');
@@ -26,18 +27,30 @@ function initializeUIHandlers() {
     const faqContainer = document.getElementById('faq-container');
     const addFaqBtn = document.getElementById('add-faq-btn');
     const faqTemplate = document.getElementById('faq-template');
-    // --- FIM DA MODIFICAÇÃO ---
 
+    // --- INÍCIO DA MODIFICAÇÃO: Adicionada a lista de redes sociais ---
     const SUPPORTED_SOCIAL_NETWORKS = [
-        { name: 'Instagram', icon: 'fab fa-instagram' }, { name: 'Twitter', icon: 'fab fa-twitter' },
-        { name: 'ArtStation', icon: 'fab fa-artstation' }, { name: 'Facebook', icon: 'fab fa-facebook' },
-        { name: 'Behance', icon: 'fab fa-behance' }, { name: 'LinkedIn', icon: 'fab fa-linkedin' },
-        { name: 'Pinterest', icon: 'fab fa-pinterest' }, { name: 'YouTube', icon: 'fab fa-youtube' },
-        { name: 'Website', icon: 'fas fa-globe' }, { name: 'Outro', icon: 'fas fa-link' }
+        { name: 'Instagram', icon: 'fab fa-instagram' },
+        { name: 'Twitter', icon: 'fab fa-twitter' },
+        { name: 'ArtStation', icon: 'fab fa-artstation' },
+        { name: 'Facebook', icon: 'fab fa-facebook' },
+        { name: 'Behance', icon: 'fab fa-behance' },
+        { name: 'Discord', icon: 'fab fa-discord' },
+        { name: 'Email', icon: 'fas fa-envelope' },
+        { name: 'LinkedIn', icon: 'fab fa-linkedin' },
+        { name: 'Pinterest', icon: 'fab fa-pinterest' },
+        { name: 'YouTube', icon: 'fab fa-youtube' },
+        { name: 'Website', icon: 'fas fa-globe' },
+        { name: 'WhatsApp', icon: 'fab fa-whatsapp' },
+        { name: 'Telegram', icon: 'fab fa-telegram' },
+        { name: 'Ko-fi', icon: 'fas fa-coffee' },
+        { name: 'Outro', icon: 'fas fa-link' }
     ];
+    // --- FIM DA MODIFICAÇÃO ---
 
     // --- 2. Funções de Criação de Elementos ---
 
+    // --- INÍCIO DA MODIFICAÇÃO: Adicionadas funções para redes sociais ---
     function updateSocialIcon(selectElement) {
         const selectedNetworkName = selectElement.value;
         const iconElement = selectElement.closest('.social-link-item').querySelector('.social-icon-display i');
@@ -69,6 +82,7 @@ function initializeUIHandlers() {
         socialLinksContainer.appendChild(clone);
         updateSocialIcon(select);
     }
+    // --- FIM DA MODIFICAÇÃO ---
 
     function createExtraElement(data = {}) {
         const clone = extraTemplate.content.cloneNode(true);
@@ -105,7 +119,6 @@ function initializeUIHandlers() {
         typesContainer.appendChild(clone);
     }
 
-    // --- INÍCIO DA MODIFICAÇÃO (Novas Funções de Criação) ---
     function createSupportContactElement(data = {}) {
         const clone = contactTemplate.content.cloneNode(true);
         const item = clone.querySelector('.commission-type-item');
@@ -118,7 +131,6 @@ function initializeUIHandlers() {
     function createFaqElement(data = {}) {
         const clone = faqTemplate.content.cloneNode(true);
         const wrapper = clone.querySelector('.commission-type-item-wrapper');
-        // Adiciona um ID único para futuras manipulações (como salvar)
         if (data.id) {
             wrapper.dataset.id = data.id;
         }
@@ -131,18 +143,18 @@ function initializeUIHandlers() {
         });
         faqContainer.appendChild(clone);
     }
-    // --- FIM DA MODIFICAÇÃO ---
 
     // --- 3. Anexando os Event Listeners ---
 
     if(addTypeBtn) addTypeBtn.addEventListener('click', () => createCommissionTypeElement());
     if(addExtraBtn) addExtraBtn.addEventListener('click', () => createExtraElement());
+    
+    // --- INÍCIO DA MODIFICAÇÃO: Ativa o novo botão de redes sociais ---
     if(addSocialBtn) addSocialBtn.addEventListener('click', () => createSocialElement());
+    // --- FIM DA MODIFICAÇÃO ---
 
-    // --- INÍCIO DA MODIFICAÇÃO (Novos Listeners) ---
     if(addContactBtn) addContactBtn.addEventListener('click', () => createSupportContactElement());
     if(addFaqBtn) addFaqBtn.addEventListener('click', () => createFaqElement());
-    // --- FIM DA MODIFICAÇÃO ---
 
 
     if(typesContainer) typesContainer.addEventListener('click', (e) => {
@@ -165,10 +177,10 @@ function initializeUIHandlers() {
     window.settingsUI = {
         createCommissionTypeElement,
         createExtraElement,
+        // --- INÍCIO DA MODIFICAÇÃO: Expõe a nova função ---
         createSocialElement,
-        // --- INÍCIO DA MODIFICAÇÃO (Novas Funções Expostas) ---
+        // --- FIM DA MODIFICAÇÃO ---
         createSupportContactElement,
         createFaqElement
-        // --- FIM DA MODIFICAÇÃO ---
     };
 }

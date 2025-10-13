@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const avatarInput = document.getElementById('artist_avatar');
     const avatarPreview = document.getElementById('avatar-preview');
 
-    // --- INÍCIO DA MODIFICAÇÃO: Novas redes adicionadas à lista ---
     const SUPPORTED_SOCIAL_NETWORKS = [
         { name: 'Instagram', icon: 'fab fa-instagram' },
         { name: 'Twitter', icon: 'fab fa-twitter' },
@@ -38,9 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Ko-fi', icon: 'fas fa-coffee' },
         { name: 'Outro', icon: 'fas fa-link' }
     ];
-    // --- FIM DA MODIFICAÇÃO ---
 
-    // --- API Funções ---
+    // --- INÍCIO DA MODIFICAÇÃO: API expandida para dados de configuração individuais ---
     const api = {
         async getProfile() {
             const response = await fetch('/admin/api/profile');
@@ -67,12 +65,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(servicesData)
             });
             return response.json();
+        },
+        // Novas funções para salvar e carregar dados genéricos do artista (pagamentos, textos, etc.)
+        async getArtistSettings() {
+            // Usamos um "plugin_id" genérico para agrupar as configurações do perfil
+            const response = await fetch(`/admin/api/plugin_data/artist_profile_settings/all_settings`);
+            if (!response.ok) return { success: true, value: {} }; // Retorna objeto vazio se não houver dados
+            const data = await response.json();
+            return data.value || {};
+        },
+        async saveArtistSettings(settingsData) {
+            const response = await fetch('/admin/api/plugin_data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    plugin_id: 'artist_profile_settings',
+                    key: 'all_settings',
+                    value: settingsData
+                })
+            });
+            return response.json();
         }
     };
+    // --- FIM DA MODIFICAÇÃO ---
 
-    // --- Funções de UI ---
+    // --- Funções de UI (sem alterações na lógica interna) ---
 
-    // UI para Contatos
     function updateSocialIcon(selectElement) {
         const selectedNetworkName = selectElement.value;
         const iconElement = selectElement.closest('.social-link-item').querySelector('.social-icon-display i');
@@ -105,7 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSocialIcon(select);
     }
 
-    // UI para Serviços
     function createPhaseElement(data = {}, container) {
         const clone = phaseTemplate.content.cloneNode(true);
         const phaseItem = clone.querySelector('.phase-item');
@@ -140,9 +157,9 @@ document.addEventListener('DOMContentLoaded', () => {
         servicesContainer.appendChild(clone);
     }
 
-    // Funções de preenchimento e salvamento
-    function populateForm(profileData, servicesData) {
-        // Popula perfil principal
+    // --- INÍCIO DA MODIFICAÇÃO: Função de preenchimento expandida ---
+    function populateForm(profileData, servicesData, artistSettings) {
+        // Popula perfil principal (tabela 'users')
         profileForm.querySelector('#artist_name').value = profileData.artist_name || '';
         profileForm.querySelector('#artist_avatar').value = profileData.artist_avatar || '';
         profileForm.querySelector('#artist_portfolio_description').value = profileData.artist_portfolio_description || '';
@@ -151,15 +168,24 @@ document.addEventListener('DOMContentLoaded', () => {
         profileForm.querySelector('#artist_bio').value = profileData.artist_bio || '';
         avatarPreview.src = profileData.artist_avatar || 'https://placehold.co/150x150/1e1e1e/ffffff?text=Preview';
 
-        // Popula contatos
+        // Popula contatos (tabela 'users', coluna 'social_links')
         socialLinksContainer.innerHTML = '';
         (profileData.social_links || []).forEach(link => createSocialElement(link));
 
-        // Popula serviços
+        // Popula serviços (tabela 'artist_services')
         servicesContainer.innerHTML = '';
         (servicesData || []).forEach(service => createServiceElement(service));
+        
+        // Popula configurações adicionais (salvas de forma genérica)
+        profileForm.querySelector('#artist_process').value = artistSettings.artist_process || '';
+        profileForm.querySelector('#artist_inspirations').value = artistSettings.artist_inspirations || '';
+        profileForm.querySelector('#profile_pix_key').value = artistSettings.pix_key || '';
+        profileForm.querySelector('#profile_payment_currency_code').value = artistSettings.payment_currency_code || 'BRL';
+        profileForm.querySelector('#profile_paypal_email').value = artistSettings.paypal_email || '';
     }
+    // --- FIM DA MODIFICAÇÃO ---
 
+    // --- INÍCIO DA MODIFICAÇÃO: Função de salvamento reescrita ---
     async function handleFormSubmit(event) {
         event.preventDefault();
         const saveButton = profileForm.querySelector('button[type="submit"]');
@@ -167,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveButton.disabled = true;
         saveButton.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Salvando...`;
 
-        // Coleta dados do perfil
+        // 1. Coleta dados do Perfil Principal (para tabela 'users')
         const specialtiesInput = profileForm.querySelector('#artist_specialties').value.trim();
         const socialLinks = Array.from(socialLinksContainer.querySelectorAll('.social-link-item')).map(item => ({
             network: item.querySelector('.network-input').value,
@@ -184,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
             social_links: socialLinks,
         };
 
-        // Coleta dados dos serviços
+        // 2. Coleta dados dos Serviços (para tabela 'artist_services')
         const servicesDataToSave = Array.from(servicesContainer.querySelectorAll('.commission-type-item-wrapper')).map(wrapper => {
             const phases = Array.from(wrapper.querySelectorAll('.phase-item')).map(phaseRow => ({
                 name: phaseRow.querySelector('.phase-name').value.trim(),
@@ -199,17 +225,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 is_active: wrapper.querySelector('.service-is-active').checked,
                 phases: phases
             };
-        }).filter(svc => svc.service_name); // Salva apenas se tiver nome
+        }).filter(svc => svc.service_name);
 
-        // Envia ambos para a API em paralelo
+        // 3. Coleta dados de Configurações Adicionais (para armazenamento genérico)
+        const artistSettingsToSave = {
+            artist_process: profileForm.querySelector('#artist_process').value.trim(),
+            artist_inspirations: profileForm.querySelector('#artist_inspirations').value.trim(),
+            pix_key: profileForm.querySelector('#profile_pix_key').value.trim(),
+            payment_currency_code: profileForm.querySelector('#profile_payment_currency_code').value.trim(),
+            paypal_email: profileForm.querySelector('#profile_paypal_email').value.trim(),
+        };
+
+        // Envia todas as requisições em paralelo
         try {
-            const [profileResult, servicesResult] = await Promise.all([
+            const [profileResult, servicesResult, settingsResult] = await Promise.all([
                 api.saveProfile(profileDataToSave),
-                api.syncProfileServices(servicesDataToSave)
+                api.syncProfileServices(servicesDataToSave),
+                api.saveArtistSettings(artistSettingsToSave)
             ]);
 
-            if (profileResult.success && servicesResult.success) {
-                showNotification('Perfil e serviços salvos com sucesso!', 'success');
+            if (profileResult.success && servicesResult.success && settingsResult.success) {
+                showNotification('Perfil salvo com sucesso!', 'success');
                 // Atualiza o menu do header
                 const body = document.body;
                 body.dataset.username = profileDataToSave.artist_name;
@@ -218,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     buildUnifiedHeader();
                 }
             } else {
-                throw new Error(profileResult.message || servicesResult.message || 'Erro desconhecido');
+                throw new Error(profileResult.message || servicesResult.message || settingsResult.message || 'Erro desconhecido ao salvar.');
             }
         } catch (error) {
             showNotification(error.message, 'error');
@@ -227,15 +263,17 @@ document.addEventListener('DOMContentLoaded', () => {
             saveButton.innerHTML = originalButtonHTML;
         }
     }
+    // --- FIM DA MODIFICAÇÃO ---
 
-    // --- Inicialização ---
+    // --- INÍCIO DA MODIFICAÇÃO: Função de inicialização expandida ---
     async function init() {
         try {
-            const [profileData, servicesData] = await Promise.all([
+            const [profileData, servicesData, artistSettings] = await Promise.all([
                 api.getProfile(),
-                api.getProfileServices()
+                api.getProfileServices(),
+                api.getArtistSettings()
             ]);
-            populateForm(profileData, servicesData);
+            populateForm(profileData, servicesData, artistSettings);
         } catch (error) {
             showNotification(error.message, 'error');
         }
@@ -254,6 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
             avatarPreview.src = 'https://placehold.co/150x150/ff0000/ffffff?text=Inválido';
         };
     }
+    // --- FIM DA MODIFICAÇÃO ---
 
     init();
 });
