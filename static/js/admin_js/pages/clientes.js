@@ -145,18 +145,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const newUsername = document.getElementById('manage-client-username').value;
             const newPassword = document.getElementById('manage-client-password').value;
             
-            const dataToUpdate = { username: newUsername };
+            const dataToUpdate = {};
+            if (newUsername) {
+                dataToUpdate.username = newUsername;
+            }
             if (newPassword) {
                 dataToUpdate.password = newPassword;
             }
             
-            const result = await updateClientDetails(clientId, dataToUpdate);
-            if (result.success) {
-                showNotification('Dados do cliente salvos!', 'success');
-                modal.style.display = 'none';
-                initializeCRM();
-            } else {
-                showNotification(result.message || 'Erro ao salvar dados.', 'error');
+            // Só envia a requisição se houver algo para atualizar
+            if (Object.keys(dataToUpdate).length > 0) {
+                const result = await updateClientDetails(clientId, dataToUpdate);
+                if (result.success) {
+                    showNotification('Dados do cliente salvos!', 'success');
+                } else {
+                    showNotification(result.message || 'Erro ao salvar dados.', 'error');
+                }
             }
         });
         
@@ -189,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (result.success) {
                     showNotification(result.message, 'success');
                     modal.style.display = 'none';
-                    initializeCRM();
+                    initializeCRM(); // Refresh table
                 } else {
                     showNotification(result.message, 'error');
                 }
