@@ -74,13 +74,15 @@
 
         <div class="about-content">
             <div class="about-avatar">
-                <img src="{{ main_artist_profile.artist_avatar or artist_avatar }}" 
-                     alt="Avatar de {{ main_artist_profile.username or artist_name }}" 
+                {# --- INÍCIO DA MODIFICAÇÃO: Usa a variável global 'artist_avatar' --- #}
+                <img src="{{ artist_avatar }}" 
+                     alt="Avatar de {{ artist_name }}" 
                      referrerpolicy="no-referrer"
                      onerror="this.onerror=null;this.src='https://placehold.co/400x400/374151/ffffff?text=Avatar';">
             </div>
             <div class="about-text">
-                <p>{{ main_artist_profile.artist_bio or artist_bio }}</p>
+                {# --- Usa a variável global 'artist_bio' --- #}
+                <p>{{ artist_bio }}</p>
                 
                 <h2>Meu Processo Criativo</h2>
                 <p>{{ artist_process }}</p>
@@ -92,7 +94,6 @@
                 <div class="social-links">
                     <h3>Siga-me</h3>
                     <ul class="social-icon-list">
-                        {# --- INÍCIO DA MODIFICAÇÃO: Lógica de ícones simplificada --- #}
                         {% for link in social_links %}
                             <li>
                                 <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" title="{{ link.network }}">
@@ -100,16 +101,17 @@
                                 </a>
                             </li>
                         {% endfor %}
-                        {# --- FIM DA MODIFICAÇÃO --- #}
                     </ul>
                 </div>
                 {% endif %}
                 <div style="margin-top: 2.5rem;">
-                    <a href="{{ url_for('public.comissoes_artista', username=main_artist_profile.username) }}" class="cta-button">
+                    {# --- Usa a variável global 'artist_name' para o link --- #}
+                    <a href="{{ url_for('public.comissoes_artista', username=artist_name) }}" class="cta-button">
                         <i class="fas fa-tags"></i> Ver Comissões e Preços
                     </a>
                 </div>
             </div>
+            {# --- FIM DA MODIFICAÇÃO --- #}
         </div>
     </div>
 </main>

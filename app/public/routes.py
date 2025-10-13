@@ -90,6 +90,7 @@ def artistas():
 
             artists.append(artist_dict)
     else:
+        # Se o modo for individual, redireciona para a página "Sobre" que é a correta.
         return redirect(url_for('public.sobre'))
 
     cursor.close()
@@ -100,35 +101,19 @@ def artistas():
                            main_artist_profile=main_artist_profile,
                            settings=settings)
 
+# --- INÍCIO DA MODIFICAÇÃO: Rota 'sobre' simplificada ---
 @public_bp.route('/sobre')
 def sobre():
-    """ Rota 'Sobre' para o modo individual. """
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    cursor.execute('SELECT key, value FROM settings')
-    settings_db = cursor.fetchall()
-    settings = {row['key']: row['value'] for row in settings_db}
-
-    cursor.execute('SELECT * FROM users WHERE id = 1')
-    main_artist_db = cursor.fetchone()
-    main_artist_profile = None
-    if main_artist_db:
-        main_artist_profile = dict(main_artist_db)
-        try:
-            main_artist_profile['social_links'] = json.loads(main_artist_profile['social_links']) if main_artist_profile['social_links'] else []
-        except (json.JSONDecodeError, TypeError):
-            main_artist_profile['social_links'] = []
-    
-    cursor.close()
-    conn.close()
-
-    return render_template('sobre.html', 
-                           main_artist_profile=main_artist_profile,
-                           settings=settings)
+    """ 
+    Renderiza a página 'Sobre'. 
+    Removemos toda a busca de dados daqui. A página agora depende 100% das 
+    variáveis globais injetadas pelo context_processor em app/__init__.py,
+    que já respeita a lógica do "modo do site".
+    """
+    return render_template('sobre.html')
+# --- FIM DA MODIFICAÇÃO ---
 
 
-# --- INÍCIO DA MODIFICAÇÃO: Nova rota para comissões do artista ---
 @public_bp.route('/artista/<string:username>/comissoes')
 def comissoes_artista(username):
     conn = get_db_connection()
@@ -166,7 +151,6 @@ def comissoes_artista(username):
 
     # 4. Renderiza um novo template com os dados do artista e seus serviços
     return render_template('comissoes_artista.html', artist=artist, services=services)
-# --- FIM DA MODIFICAÇÃO ---
 
 
 @public_bp.route('/contato')
