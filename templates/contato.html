@@ -20,33 +20,6 @@
     .contact-info h2 { font-size: 1.8em; margin-bottom: 1rem; }
     .contact-info p { color: var(--cor-texto-secundario); margin-bottom: 2rem; }
     .form-textarea { min-height: 120px; resize: vertical; }
-
-    .social-links {
-        margin-top: 2rem;
-        padding-top: 2rem;
-        border-top: 1px solid var(--cor-borda);
-    }
-    .social-links h3 {
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
-        color: var(--cor-texto-secundario);
-        font-weight: 600;
-    }
-    .social-icon-list {
-        display: flex;
-        gap: 1.5rem;
-        list-style: none;
-        padding: 0;
-    }
-    .social-icon-list a {
-        color: var(--cor-texto-secundario);
-        font-size: 1.8rem;
-        transition: var(--transicao);
-    }
-    .social-icon-list a:hover {
-        color: var(--cor-principal);
-        transform: scale(1.2);
-    }
 </style>
 <main class="public-main">
     <div class="container">
@@ -71,9 +44,7 @@
                         {% for link in social_links %}
                             <li>
                                 <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" title="{{ link.network }}">
-                                    {# --- INÍCIO DA CORREÇÃO: Lógica de ícones simplificada --- #}
                                     <i class="{{ link.network | social_icon }}"></i>
-                                    {# --- FIM DA CORREÇÃO --- #}
                                 </a>
                             </li>
                         {% endfor %}

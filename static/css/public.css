@@ -355,8 +355,37 @@ html[data-theme="dark"] .theme-switcher .icon-moon { display: block; }
     transform: scale(1.2);
 }
 
-/* --- INÍCIO DA MODIFICAÇÃO: Bloco de responsividade unificado --- */
-/* Estilos aplicados em telas de até 768px de largura */
+/* --- INÍCIO DA MODIFICAÇÃO: Estilos para lista de ícones sociais --- */
+.social-links {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--cor-borda);
+}
+.social-links h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--cor-texto-secundario);
+    font-weight: 600;
+}
+.social-icon-list {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+    padding: 0;
+    flex-wrap: wrap; /* Adicionado para permitir a quebra de linha */
+}
+.social-icon-list a {
+    color: var(--cor-texto-secundario);
+    font-size: 1.8rem;
+    transition: var(--transicao);
+}
+.social-icon-list a:hover {
+    color: var(--cor-principal);
+    transform: scale(1.2);
+}
+/* --- FIM DA MODIFICAÇÃO --- */
+
+/* --- Bloco de responsividade unificado --- */
 @media (max-width: 768px) {
     /* Ajusta o padding do container do cabeçalho */
     .nav-container {
@@ -421,4 +450,3 @@ html[data-theme="dark"] .theme-switcher .icon-moon { display: block; }
          margin: 0;
     }
 }
-/* --- FIM DA MODIFICAÇÃO --- */
