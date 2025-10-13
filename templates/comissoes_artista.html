@@ -78,7 +78,6 @@
     .phases-list li:first-child {
         margin-top: 0;
     }
-    /* --- INÍCIO DA MODIFICAÇÃO: Novo estilo para o link de 'Voltar' --- */
     .back-link {
         color: var(--cor-texto-secundario);
         font-weight: 600;
@@ -88,9 +87,33 @@
         align-items: center;
         gap: 8px;
         font-size: 0.9rem;
+        margin-bottom: 2rem; /* Adicionado espaço abaixo do link */
     }
     .back-link:hover {
         color: var(--cor-principal);
+    }
+
+    /* --- INÍCIO DA MODIFICAÇÃO: Estilos para o novo botão responsivo --- */
+    .responsive-cta-wrapper {
+        margin-top: 3rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+    }
+    .cta-mobile-title {
+        display: none; /* Escondido em telas grandes */
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--cor-texto-principal);
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+        .cta-mobile-title {
+            display: block; /* Visível apenas em telas pequenas */
+            margin-bottom: -1rem; /* Aproxima o título do botão */
+        }
     }
     /* --- FIM DA MODIFICAÇÃO --- */
 </style>
@@ -106,8 +129,11 @@
             {% endif %}
         {% endwith %}
 
+        <a href="{{ url_for('public.artistas') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Voltar para a Lista de Artistas
+        </a>
         <div class="artist-header">
-            <img src="{{ artist.artist_avatar }}" alt="Avatar de {{ artist.username }}" referrerpolicy="no-referrer"
+            <img src="{{ artist.artist_avatar or '' }}" alt="Avatar de {{ artist.username }}" referrerpolicy="no-referrer"
                  onerror="this.onerror=null;this.src='https://placehold.co/150x150/ff69b4/ffffff?text={{ artist.username[0] }}';">
             <h1>Comissões de {{ artist.username }}</h1>
             <p>{{ artist.artist_portfolio_description }}</p>
@@ -154,12 +180,11 @@
             {% endif %}
         </div>
         
-        <div style="margin-top: 3rem; display: flex; flex-direction: column; align-items: center; gap: 1.5rem;">
-            <a href="{{ url_for('public.artistas') }}" class="back-link">
-                <i class="fas fa-arrow-left"></i> Voltar para Artistas
-            </a>
+        <div class="responsive-cta-wrapper">
+            <p class="cta-mobile-title">Pronto para começar?</p>
             <a href="{{ url_for('auth.login') }}" class="cta-button">
-                <i class="fas fa-shopping-cart"></i> Pedir Comissão
+                <i class="fas fa-shopping-cart"></i> 
+                <span class="cta-button-text">Pedir Comissão</span>
             </a>
         </div>
         </div>

@@ -37,11 +37,6 @@
         font-size: 1.1rem;
         white-space: pre-wrap;
     }
-
-    /* --- INÍCIO DA MODIFICAÇÃO: Estilos duplicados removidos --- */
-    /* As regras para .social-links e .social-icon-list foram removidas daqui,
-       pois agora estão centralizadas em public.css */
-    /* --- FIM DA MODIFICAÇÃO --- */
 </style>
 
 <main class="public-main">
@@ -59,7 +54,10 @@
                      onerror="this.onerror=null;this.src='https://placehold.co/400x400/374151/ffffff?text=Avatar';">
             </div>
             <div class="about-text">
+                {# --- INÍCIO DA MODIFICAÇÃO: Título "Biografia" adicionado --- #}
+                <h2>Biografia</h2>
                 <p>{{ artist_bio }}</p>
+                {# --- FIM DA MODIFICAÇÃO --- #}
                 
                 <h2>Meu Processo Criativo</h2>
                 <p>{{ artist_process }}</p>
