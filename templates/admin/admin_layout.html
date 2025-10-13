@@ -114,7 +114,8 @@
 
 <body data-username="{{ session.username }}" 
       data-user-role="Admin" 
-      data-avatar-url="{{ session_avatar_url or '' }}">
+      data-avatar-url="{{ session_avatar_url or '' }}"
+      data-user-id="{{ session.user_id }}">
 
 <div class="dashboard">
         {% include 'admin/components/_sidebar.html' %}
@@ -132,18 +133,19 @@
     {% include 'admin/components/_overlay_elements.html' %}
     {% include 'admin/components/_create_modal.html' %}
     {% include 'admin/components/_edit_modal.html' %}
-    {% include 'admin/components/_client_modal.html' %}
+    
+    {# --- INÍCIO DA MODIFICAÇÃO --- #}
+    {# O modal antigo de cliente foi substituído pelo novo modal de gerenciamento unificado #}
+    {% include 'admin/components/_manage_client_modal.html' %}
+    {# --- FIM DA MODIFICAÇÃO --- #}
+
     {% include 'admin/components/_create_client_modal.html' %}
     {% include 'admin/components/_plugin_viewer_modal.html' %}
     {% include '_chat_widget.html' %}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
     <script>
-        // --- INÍCIO DA CORREÇÃO ---
-        // Adicionamos "or []" para fornecer uma lista vazia como valor padrão
-        // caso as variáveis não sejam definidas pelo backend. Isso evita o UndefinedError.
         window.INJECTED_PLUGINS = {{ ((public_plugins or []) + (admin_plugins or [])) | tojson | safe }};
-        // --- FIM DA CORREÇÃO ---
     </script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="{{ url_for('static', filename='js/admin_js/api.js') }}"></script>
@@ -158,6 +160,7 @@
     <script src="{{ url_for('static', filename='js/viewer.js') }}"></script> 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ url_for('static', filename='js/avatar_menu.js') }}"></script>
-    {% block scripts %}{% endblock %}
+    
+{% block scripts %}{% endblock %}
 </body>
 </html>

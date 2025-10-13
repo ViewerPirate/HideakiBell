@@ -1,0 +1,88 @@
+<div class="modal" id="manage-client-modal">
+    <div class="modal-content" style="max-width: 700px;">
+        <div class="modal-header">
+            <h3 class="modal-title" id="manage-client-modal-title">Gerenciar Cliente</h3>
+            <button class="close-modal">&times;</button>
+        </div>
+        
+        <form id="manage-client-form" novalidate>
+            <input type="hidden" id="manage-client-id">
+            <div class="modal-body">
+                
+                <div class="settings-grid" style="grid-template-columns: 1fr; gap: 1.5rem;">
+                    
+                    <div class="card">
+                        <div class="card-header" style="padding: 1rem 1.5rem; border: none;">
+                            <h4 class="card-title" style="font-size: 1.1rem; font-weight: 600;">Perfil</h4>
+                        </div>
+                        <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
+                            <div class="form-group">
+                                <label for="manage-client-username">Nome de Usuário</label>
+                                <input type="text" id="manage-client-username" class="form-input" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header" style="padding: 1rem 1.5rem; border: none;">
+                            <h4 class="card-title" style="font-size: 1.1rem; font-weight: 600;">Acesso e Permissões</h4>
+                        </div>
+                        <div style="padding: 0 1.5rem 1.5rem 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                            <div class="form-group">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="manage-client-is-admin">
+                                    <span class="slider"></span>
+                                    Status de Administrador
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="manage-client-is-blocked">
+                                    <span class="slider"></span>
+                                    Bloqueado
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="manage-client-is-banned">
+                                    <span class="slider"></span>
+                                    Banido
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                         <div class="card-header" style="padding: 1rem 1.5rem; border: none;">
+                            <h4 class="card-title" style="font-size: 1.1rem; font-weight: 600;">Segurança</h4>
+                        </div>
+                        <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
+                            <div class="form-group">
+                                <label for="manage-client-password">Redefinir Senha</label>
+                                <input type="text" id="manage-client-password" class="form-input" placeholder="Deixe em branco para não alterar">
+                                <p style="font-size: 0.85em; color: var(--cor-texto-secundario); margin-top: 5px;">
+                                    Digite uma nova senha para o usuário. Ele não será notificado da alteração.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="border: 1px solid var(--danger); background-color: rgba(244, 67, 54, 0.05);">
+                        <div class="card-header" style="padding: 1rem 1.5rem; border: none;">
+                            <h4 class="card-title" style="font-size: 1.1rem; font-weight: 600; color: var(--danger);">Zona de Perigo</h4>
+                        </div>
+                        <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
+                            <p style="color: var(--cor-texto-secundario); margin-bottom: 1rem;">Esta ação é irreversível e excluirá permanentemente a conta do cliente.</p>
+                            <button type="button" class="btn btn-danger" id="delete-client-btn">Excluir Cliente Permanentemente</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" class="btn btn-light close-modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary" id="save-client-changes-btn">Salvar Alterações</button>
+            </div>
+        </form>
+    </div>
+</div>

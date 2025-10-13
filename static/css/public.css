@@ -372,7 +372,7 @@ html[data-theme="dark"] .theme-switcher .icon-moon { display: block; }
     gap: 1.5rem;
     list-style: none;
     padding: 0;
-    flex-wrap: wrap; /* Adicionado para permitir a quebra de linha */
+    flex-wrap: wrap; 
 }
 .social-icon-list a {
     color: var(--cor-texto-secundario);
@@ -384,7 +384,7 @@ html[data-theme="dark"] .theme-switcher .icon-moon { display: block; }
     transform: scale(1.2);
 }
 
-/* --- INÍCIO DA MODIFICAÇÃO: Estilos para o botão de CTA responsivo com título --- */
+/* --- Estilos para o botão de CTA responsivo com título --- */
 .responsive-cta-wrapper {
     margin-top: 2.5rem;
     display: flex;
@@ -399,7 +399,6 @@ html[data-theme="dark"] .theme-switcher .icon-moon { display: block; }
     color: var(--cor-texto-principal);
     text-align: center;
 }
-/* --- FIM DA MODIFICAÇÃO --- */
 
 /* --- Bloco de responsividade unificado --- */
 @media (max-width: 768px) {
@@ -413,32 +412,54 @@ html[data-theme="dark"] .theme-switcher .icon-moon { display: block; }
         display: none;
     }
 
-    /* Garante que o ícone fique visível e com um bom tamanho */
-    .nav-link i {
-        font-size: 1.4rem; /* Aumenta o tamanho do ícone para ser mais tocável */
-        margin: 0;
-    }
-    
-    /* Remove o espaçamento original entre ícone e texto */
+    /* Transforma os links de navegação em botões circulares */
     .nav-link {
+        width: 42px;
+        height: 42px;
+        border: 1px solid transparent;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
         gap: 0;
     }
+
+    .nav-link::after {
+        display: none;
+    }
+
+    .nav-link:hover {
+        border-color: var(--cor-borda);
+        background-color: var(--cor-fundo);
+    }
     
-    /* Diminui o espaço entre os ícones */
+    .nav-link.active {
+        color: var(--cor-principal);
+        border-color: var(--cor-principal);
+        background-color: var(--cor-fundo-claro);
+    }
+    
+    /* --- INÍCIO DA MODIFICAÇÃO: Ajuste de alinhamento e tamanho --- */
+    .nav-link i {
+        font-size: 1.1rem; /* Tamanho ligeiramente reduzido */
+        margin: 0;
+        line-height: 0; /* Força a centralização pelo flexbox */
+    }
+    /* --- FIM DA MODIFICAÇÃO --- */
+    
     .nav-links {
-        gap: 0.75rem;
+        gap: 0.5rem; 
     }
     
     .nav-right, .desktop-nav {
-        gap: 1rem; /* Diminui o espaço entre a navegação e as ações */
+        gap: 1rem; 
     }
 
-    /* Esconde o texto do botão de login/CTA */
     .cta-button-text {
         display: none;
     }
 
-    /* Ajusta o botão de login para ser um círculo com ícone */
     .cta-button {
         width: 42px;
         height: 42px;
@@ -447,13 +468,11 @@ html[data-theme="dark"] .theme-switcher .icon-moon { display: block; }
         font-size: 1.1rem;
     }
     
-    /* Garante que o ícone no botão CTA não fique muito pequeno */
     .cta-button i {
         margin: 0;
         font-size: 1.1rem;
     }
     
-    /* Regra genérica para outros botões com ícone e texto */
     .btn .btn-text {
         display: none;
     }
@@ -466,10 +485,18 @@ html[data-theme="dark"] .theme-switcher .icon-moon { display: block; }
          margin: 0;
     }
 
-    /* --- INÍCIO DA MODIFICAÇÃO: Exibe o título do CTA responsivo --- */
     .cta-mobile-title {
-        display: block; /* Visível apenas em telas pequenas */
-        margin-bottom: -0.5rem; /* Aproxima o título do botão */
+        display: block; 
+        margin-bottom: -0.5rem; 
     }
-    /* --- FIM DA MODIFICAÇÃO --- */
+
+    html[data-theme="dark"] .nav-link:hover {
+        background-color: var(--cor-surface);
+        border-color: var(--cor-borda);
+    }
+
+    html[data-theme="dark"] .nav-link.active {
+        background-color: rgba(255, 105, 180, 0.1); 
+        border-color: var(--cor-principal);
+    }
 }

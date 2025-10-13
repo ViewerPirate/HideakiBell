@@ -150,6 +150,34 @@ async function createClient(clientData) {
     }
 }
 
+// --- INÍCIO DA MODIFICAÇÃO ---
+async function updateClientDetails(clientId, clientData) {
+    try {
+        const response = await fetch(`/admin/api/clients/${clientId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(clientData)
+        });
+        return await response.json();
+    } catch (error) {
+        console.error("Erro ao atualizar cliente:", error);
+        return { success: false, message: 'Erro de conexão.' };
+    }
+}
+
+async function deleteClient(clientId) {
+    try {
+        const response = await fetch(`/admin/api/clients/${clientId}`, {
+            method: 'DELETE'
+        });
+        return await response.json();
+    } catch (error) {
+        console.error("Erro ao excluir cliente:", error);
+        return { success: false, message: 'Erro de conexão.' };
+    }
+}
+// --- FIM DA MODIFICAÇÃO ---
+
 async function updateClientPreferences(clientId, prefs) {
     try {
         const response = await fetch(`/admin/api/clients/${clientId}/update_prefs`, {
@@ -190,7 +218,6 @@ async function toggleClientBan(clientId) {
 async function toggleAdminStatus(clientId) {
     try {
         const response = await fetch(`/admin/api/clients/${clientId}/toggle_admin`, { method: 'POST' });
-        // Retorna a resposta inteira para que possamos ler a mensagem de erro ou sucesso
         return await response.json();
     } catch (error) {
         console.error("Erro ao alterar status de admin:", error);
@@ -322,10 +349,6 @@ async function fetchMessages() {
     }
 }
 
-// --- INÍCIO DA MODIFICAÇÃO (Novas Funções) ---
-/**
- * Busca todos os FAQs da API.
- */
 async function fetchFaqs() {
     try {
         const response = await fetch('/admin/api/faqs');
@@ -340,10 +363,6 @@ async function fetchFaqs() {
     }
 }
 
-/**
- * Envia a lista completa de FAQs para o backend para sincronização.
- * @param {Array} faqsData - A lista de objetos de FAQ.
- */
 async function syncFaqs(faqsData) {
     try {
         const response = await fetch('/admin/api/faqs/sync', {
@@ -357,4 +376,3 @@ async function syncFaqs(faqsData) {
         return { success: false, message: 'Erro de conexão ao salvar FAQs.' };
     }
 }
-// --- FIM DA MODIFICAÇÃO ---

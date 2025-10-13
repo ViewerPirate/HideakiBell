@@ -12,8 +12,8 @@ def get_clients():
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    # Removida a coluna 'email' da consulta
-    cursor.execute('SELECT id, username as name, is_blocked, is_banned, created_at, is_admin FROM users ORDER BY username')
+    # MODIFICAÇÃO: Renomeado 'name' para 'username' para consistência.
+    cursor.execute('SELECT id, username, is_blocked, is_banned, created_at, is_admin FROM users ORDER BY username')
     clients_db = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -23,6 +23,11 @@ def get_clients():
 @admin_required
 def create_client():
     data = request.get_json()
+    # MODIFICAÇÃO: Renomeado 'name' para 'username'
+    username = data.get('username')
+    if not username:
+        return jsonify({'success': False, 'message': 'O nome de usuário é obrigatório.'}), 400
+
     hashed_password = generate_password_hash("senha_padrao_cliente")
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -30,36 +35,108 @@ def create_client():
     placeholder = '%s' if is_postgres else '?'
     
     try:
-        # Query de inserção sem o campo 'email'
         query = f'INSERT INTO users (username, password_hash) VALUES ({placeholder}, {placeholder})'
-        cursor.execute(query, (data['name'], hashed_password))
+        cursor.execute(query, (username, hashed_password))
         conn.commit()
     except Exception:
         conn.rollback()
-        # Mensagem de erro atualizada
         return jsonify({'success': False, 'message': 'Nome de usuário já existe.'}), 409
     finally:
         cursor.close()
         conn.close()
     return jsonify({'success': True, 'message': 'Cliente criado com sucesso.'})
 
-@admin_bp.route('/api/clients/<int:client_id>', methods=['GET'])
+# --- INÍCIO DA MODIFICAÇÃO: Rota unificada para GET, PUT, DELETE ---
+@admin_bp.route('/api/clients/<int:client_id>', methods=['GET', 'PUT', 'DELETE'])
 @admin_required
-def get_single_client(client_id):
+def manage_single_client(client_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     is_postgres = hasattr(conn, 'cursor_factory')
     placeholder = '%s' if is_postgres else '?'
-    
-    # Removida a coluna 'email' da consulta
-    query = f'SELECT id, username as name, is_blocked, is_banned, notify_on_site, notify_by_email, created_at FROM users WHERE id = {placeholder}'
-    cursor.execute(query, (client_id,))
-    client = cursor.fetchone()
-    cursor.close()
-    conn.close()
-    if client is None:
-        return jsonify({'error': 'Cliente não encontrado'}), 404
-    return jsonify(dict(client))
+
+    # --- MÉTODO GET: Buscar um único cliente ---
+    if request.method == 'GET':
+        try:
+            # MODIFICAÇÃO: Renomeado 'name' para 'username'
+            query = f'SELECT id, username, is_blocked, is_banned, notify_on_site, notify_by_email, created_at FROM users WHERE id = {placeholder}'
+            cursor.execute(query, (client_id,))
+            client = cursor.fetchone()
+            if client is None:
+                return jsonify({'error': 'Cliente não encontrado'}), 404
+            return jsonify(dict(client))
+        finally:
+            cursor.close()
+            conn.close()
+
+    # --- MÉTODO PUT: Atualizar username e/ou senha ---
+    if request.method == 'PUT':
+        data = request.get_json()
+        new_username = data.get('username')
+        new_password = data.get('password')
+
+        if not new_username and not new_password:
+            conn.close()
+            return jsonify({'success': False, 'message': 'Nenhum dado para atualizar foi fornecido.'}), 400
+
+        try:
+            # Verifica se o novo nome de usuário já está em uso por outra conta
+            if new_username:
+                cursor.execute(f"SELECT id FROM users WHERE username = {placeholder} AND id != {placeholder}", (new_username, client_id))
+                if cursor.fetchone():
+                    return jsonify({'success': False, 'message': 'Este nome de usuário já está em uso.'}), 409
+
+            updates = []
+            params = []
+            if new_username:
+                updates.append(f"username = {placeholder}")
+                params.append(new_username)
+            if new_password:
+                hashed_password = generate_password_hash(new_password)
+                updates.append(f"password_hash = {placeholder}")
+                params.append(hashed_password)
+            
+            params.append(client_id)
+            query = f"UPDATE users SET {', '.join(updates)} WHERE id = {placeholder}"
+            
+            cursor.execute(query, tuple(params))
+            conn.commit()
+            
+            return jsonify({'success': True, 'message': 'Dados do cliente atualizados com sucesso.'})
+        except Exception as e:
+            conn.rollback()
+            return jsonify({'success': False, 'message': f'Erro no servidor: {e}'}), 500
+        finally:
+            cursor.close()
+            conn.close()
+
+    # --- MÉTODO DELETE: Excluir um cliente ---
+    if request.method == 'DELETE':
+        if client_id == session.get('user_id'):
+            conn.close()
+            return jsonify({'success': False, 'message': 'Você não pode excluir sua própria conta.'}), 403
+
+        try:
+            # Anula a referência do cliente nas comissões para manter o histórico financeiro
+            cursor.execute(f"UPDATE comissoes SET client_id = NULL WHERE client_id = {placeholder}", (client_id,))
+            # Exclui notificações associadas
+            cursor.execute(f"DELETE FROM notifications WHERE user_id = {placeholder}", (client_id,))
+            # Exclui dados de plugins associados
+            cursor.execute(f"DELETE FROM plugin_data WHERE user_id = {placeholder}", (client_id,))
+            # Exclui os serviços do artista (se for um)
+            cursor.execute(f"DELETE FROM artist_services WHERE artist_id = {placeholder}", (client_id,))
+            # Finalmente, exclui o usuário
+            cursor.execute(f"DELETE FROM users WHERE id = {placeholder}", (client_id,))
+            
+            conn.commit()
+            return jsonify({'success': True, 'message': 'Cliente excluído com sucesso.'})
+        except Exception as e:
+            conn.rollback()
+            return jsonify({'success': False, 'message': f'Erro no servidor: {e}'}), 500
+        finally:
+            cursor.close()
+            conn.close()
+# --- FIM DA MODIFICAÇÃO ---
 
 @admin_bp.route('/api/clients/<int:client_id>/toggle_admin', methods=['POST'])
 @admin_required
