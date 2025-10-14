@@ -96,6 +96,7 @@
 #manage-client-modal .modal-body {
     overflow-y: auto;
     padding: 1rem; /* Padding geral para o corpo do modal */
+    min-height: 0; /* CORREÇÃO ADICIONADA AQUI */
 }
 
 /* Estilo para as seções dentro do modal */

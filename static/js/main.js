@@ -47,6 +47,31 @@ function showNotification(message, type = 'success') {
     }, 3500);
 }
 
+// INÍCIO DA MODIFICAÇÃO: Funções de controle de modal
+/**
+ * Exibe um modal e bloqueia o scroll do corpo da página.
+ * @param {HTMLElement} modal - O elemento do modal a ser exibido.
+ */
+function showModal(modal) {
+    if (!modal) return;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+/**
+ * Esconde um modal e restaura o scroll do corpo da página.
+ * @param {HTMLElement} modal - O elemento do modal a ser escondido.
+ */
+function hideModal(modal) {
+    if (!modal) return;
+    modal.style.display = 'none';
+    // Só restaura o scroll se nenhum outro modal estiver visível
+    if (document.querySelectorAll('.modal[style*="display: flex"]').length === 0) {
+        document.body.style.overflow = '';
+    }
+}
+// FIM DA MODIFICAÇÃO
+
 /**
  * Verifica o sessionStorage por uma notificação pendente, a exibe e a remove.
  * Útil para mostrar feedback de uma ação após um redirecionamento ou recarga de página.
@@ -129,6 +154,7 @@ function initializeNSFWFilter() {
     const enableNSFWToggle = () => {
         nsfwCards.forEach(card => {
             const toggleBtn = card.querySelector('.nsfw-toggle-icon-btn');
+            
             if (toggleBtn) {
                 const icon = toggleBtn.querySelector('i');
                 // Garante que o ícone inicial esteja correto
@@ -230,6 +256,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- INICIALIZAÇÃO DO FILTRO NSFW ---
     initializeNSFWFilter();
 
+    // INÍCIO DA MODIFICAÇÃO: Lógica para abrir e fechar os modais
+    document.querySelectorAll('[data-modal-target]').forEach(trigger => {
+        trigger.addEventListener('click', (e) => {
+            e.preventDefault();
+            const modalId = trigger.dataset.modalTarget;
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                showModal(modal);
+            }
+        });
+    });
+
+    document.querySelectorAll('.modal .close-modal').forEach(button => {
+        button.addEventListener('click', () => {
+            hideModal(button.closest('.modal'));
+        });
+    });
+
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                hideModal(modal);
+            }
+        });
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === "Escape") {
+            document.querySelectorAll('.modal').forEach(hideModal);
+        }
+    });
+    // FIM DA MODIFICAÇÃO
+
     // --- LÓGICA PARA O FORMULÁRIO DE CONTATO ---
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {
@@ -281,12 +340,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // --- INÍCIO DA MODIFICAÇÃO: Lógica de responsividade do logo ---
     initializeLogoResponsiveness();
-    // --- FIM DA MODIFICAÇÃO ---
 });
-
-// --- INÍCIO DA MODIFICAÇÃO: Funções do plugin movidas para cá ---
 
 /**
  * Converte um nome completo em suas iniciais.
@@ -340,4 +395,3 @@ function initializeLogoResponsiveness() {
     // Aplica o estado inicial assim que o script é executado
     applyLogoState(mobileMediaQuery.matches, logoElement, originalLogoText);
 }
-// --- FIM DA MODIFICAÇÃO ---

@@ -9,7 +9,7 @@ async function loadAndPopulateSettings() {
     try {
         const [settings, faqs] = await Promise.all([
             fetchSettings(), // Função de api.js
-            fetchFaqs()      // Função de api.js
+            fetchFaqs()       // Função de api.js
         ]);
 
         if (!settings) {
@@ -47,11 +47,14 @@ async function loadAndPopulateSettings() {
         document.getElementById('artist_process').value = settings.artist_process || '';
         document.getElementById('artist_inspirations').value = settings.artist_inspirations || '';
 
-        // --- INÍCIO DA MODIFICAÇÃO: Popula o campo de avatar ---
         document.getElementById('artist_avatar').value = settings.artist_avatar || '';
         document.getElementById('avatar-preview').src = settings.artist_avatar || 'https://placehold.co/150x150/1e1e1e/ffffff?text=Preview';
-        // --- FIM DA MODIFICAÇÃO ---
         
+        // INÍCIO DA MODIFICAÇÃO: Popula os novos campos
+        document.getElementById('terms_of_service').value = settings.terms_of_service || '';
+        document.getElementById('privacy_policy').value = settings.privacy_policy || '';
+        // FIM DA MODIFICAÇÃO
+
         // Usa as funções do módulo de UI para criar os elementos dinâmicos
         if (settings.commission_types && Array.isArray(settings.commission_types)) {
             settings.commission_types.forEach(data => window.settingsUI.createCommissionTypeElement(data));
@@ -82,6 +85,7 @@ async function loadAndPopulateSettings() {
 function initializeFormSaver(form) {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        
         console.log("Coletando dados do formulário para salvar...");
 
         const settingsData = {
@@ -106,9 +110,13 @@ function initializeFormSaver(form) {
             'artist_bio': document.getElementById('artist_bio').value,
             'artist_process': document.getElementById('artist_process').value,
             'artist_inspirations': document.getElementById('artist_inspirations').value,
-            // --- INÍCIO DA MODIFICAÇÃO: Adiciona o campo de avatar ao salvamento ---
             'artist_avatar': document.getElementById('artist_avatar').value,
-            // --- FIM DA MODIFICAÇÃO ---
+            
+            // INÍCIO DA MODIFICAÇÃO: Coleta os dados dos novos campos
+            'terms_of_service': document.getElementById('terms_of_service').value,
+            'privacy_policy': document.getElementById('privacy_policy').value,
+            // FIM DA MODIFICAÇÃO
+
             'social_links': [],
             'commission_types': [], 
             'commission_extras': [], 
