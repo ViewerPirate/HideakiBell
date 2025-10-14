@@ -109,8 +109,7 @@ html[data-theme="dark"] .public-header { background-color: rgba(18, 18, 18, 0.7)
     background: transparent; border: 1px solid var(--cor-borda);
     border-radius: 50%; cursor: pointer;
     color: var(--cor-texto-secundario);
-    display: flex; align-items: center; justify-content: center;
-    width: 42px; height: 42px; transition: var(--transicao);
+    display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; transition: var(--transicao);
 }
 .theme-switcher:hover {
     color: var(--cor-principal); border-color: var(--cor-principal);
@@ -129,8 +128,7 @@ html[data-theme="dark"] .theme-switcher .icon-moon { display: block; }
     text-decoration: none; font-weight: 700; transition: var(--transicao);
     border: none; box-shadow: var(--sombra-suave);
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: center; justify-content: center;
     gap: 8px;
 }
 .cta-button:hover { transform: scale(1.05) translateY(-2px); box-shadow: var(--sombra-media); }
@@ -165,6 +163,72 @@ html[data-theme="dark"] .theme-switcher .icon-moon { display: block; }
 .flash-message.error { background-color: rgba(220, 38, 38, 0.1); color: #dc2626; border-color: rgba(220, 38, 38, 0.2); }
 .flash-message.success { background-color: rgba(34, 197, 94, 0.1); color: #16a34a; border-color: rgba(34, 197, 94, 0.2); }
 .flash-message.info { background-color: rgba(59, 130, 246, 0.1); color: #3b82f6; border-color: rgba(59, 130, 246, 0.2); }
+
+/* --- INÍCIO DA MODIFICAÇÃO: ESTILO BASE PARA MODAIS --- */
+.modal {
+    display: none; /* Garante que todos os modais comecem escondidos */
+    position: fixed;
+    inset: 0;
+    background-color: rgba(18, 18, 18, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+.modal-content {
+    background-color: var(--cor-surface);
+    border-radius: var(--raio-borda);
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    box-shadow: var(--sombra-media);
+    border: 1px solid var(--cor-borda);
+    animation: fadeInUp 0.4s ease-out;
+    display: flex;
+    flex-direction: column;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    border-bottom: 1px solid var(--cor-borda);
+}
+.modal-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+.close-modal {
+    background-color: var(--cor-fundo);
+    border: 1px solid var(--cor-borda);
+    color: var(--cor-texto-secundario);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transicao);
+    font-size: 1.2rem;
+    line-height: 1;
+}
+.close-modal:hover {
+    background-color: var(--cor-fundo-claro);
+    color: var(--cor-principal);
+    transform: rotate(90deg);
+}
+.modal-body {
+    padding: 30px;
+    overflow-y: auto;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+/* --- FIM DA MODIFICAÇÃO --- */
 
 /* --- GALERIA ESTILO PINTEREST --- */
 .gallery-grid {
@@ -370,8 +434,7 @@ html[data-theme="dark"] .theme-switcher .icon-moon { display: block; }
 .social-icon-list {
     display: flex;
     gap: 1.5rem;
-    list-style: none;
-    padding: 0;
+    list-style: none; padding: 0;
     flex-wrap: wrap; 
 }
 .social-icon-list a {
@@ -440,13 +503,11 @@ html[data-theme="dark"] .theme-switcher .icon-moon { display: block; }
         background-color: var(--cor-fundo-claro);
     }
     
-    /* --- INÍCIO DA MODIFICAÇÃO: Ajuste de alinhamento e tamanho --- */
     .nav-link i {
         font-size: 1.1rem; /* Tamanho ligeiramente reduzido */
         margin: 0;
         line-height: 0; /* Força a centralização pelo flexbox */
     }
-    /* --- FIM DA MODIFICAÇÃO --- */
     
     .nav-links {
         gap: 0.5rem; 
